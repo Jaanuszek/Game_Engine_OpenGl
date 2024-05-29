@@ -1,2 +1,3 @@
 ﻿  main.cpp
+C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\GameEngine\src\main.cpp(86,20): warning C4101: 'VAO': unreferenced local variable
   GameEngine.vcxproj -> C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\x64\Debug\GameEngine.exe
