@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,13 +30,26 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Basic.shader",
+              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader",
+              "RelativeDocumentMoniker": "GameEngine\\res\\shaders\\Basic.shader",
+              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader",
+              "RelativeToolTip": "GameEngine\\res\\shaders\\Basic.shader",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002777|",
+              "WhenOpened": "2024-05-30T09:22:46.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\main.cpp",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp",
               "RelativeToolTip": "GameEngine\\src\\main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAD4AAAAMAAAA",
+              "ViewState": "AQIAAG8AAAAAAAAAAAAuwHoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-22T16:20:51.629Z",
               "EditorCaption": ""
