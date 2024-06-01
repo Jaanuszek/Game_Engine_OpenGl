@@ -6,6 +6,29 @@
 #include <string>
 #include <sstream>
 
+#define ASSERT(x) if(!(x)) __debugbreak();
+#define GLCall(x) GLClearError();\
+	x;\
+	ASSERT(GLLogCall(#x,__FILE__, __LINE__))
+
+static void GLClearError() {
+	while (glGetError() != GL_NO_ERROR);
+}
+
+//static void GLCheckError() {
+//	while (GLenum error = glGetError()) {
+//		std::cout << "[OpenGL Error] (" << error << ")" << std::endl;
+//	}
+//}
+
+static bool GLLogCall(const char* function, const char* file, int line) {
+	while (GLenum error = glGetError()) {
+		std::cout << "[OpenGL Error] (" << error << ")" << function<<" "<< file<< ":"<<line<< std::endl;
+		return false;
+	}
+	return true;
+}
+
 struct ShaderProgramSource {
 	std::string VertexSource;
 	std::string FragmentSource;
@@ -76,11 +99,13 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 }
 
 int main() {
-	glfwInit();
+	if (!glfwInit())
+		return -1;
 
-	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Game Engine", NULL, NULL);
@@ -90,7 +115,7 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-
+	glfwSwapInterval(1);
 	gladLoadGL();
 
 	float vertices[] = {
@@ -105,10 +130,14 @@ int main() {
 		2,3,0
 	};
 
+	unsigned int VAO;
+	GLCall(glGenVertexArrays(1, &VAO));
+	GLCall(glBindVertexArray(VAO));
+
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, 6* 2 * sizeof(float), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void*)0);
@@ -125,8 +154,11 @@ int main() {
 	//std::cout << "FRAGMENT" << std::endl;
 	//std::cout << source.FragmentSource << std::endl;
 	unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-	glUseProgram(shader);
+	GLCall(glUseProgram(shader));
 
+	GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+	ASSERT(location != -1);
+	GLCall(glUniform4f(location, 0.8f,0.3f,0.8f,1.0f));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -136,13 +168,34 @@ int main() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glfwSwapBuffers(window);
 
+	GLCall(glBindVertexArray(0));
+	GLCall(glUseProgram(0));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
 
-
+	float r = 0.0f;
+	float increment = 0.01f;
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, nullptr);
+		GLCall(glUseProgram(shader));
+		GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
+
+		GLCall(glBindVertexArray(VAO));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+
+		GLCall(glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, nullptr));
+		
+		if (r > 1.0f) {
+			increment = -0.01f;
+		}
+		else if (r < 0.0f) {
+			increment = 0.01f;
+		}
+		r += increment;
+
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
