@@ -153,6 +153,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
     <ClCompile Include="src\VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,8 @@
   <ItemGroup>
     <ClInclude Include="src\EBO.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VBL.h" />
     <ClInclude Include="src\VBO.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
