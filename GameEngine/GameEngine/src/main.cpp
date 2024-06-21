@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "VBO.h"
 #include "EBO.h"
+#include "VAO.h"
 
 
 struct ShaderProgramSource {
@@ -112,14 +113,12 @@ int main() {
 			2,3,0
 		};
 
-		unsigned int VAO;
-		GLCall(glGenVertexArrays(1, &VAO));
-		GLCall(glBindVertexArray(VAO));
-
+		VAO vao;
 		VBO vbo(vertices, 8 * sizeof(float));
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void*)0);
+		VBL layout;
+		layout.Push(GL_FLOAT,2);
+		vao.AddBuffer(vbo, layout);
 
 		EBO ebo(indices, 6);
 
@@ -144,7 +143,6 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
 
-		GLCall(glBindVertexArray(0));
 		GLCall(glUseProgram(0));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -159,7 +157,7 @@ int main() {
 			GLCall(glUseProgram(shader));
 			GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
-			GLCall(glBindVertexArray(VAO));
+			vao.Bind();
 			vbo.Bind();
 
 			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
