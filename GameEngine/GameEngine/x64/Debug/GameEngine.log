@@ -1,5 +1,2 @@
-﻿  VAO.cpp
-C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\GameEngine\src\VAO.cpp(21,3): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
-  main.cpp
-  Generating Code...
+﻿  main.cpp
   GameEngine.vcxproj -> C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\x64\Debug\GameEngine.exe
