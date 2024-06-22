@@ -1,7 +1,8 @@
 #pragma once
 
 #include "VBO.h"
-#include "VBL.h"
+
+class VBL;
 
 class VAO {
 private:
