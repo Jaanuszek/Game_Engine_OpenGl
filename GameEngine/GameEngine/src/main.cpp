@@ -158,7 +158,7 @@ int main() {
 			GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
 			vao.Bind();
-			vbo.Bind();
+			ebo.Bind();
 
 			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 

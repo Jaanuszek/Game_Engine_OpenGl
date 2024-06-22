@@ -7,6 +7,18 @@
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\Renderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\Renderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\VBO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\VAO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -27,20 +39,8 @@
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\EBO.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\VBO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBO.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\VBO.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\Renderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\Renderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -58,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 13,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,20 +70,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "VAO.cpp",
-              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\src\\VAO.cpp",
-              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.cpp",
-              "RelativeToolTip": "GameEngine\\src\\VAO.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAowAwAAAA4AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-06-21T21:10:35.148Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "VBL.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBL.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\VBL.h",
@@ -95,7 +82,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "VAO.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\VAO.h",
@@ -107,7 +94,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "EBO.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\EBO.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\EBO.cpp",
@@ -119,7 +106,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "EBO.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\EBO.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\EBO.h",
@@ -131,7 +118,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
               "Title": "VBO.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBO.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\VBO.cpp",
@@ -143,7 +130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "VBO.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VBO.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\VBO.h",
@@ -155,25 +142,25 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 1,
               "Title": "Renderer.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\Renderer.cpp",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.cpp",
               "RelativeToolTip": "GameEngine\\src\\Renderer.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAATAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-06-21T18:41:39.876Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 2,
               "Title": "Renderer.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\Renderer.h",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h",
               "RelativeToolTip": "GameEngine\\src\\Renderer.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAqAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-06-21T18:41:31.145Z"
             },
@@ -209,10 +196,22 @@
               "RelativeDocumentMoniker": "GameEngine\\src\\main.cpp",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp",
               "RelativeToolTip": "GameEngine\\src\\main.cpp",
-              "ViewState": "AQIAAIkAAAAAAAAAAIAwwJAAAAAAAAAA",
+              "ViewState": "AQIAAJIAAAAAAAAAAIAwwKEAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-22T16:20:51.629Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "VAO.cpp",
+              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\src\\VAO.cpp",
+              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\VAO.cpp",
+              "RelativeToolTip": "GameEngine\\src\\VAO.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAowAwAAAA4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-06-21T21:10:35.148Z"
             }
           ]
         }
