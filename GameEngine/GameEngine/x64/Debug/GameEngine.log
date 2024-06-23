@@ -8,4 +8,5 @@ C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\GameEngine\src\Renderer.h(6,
 C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\GameEngine\src\Renderer.h(7,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'src/main.cpp')
   
+x64\Debug\glm.obj : warning LNK4042: object specified more than once; extras ignored
   GameEngine.vcxproj -> C:\Users\Kuba\Desktop\Game_Engine_OpenGL\GameEngine\x64\Debug\GameEngine.exe
