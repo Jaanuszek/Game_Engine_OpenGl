@@ -3,12 +3,15 @@
   "WorkspaceRootPath": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\vendor\\imgui\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -25,10 +28,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Shader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\Shader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\res\\shaders\\Basic.shader||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Texture.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -81,6 +80,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\EBO.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D6DFB6DE-4409-41CE-87C1-0E7F6E07824E}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\src\\EBO.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:GameEngine\\src\\vendor\\imgui\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -90,7 +93,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -102,28 +105,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\src\\vendor\\imgui\\main.cpp",
-              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp",
-              "RelativeToolTip": "GameEngine\\src\\vendor\\imgui\\main.cpp",
-              "ViewState": "AQIAAHsAAAAAAAAAAAAAAIMAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-06-24T11:24:26.868Z",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\.gitignore",
+              "RelativeDocumentMoniker": "..\\.gitignore",
+              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\.gitignore",
+              "RelativeToolTip": "..\\.gitignore",
+              "ViewState": "AQIAAHUAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-26T15:14:01.587Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "glm.cppm",
-              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\glm\\glm.cppm",
-              "RelativeDocumentMoniker": "GameEngine\\src\\vendor\\glm\\glm.cppm",
-              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\glm\\glm.cppm",
-              "RelativeToolTip": "GameEngine\\src\\vendor\\glm\\glm.cppm",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAGAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001913|",
-              "WhenOpened": "2024-06-23T09:53:41.775Z"
             },
             {
               "$type": "Document",
@@ -175,16 +166,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\main.cpp",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\main.cpp",
               "RelativeToolTip": "GameEngine\\src\\main.cpp",
-              "ViewState": "AQIAADkAAAAAAAAAAAAcwFAAAAAPAAAA",
+              "ViewState": "AQIAAG0AAAAAAAAAAAAowIMAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-22T16:20:51.629Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "glm.cppm",
+              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\glm\\glm.cppm",
+              "RelativeDocumentMoniker": "GameEngine\\src\\vendor\\glm\\glm.cppm",
+              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\glm\\glm.cppm",
+              "RelativeToolTip": "GameEngine\\src\\vendor\\glm\\glm.cppm",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001913|",
+              "WhenOpened": "2024-06-23T09:53:41.775Z"
             },
             {
               "$type": "Document",
@@ -236,7 +239,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Renderer.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Renderer.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\Renderer.h",
@@ -248,19 +251,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "Basic.shader",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader",
               "RelativeDocumentMoniker": "GameEngine\\res\\shaders\\Basic.shader",
               "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\res\\shaders\\Basic.shader",
               "RelativeToolTip": "GameEngine\\res\\shaders\\Basic.shader",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAALAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002777|",
               "WhenOpened": "2024-05-30T09:22:46.032Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 20,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\src\\vendor\\imgui\\main.cpp",
+              "ToolTip": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\vendor\\imgui\\main.cpp",
+              "RelativeToolTip": "GameEngine\\src\\vendor\\imgui\\main.cpp",
+              "ViewState": "AQIAAHsAAAAAAAAAAAAAAIMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-06-24T11:24:26.868Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Shader.h",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Shader.h",
               "RelativeDocumentMoniker": "GameEngine\\src\\Shader.h",
@@ -272,7 +287,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Shader.cpp",
               "DocumentMoniker": "C:\\Users\\Kuba\\Desktop\\Game_Engine_OpenGL\\GameEngine\\GameEngine\\src\\Shader.cpp",
               "RelativeDocumentMoniker": "GameEngine\\src\\Shader.cpp",
