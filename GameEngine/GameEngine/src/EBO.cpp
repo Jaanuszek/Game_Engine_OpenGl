@@ -20,3 +20,10 @@ void EBO::Bind() const {
 void EBO::Unbind() const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
+
+void EBO::Update(const unsigned int* data, unsigned int count)
+{
+	m_Count = count;
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_ID));
+	GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, count * sizeof(unsigned int), data));
+}

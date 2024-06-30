@@ -18,3 +18,9 @@ void VBO::Bind() const{
 void VBO::Unbind() const{
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
+
+void VBO::Update(const void* data, unsigned int size) const
+{
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_ID));
+	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data)); //update the whole data of buffer
+}

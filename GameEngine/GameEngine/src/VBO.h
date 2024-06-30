@@ -8,5 +8,6 @@ public:
 	~VBO();
 
 	void Bind() const;
-	void Unbind() const ;
+	void Unbind() const;
+	void Update(const void* data, unsigned int size) const;
 };

@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -29,7 +30,7 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-
+void RenderSphere(float radius, unsigned int rings, unsigned int sectors, std::vector<float>& vertices, std::vector<unsigned int>& indices);
 
 float verticesCube[] = {
 	-0.5f,-0.5f,-0.5f, 0.0f,0.0f, 1.0f,0.0f,0.0f, //left bottom back 0
@@ -140,15 +141,8 @@ int main() {
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, 36);
 
-		VAO vao2;
-		//pyramid
-		VBO vbo2(verticesPyramid, 5 * 8 * sizeof(float));
-		VBL layout2;
-		layout2.Push(GL_FLOAT, 3);
-		layout2.Push(GL_FLOAT, 2);
-		layout2.Push(GL_FLOAT, 3);
-		vao2.AddBuffer(vbo2, layout2);
-		EBO ebo2(indicesPyramid, 18);
+
+
 
 		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 		//glm::perspective(fov, aspect, near, far)
@@ -169,22 +163,10 @@ int main() {
 		texture1.Bind();
 		shader1.SetUniform1i("u_Texture", 0);
 
-		Shader shader2("res/shaders/Basic.shader");
-		shader2.Bind();
-		shader2.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-
-		Texture texture2("res/textures/pudzilla.png");
-		texture2.Bind();
-		shader2.SetUniform1i("u_Texture", 0);
-
 		vao1.Unbind();
-		vao2.Unbind();
 		vbo1.Unbind();
-		vbo2.Unbind();
 		ebo1.Unbind();
-		ebo2.Unbind();
 		shader1.Unbind();
-		shader2.Unbind();
 
 		Renderer renderer;
 
@@ -196,7 +178,6 @@ int main() {
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
-		bool plsWork = true;
 
 		while (!glfwWindowShouldClose(window)) {
 			renderer.Clear();
@@ -212,26 +193,21 @@ int main() {
 				model = glm::translate(model, translationA);
 
 				glm::mat4 mvp = proj * view * model; // mvp - model view projection, due to matrix multiplication is reversed from (right to left)
-				if (renderObject == RenderObject::Cube) {
 					shader1.Bind();
 					shader1.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vao1, ebo1, shader1);
-				}
-				else if (renderObject == RenderObject::Pyramid) {
-					shader2.Bind();
-					shader2.SetUniformMat4f("u_MVP", mvp);
-					renderer.Draw(vao2, ebo2, shader2);
-				}
 			}
 
 			{
 			ImGui::Begin("Jabol");
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
+				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
+				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
 			}
 			ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);  
 			ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
@@ -261,23 +237,57 @@ int main() {
 }
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo) {
-	//vao.Bind();
 	if (object == RenderObject::Cube) {
-		VBO vbo(verticesCube, 8 * 8 * sizeof(float));
-		VBL layout;
-		layout.Push(GL_FLOAT, 3);
-		layout.Push(GL_FLOAT, 2);
-		layout.Push(GL_FLOAT, 3);
-		vao.AddBuffer(vbo, layout);
-		EBO ebo(indicesCube, 36);
+		vbo.Update(verticesCube, 8 * 8 * sizeof(float));
+		ebo.Update(indicesCube, 36);
 	}
 	else if (object == RenderObject::Pyramid) {
-		VBO vbo(verticesPyramid, 5 * 8 * sizeof(float));
-		VBL layout;
-		layout.Push(GL_FLOAT, 3);
-		layout.Push(GL_FLOAT, 2);
-		layout.Push(GL_FLOAT, 3);
-		vao.AddBuffer(vbo, layout);
-		EBO ebo(indicesPyramid, 18);
+		vbo.Update(verticesPyramid, 5 * 8 * sizeof(float));
+		ebo.Update(indicesPyramid, 18);
 	}
+}
+//idk it's not working
+void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::vector<float>& vertices, std::vector<unsigned int>& indices) {
+	float const R = 1.0f / (float)(sectors - 1); //normalizing Sectors to be a value frome 0 to 1
+	float const S = 1.0f / (float)(stacks - 1); //normalizing Stacks 
+
+	//r sector step
+	//s stack step
+	int r, s; //r - sector(ring), s - stack
+	
+	float sectorStep = 2 * glm::pi<float>() / sectors;
+	float stackStep = glm::pi<float>() / stacks;
+	//float x, y, z;
+
+	vertices.resize(sectors * stacks * 6); //sectors * stacks * 6. 3 position, 3 colors
+	std::vector<float>::iterator v = vertices.begin();
+	for (r = 0; r < sectors; r++) {
+		for (s = 0; s < stacks; s++) {
+			float const x = cos(glm::half_pi<float>() - glm::pi<float>() * s / S) * cos(2 * glm::pi<float>() * r / R);
+			float const y = cos(glm::half_pi<float>() - glm::pi<float>() * s / S) * sin(2 * glm::pi<float>() * r / R);
+			float const z =  sin(glm::half_pi<float>() - glm::pi<float>() * s / S);
+			*v++ = x * radius;
+			*v++ = y * radius;
+			*v++ = z * radius;
+
+			*v++ = (x + 1) * 0.5f;
+			*v++ = (y + 1) * 0.5f;
+			*v++ = (z + 1) * 0.5f;
+		}
+	}
+
+	indices.resize(sectors * stacks * 6); // 6 indices per quad because every quad have 2 triangles and 2 triangles have 6 indices
+	std::vector<unsigned int>::iterator i = indices.begin();
+	for (r = 0; r < sectors - 1; r++) {
+		for (s = 0; s < stacks - 1; s++) {
+			*i++ = r * stacks + s;
+			*i++ = r * stacks + (s + 1);
+			*i++ = (r + 1) * stacks + (s + 1);
+
+			*i++ = r * stacks + s;
+			*i++ = (r + 1) * stacks + (s + 1);
+			*i++ = (r + 1) * stacks + s;
+		}
+	}
+
 }
