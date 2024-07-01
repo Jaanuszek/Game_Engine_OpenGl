@@ -26,7 +26,8 @@
 
 enum class RenderObject {
 	Cube,
-	Pyramid
+	Pyramid,
+	Sphere
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
@@ -142,8 +143,6 @@ int main() {
 		EBO ebo1(indicesCube, 36);
 
 
-
-
 		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 		//glm::perspective(fov, aspect, near, far)
 		//ascpet = width/height
@@ -167,6 +166,28 @@ int main() {
 		vbo1.Unbind();
 		ebo1.Unbind();
 		shader1.Unbind();
+
+		std::vector<float> verticesSphere;
+		std::vector<unsigned int> indicesSphere;
+		RenderSphere(1.0f, 24, 48, verticesSphere, indicesSphere);
+		//for (auto i : verticesSphere) {
+		//	std::cout << i << std::endl;
+		//}
+		VAO vaoSphere;
+		VBO vboSphere(verticesSphere.data(), verticesSphere.size() * sizeof(float));
+		VBL layoutSphere;
+		layoutSphere.Push(GL_FLOAT, 3);
+		layoutSphere.Push(GL_FLOAT, 3);
+		vaoSphere.AddBuffer(vboSphere, layoutSphere);
+		EBO eboSphere(indicesSphere.data(), indicesSphere.size());
+
+		Shader shaderSphere("res/shaders/Sphere.shader");
+		shaderSphere.Bind();
+
+		vaoSphere.Unbind();
+		vboSphere.Unbind();
+		eboSphere.Unbind();
+		shaderSphere.Unbind();
 
 		Renderer renderer;
 
@@ -193,9 +214,16 @@ int main() {
 				model = glm::translate(model, translationA);
 
 				glm::mat4 mvp = proj * view * model; // mvp - model view projection, due to matrix multiplication is reversed from (right to left)
+				if (renderObject != RenderObject::Sphere) {
 					shader1.Bind();
 					shader1.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vao1, ebo1, shader1);
+				}
+				else {
+					shaderSphere.Bind();
+					shaderSphere.SetUniformMat4f("u_MVP", mvp);
+					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
+				}
 			}
 
 			{
@@ -208,6 +236,10 @@ int main() {
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
 				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Render Sphere")) {
+				renderObject = RenderObject::Sphere;
 			}
 			ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);  
 			ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
@@ -255,17 +287,18 @@ void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::
 	//s stack step
 	int r, s; //r - sector(ring), s - stack
 	
-	float sectorStep = 2 * glm::pi<float>() / sectors;
-	float stackStep = glm::pi<float>() / stacks;
-	//float x, y, z;
 
 	vertices.resize(sectors * stacks * 6); //sectors * stacks * 6. 3 position, 3 colors
 	std::vector<float>::iterator v = vertices.begin();
 	for (r = 0; r < sectors; r++) {
 		for (s = 0; s < stacks; s++) {
-			float const x = cos(glm::half_pi<float>() - glm::pi<float>() * s / S) * cos(2 * glm::pi<float>() * r / R);
-			float const y = cos(glm::half_pi<float>() - glm::pi<float>() * s / S) * sin(2 * glm::pi<float>() * r / R);
-			float const z =  sin(glm::half_pi<float>() - glm::pi<float>() * s / S);
+			//float const x = cos(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
+			//float const y = cos(glm::pi<float>() * s * S);
+			//float const z = sin(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
+			//these equations were wrong becasue of s/S, there should be s*S idk why
+			float const x = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * cos(2 * glm::pi<float>() * r * R);
+			float const y = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * sin(2 * glm::pi<float>() * r * R);
+			float const z =  sin(glm::half_pi<float>() - glm::pi<float>() * s * S);
 			*v++ = x * radius;
 			*v++ = y * radius;
 			*v++ = z * radius;
@@ -278,6 +311,39 @@ void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::
 
 	indices.resize(sectors * stacks * 6); // 6 indices per quad because every quad have 2 triangles and 2 triangles have 6 indices
 	std::vector<unsigned int>::iterator i = indices.begin();
+	for (r = 0; r < sectors ; r++) {
+		for (s = 0; s < stacks; s++) {
+			*i++ = r * stacks + s;
+			*i++ = r * stacks + (s + 1);
+			*i++ = (r + 1) * stacks + (s + 1);
+
+			*i++ = r * stacks + s;
+			*i++ = (r + 1) * stacks + (s + 1);
+			*i++ = (r + 1) * stacks + s;
+		}
+	}
+	/*float const R = 1.0f / (float)(sectors - 1);
+	float const S = 1.0f / (float)(stacks - 1);
+	int r, s;
+	
+	vertices.resize(sectors * stacks * 8);
+	std::vector<float>::iterator v = vertices.begin();
+	for (r = 0; r < sectors; r++) {
+		for (s = 0; s < stacks; s++) {
+			float const x = cos(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
+			float const y = cos(glm::pi<float>() * s * S);
+			float const z = sin(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
+			*v++ = x * radius;
+			*v++ = y * radius;
+			*v++ = z * radius;
+
+			*v++ = x;
+			*v++ = y;
+			*v++ = z;
+		}
+	}
+	indices.resize(sectors * stacks * 6);
+	std::vector<unsigned int>::iterator i = indices.begin();
 	for (r = 0; r < sectors - 1; r++) {
 		for (s = 0; s < stacks - 1; s++) {
 			*i++ = r * stacks + s;
@@ -288,6 +354,6 @@ void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::
 			*i++ = (r + 1) * stacks + (s + 1);
 			*i++ = (r + 1) * stacks + s;
 		}
-	}
+	}*/
 
 }
