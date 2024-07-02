@@ -322,38 +322,4 @@ void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::
 			*i++ = (r + 1) * stacks + s;
 		}
 	}
-	/*float const R = 1.0f / (float)(sectors - 1);
-	float const S = 1.0f / (float)(stacks - 1);
-	int r, s;
-	
-	vertices.resize(sectors * stacks * 8);
-	std::vector<float>::iterator v = vertices.begin();
-	for (r = 0; r < sectors; r++) {
-		for (s = 0; s < stacks; s++) {
-			float const x = cos(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
-			float const y = cos(glm::pi<float>() * s * S);
-			float const z = sin(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
-			*v++ = x * radius;
-			*v++ = y * radius;
-			*v++ = z * radius;
-
-			*v++ = x;
-			*v++ = y;
-			*v++ = z;
-		}
-	}
-	indices.resize(sectors * stacks * 6);
-	std::vector<unsigned int>::iterator i = indices.begin();
-	for (r = 0; r < sectors - 1; r++) {
-		for (s = 0; s < stacks - 1; s++) {
-			*i++ = r * stacks + s;
-			*i++ = r * stacks + (s + 1);
-			*i++ = (r + 1) * stacks + (s + 1);
-
-			*i++ = r * stacks + s;
-			*i++ = (r + 1) * stacks + (s + 1);
-			*i++ = (r + 1) * stacks + s;
-		}
-	}*/
-
 }
