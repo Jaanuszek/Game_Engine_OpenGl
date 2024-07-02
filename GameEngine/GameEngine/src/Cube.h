@@ -1,8 +1,6 @@
 #pragma once
 
-#include "RenderObject.h"
-
-class Cube : public RenderObject {
+class Cube{
 private:
 	float verticesCube[8 * 8] = {
 		-0.5f,-0.5f,-0.5f, 0.0f,0.0f, 1.0f,0.0f,0.0f, //left bottom back 0
@@ -36,12 +34,11 @@ private:
 		3,2,6,
 		6,7,3
 	};
-	VAO m_vao;
-	VBO m_vbo;
-	VBL m_layout;
-	EBO m_ebo;
 public:
-	Cube(VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-	void Setup() override;
-	void Render(Shader& shader, Renderer& render, glm::mat4& mvp) override;
+	const float* GetVertices(void) const {
+		return verticesCube;
+	}
+	const unsigned int* GetIndices(void) const {
+		return indicesCube;
+	}
 };

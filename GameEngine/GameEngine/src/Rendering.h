@@ -7,9 +7,9 @@
 #include "Shader.h"
 #include "Texture.h"
 
-class RenderObject {
+class Rendering {
 public:
 	virtual void Setup() = 0;
 	virtual void Render(Shader& shader, Renderer& render, glm::mat4& mvp) = 0;
-	virtual ~RenderObject() = default; // virtual destructor, used for polymorphism to make sure that the destructor of the derived class is called
+	virtual ~Rendering() = default; // virtual destructor, used for polymorphism to make sure that the destructor of the derived class is called
 };

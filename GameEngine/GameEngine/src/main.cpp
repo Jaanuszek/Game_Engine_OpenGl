@@ -21,6 +21,10 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "Cube.h"
+#include "Pyramid.h"
+#include "Sphere.h"
+
 #include "tests/TestClearColor.h"
 
 
@@ -31,62 +35,14 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-void RenderSphere(float radius, unsigned int rings, unsigned int sectors, std::vector<float>& vertices, std::vector<unsigned int>& indices);
 
-float verticesCube[] = {
-	-0.5f,-0.5f,-0.5f, 0.0f,0.0f, 1.0f,0.0f,0.0f, //left bottom back 0
-	0.5f, -0.5f,-0.5f, 1.0f,0.0f, 0.0f,1.0f,0.0f, //right bottom back 1
-	0.5f,  0.5f,-0.5f, 1.0f,1.0f, 0.0f,0.0f,1.0f, //right top back 2
-	-0.5f, 0.5f,-0.5f, 0.0f,1.0f, 0.5f,0.5f,0.5f, //left top back 3
+Cube cube;
+const float *verticesCube = cube.GetVertices();
+const unsigned int* indicesCube = cube.GetIndices();
+Pyramid pyramid;
+const float* verticesPyramid = pyramid.GetVertices();
+const unsigned int* indicesPyramid = pyramid.GetIndices();
 
-	-0.5f,-0.5f,0.5f, 0.0f,0.0f, 0.2f,0.5f,0.7f, //left bottom front 4
-	0.5f, -0.5f,0.5f, 1.0f,0.0f, 1.0f,1.0f,0.0f, //right bottom front 5
-	0.5f,  0.5f,0.5f, 1.0f,1.0f, 0.0f,1.0f,1.0f, //right top front	6
-	-0.5f, 0.5f,0.5f, 0.0f,1.0f, 0.7f,0.5f,0.2f //left top front	7
-};
-
-unsigned int indicesCube[] = {
-	//back wall
-	0,1,2,
-	2,3,0,
-	//front wall
-	4,5,6,
-	6,7,4,
-	//left wall
-	0,3,7,
-	7,4,0,
-	//right wall
-	1,2,6,
-	6,5,1,
-	//bottom wall
-	0,1,5,
-	5,4,0,
-	//top wall
-	3,2,6,
-	6,7,3
-};
-
-float verticesPyramid[] = {
-	//adding colors as layout 2
-	-0.5f,-0.5f,-0.5f,0.0f,0.0f, 1.0f,0.0f,0.0f, //left bottom back 0
-	0.5f,-0.5f,-0.5f,1.0f,0.0f, 0.0f, 1.0f, 0.0f, //right bottom back 1
-	0.5f,0.5f,-0.5f,1.0f,1.0f, 0.0f, 0.0f,1.0f, //right top back 2
-	-0.5f,0.5f,-0.5f,0.0f,1.0f, 0.5f,0.5f,0.5f, //left top back 3
-
-	0.0f,0.0f,0.5f,0.5f,0.5f, 1.0f,1.0f,0.0f //top of the pyramid 4
-};
-unsigned int indicesPyramid[] = {
-	//back wall
-	0,1,2,
-	2,3,0,
-	//left wall
-	0,3,4,
-	//right wall
-	1,2,4,
-	//front wall
-	0,1,4,
-	2,3,4
-};
 
 int main() {
 	if (!glfwInit())
@@ -108,20 +64,6 @@ int main() {
 	glfwSwapInterval(1);
 	gladLoadGL();
 	{
-		float vertices[] = {
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, 1.0f, 0.0f, 
-			0.5f, 0.5f, 1.0f, 1.0f, 
-			-0.5f, 0.5f, 0.0f, 1.0f
-		};
-
-		unsigned int indices[] = {
-			0,1,2,
-			2,3,0
-		};
-
-
-
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
@@ -167,12 +109,9 @@ int main() {
 		ebo1.Unbind();
 		shader1.Unbind();
 
-		std::vector<float> verticesSphere;
-		std::vector<unsigned int> indicesSphere;
-		RenderSphere(1.0f, 24, 48, verticesSphere, indicesSphere);
-		//for (auto i : verticesSphere) {
-		//	std::cout << i << std::endl;
-		//}
+		Sphere sphere(1.0f,24,48);
+		std::vector<float> verticesSphere = sphere.GetVertices();
+		std::vector<unsigned int> indicesSphere= sphere.GetIndices();
 		VAO vaoSphere;
 		VBO vboSphere(verticesSphere.data(), verticesSphere.size() * sizeof(float));
 		VBL layoutSphere;
@@ -276,50 +215,5 @@ void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EB
 	else if (object == RenderObject::Pyramid) {
 		vbo.Update(verticesPyramid, 5 * 8 * sizeof(float));
 		ebo.Update(indicesPyramid, 18);
-	}
-}
-//idk it's not working
-void RenderSphere(float radius, unsigned int sectors, unsigned int stacks, std::vector<float>& vertices, std::vector<unsigned int>& indices) {
-	float const R = 1.0f / (float)(sectors - 1); //normalizing Sectors to be a value frome 0 to 1
-	float const S = 1.0f / (float)(stacks - 1); //normalizing Stacks 
-
-	//r sector step
-	//s stack step
-	int r, s; //r - sector(ring), s - stack
-	
-
-	vertices.resize(sectors * stacks * 6); //sectors * stacks * 6. 3 position, 3 colors
-	std::vector<float>::iterator v = vertices.begin();
-	for (r = 0; r < sectors; r++) {
-		for (s = 0; s < stacks; s++) {
-			//float const x = cos(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
-			//float const y = cos(glm::pi<float>() * s * S);
-			//float const z = sin(2 * glm::pi<float>() * r * R) * sin(glm::pi<float>() * s * S);
-			//these equations were wrong becasue of s/S, there should be s*S idk why
-			float const x = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * cos(2 * glm::pi<float>() * r * R);
-			float const y = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * sin(2 * glm::pi<float>() * r * R);
-			float const z =  sin(glm::half_pi<float>() - glm::pi<float>() * s * S);
-			*v++ = x * radius;
-			*v++ = y * radius;
-			*v++ = z * radius;
-
-			*v++ = (x + 1) * 0.5f;
-			*v++ = (y + 1) * 0.5f;
-			*v++ = (z + 1) * 0.5f;
-		}
-	}
-
-	indices.resize(sectors * stacks * 6); // 6 indices per quad because every quad have 2 triangles and 2 triangles have 6 indices
-	std::vector<unsigned int>::iterator i = indices.begin();
-	for (r = 0; r < sectors ; r++) {
-		for (s = 0; s < stacks; s++) {
-			*i++ = r * stacks + s;
-			*i++ = r * stacks + (s + 1);
-			*i++ = (r + 1) * stacks + (s + 1);
-
-			*i++ = r * stacks + s;
-			*i++ = (r + 1) * stacks + (s + 1);
-			*i++ = (r + 1) * stacks + s;
-		}
 	}
 }

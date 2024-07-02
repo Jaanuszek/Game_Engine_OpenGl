@@ -153,6 +153,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VAO.cpp" />
@@ -313,9 +314,11 @@
   <ItemGroup>
     <ClInclude Include="src\Cube.h" />
     <ClInclude Include="src\EBO.h" />
+    <ClInclude Include="src\Pyramid.h" />
     <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\RenderObject.h" />
+    <ClInclude Include="src\Rendering.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\Texture.h" />
