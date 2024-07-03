@@ -9,9 +9,9 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
+//#include <fstream>
+//#include <string>
+//#include <sstream>
 
 #include "Renderer.h"
 #include "VBO.h"
@@ -24,6 +24,8 @@
 #include "Cube.h"
 #include "Pyramid.h"
 #include "Sphere.h"
+
+#include "Camera.h"
 
 #include "tests/TestClearColor.h"
 
@@ -139,20 +141,35 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 
+		Camera camera(viewTranslation, translationA);
+		//glm::mat4 cos = camera.GetViewMatrix();
+
+		bool cameraOn = false;
+
 		while (!glfwWindowShouldClose(window)) {
 			renderer.Clear();
-
+			if (cameraOn) {
+				camera.processInput(window);
+			}
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
 				glm::mat4 proj = glm::perspective(glm::radians(45.0f), 960.0f / 540.0f, 0.1f, 100.0f);
-				glm::mat4 view = glm::translate(glm::mat4(1.0f), viewTranslation);
+				//glm::mat4 view = glm::translate(glm::mat4(1.0f), viewTranslation);
+				glm::mat4 view;
 				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				model = glm::translate(model, translationA);
+				glm::mat4 mvp;
+				if (!cameraOn) {
+					view = glm::translate(glm::mat4(1.0f), viewTranslation);
+					mvp = proj * view * model;
+				}
+				else {
+					mvp = camera.CalculateMVP(proj, model);
+				}
 
-				glm::mat4 mvp = proj * view * model; // mvp - model view projection, due to matrix multiplication is reversed from (right to left)
 				if (renderObject != RenderObject::Sphere) {
 					shader1.Bind();
 					shader1.SetUniformMat4f("u_MVP", mvp);
@@ -167,6 +184,9 @@ int main() {
 
 			{
 			ImGui::Begin("Jabol");
+			if (ImGui::Button("Camera On/Off")) {
+				cameraOn = !cameraOn;
+			}
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
 				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
