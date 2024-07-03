@@ -45,6 +45,8 @@ Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 int main() {
 	if (!glfwInit())
@@ -69,6 +71,7 @@ int main() {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -141,22 +144,25 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 
-		Camera camera(viewTranslation, translationA);
-		//glm::mat4 cos = camera.GetViewMatrix();
+		Camera camera(glm::vec3(0.0f,0.0f,3.0f), translationA);
 
 		bool cameraOn = false;
 
+
 		while (!glfwWindowShouldClose(window)) {
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
 			renderer.Clear();
 			if (cameraOn) {
-				camera.processInput(window);
+				camera.processInput(window,deltaTime);
+				//camera.mouse_callback(window, 0.0f, 0.0f);
 			}
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
 				glm::mat4 proj = glm::perspective(glm::radians(45.0f), 960.0f / 540.0f, 0.1f, 100.0f);
-				//glm::mat4 view = glm::translate(glm::mat4(1.0f), viewTranslation);
 				glm::mat4 view;
 				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));

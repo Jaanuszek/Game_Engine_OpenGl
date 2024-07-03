@@ -7,22 +7,26 @@ Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraTarget) : m_CameraPos(camera
 	m_CameraUp = glm::cross(m_CameraDirection, m_CameraRight); //up vector y-axis
 	m_CameraFront = glm::normalize(m_CameraDirection - m_CameraPos); //front vector
 	m_ViewMatrix = glm::lookAt(m_CameraPos, m_CameraTarget + m_CameraFront, m_CameraUp); //view matrix, look at matrix
-}
 
-Camera::~Camera()
-{
+	//mouse movement
+	direction.x = cos(glm::radians(yaw))*cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 }
-
 glm::mat4 Camera::CalculateMVP(glm::mat4 proj, glm::mat4 model)
 {
+	//direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//direction.y = sin(glm::radians(pitch));
+	//direction.z = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//m_CameraFront = glm::normalize(direction);
+
 	m_ViewMatrix = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
-	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f,1.0f,0.0f)); //niby to dziala ale cos na odwrót ta kamera jest zrobiona
 	return proj * m_ViewMatrix * model;
 }
 
-void Camera::processInput(GLFWwindow* window)
+void Camera::processInput(GLFWwindow* window, float deltaTime)
 {
-	const float cameraSpeed = 0.05f;
+	//float cameraSpeed = 2.5f * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_CameraPos += cameraSpeed * m_CameraFront;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -31,4 +35,32 @@ void Camera::processInput(GLFWwindow* window)
 		m_CameraPos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)	
 		m_CameraPos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * cameraSpeed;
+	if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		cameraSpeed = 10.0f * deltaTime;
+	else
+		cameraSpeed = 2.5f * deltaTime;	
+}
+
+void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	float lastX = 400, lastY = 300;
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos;
+
+	const float sensitivity = 0.1f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+	
+	yaw += xoffset;
+	pitch += yoffset;
+	if(pitch>89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
 }
