@@ -37,6 +37,7 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 Cube cube;
 const float *verticesCube = cube.GetVertices();
@@ -47,6 +48,8 @@ const unsigned int* indicesPyramid = pyramid.GetIndices();
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+bool cameraOn = false;
 
 int main() {
 	if (!glfwInit())
@@ -71,7 +74,7 @@ int main() {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
-		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -145,18 +148,30 @@ int main() {
 		RenderObject renderObject = RenderObject::Cube;
 
 		Camera camera(glm::vec3(0.0f,0.0f,3.0f), translationA);
+		//glfwSetWindowUserPointer(window, &camera);
+		//glfwSetCursorPosCallback(window, mouse_callback);
 
-		bool cameraOn = false;
-
+		//glfwSetWindowUserPointer(window, &camera);
+		//glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+		//	void* userPointer = glfwGetWindowUserPointer(window);
+		//	static_cast<Camera*>(userPointer)->mouse_callback(window, xpos, ypos);
+		//	});
+		//glfwMakeContextCurrent(window);
+		//glfwSwapInterval(1);
 
 		while (!glfwWindowShouldClose(window)) {
+
+
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			renderer.Clear();
 			if (cameraOn) {
+				//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				camera.processInput(window,deltaTime);
-				//camera.mouse_callback(window, 0.0f, 0.0f);
+			}
+			else {
+				//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -173,6 +188,7 @@ int main() {
 					mvp = proj * view * model;
 				}
 				else {
+					camera.mouse_callback(window, 960.0f / 2.0f, 540.0f / 2.0f);
 					mvp = camera.CalculateMVP(proj, model);
 				}
 
@@ -243,3 +259,10 @@ void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EB
 		ebo.Update(indicesPyramid, 18);
 	}
 }
+
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+//	Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+//	if (camera) {
+//		camera->mouse_callback(window, xpos, ypos);
+//	}
+//}
