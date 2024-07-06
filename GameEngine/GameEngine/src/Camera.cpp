@@ -27,40 +27,35 @@ glm::mat4 Camera::CalculateMVP(glm::mat4 proj, glm::mat4 model)
 	return proj * m_ViewMatrix * model;
 }
 
-void Camera::processInput(GLFWwindow* window, float deltaTime)
+void Camera::processInput(Camera_Movement direction, float deltaTime)
 {
 	//float cameraSpeed = 2.5f * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (direction == Camera_Movement::FORWARD)
 		m_CameraPos += cameraSpeed * m_CameraFront;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (direction == Camera_Movement::BACKWARD)
 		m_CameraPos -= cameraSpeed * m_CameraFront;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (direction == Camera_Movement::LEFT)
 		m_CameraPos -= m_CameraRight * cameraSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)	
+	if (direction == Camera_Movement::RIGHT)	
 		m_CameraPos += m_CameraRight* cameraSpeed;
-	if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	if (direction == Camera_Movement::ACCELERATION)
 		cameraSpeed = 10.0f * deltaTime;
 	else
 		cameraSpeed = 2.5f * deltaTime;	
+	//if (direction == Camera_Movement::ON)
+	//{
+	//	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//}
+	//if (direction == Camera_Movement::OFF)
+	//{
+	//	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	//}
 }
 
-void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void Camera::processMouseMovement(float xoffset, float yoffset)
 {
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
-
-	lastX = xpos;
-	lastY = ypos;
-
-	const float sensitivity = 0.1f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
+	xoffset *= MouseSensitivity;
+	yoffset *= MouseSensitivity;
 	
 	yaw += xoffset;
 	pitch += yoffset;

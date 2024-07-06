@@ -4,6 +4,18 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+
+enum class Camera_Movement{
+	NONE,
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT,
+	ACCELERATION,
+	ON,
+	OFF
+};
+
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 2.5f;
@@ -29,14 +41,10 @@ private:
 	float MouseSensitivity;
 	float Zoom;
 
-	bool firstMouse = true;
-	float lastX = 960/2;
-	float lastY = 540/2;
 	void updateCameraVectors();
 public:
 	Camera(glm::vec3 cameraPos, glm::vec3 cameraTarget);
 	glm::mat4 CalculateMVP(glm::mat4 proj, glm::mat4 model);
-	void processInput(GLFWwindow* window, float deltaTime);
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-	void registerCallback(GLFWwindow* window);
+	void processInput(Camera_Movement direction, float deltaTime);
+	void processMouseMovement(float xoffset, float yoffset);
 };

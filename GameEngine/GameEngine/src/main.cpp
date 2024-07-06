@@ -37,7 +37,11 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void keyboard_callback(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+
+float width = 960.0f;
+float height = 540.0f;
 
 Cube cube;
 const float *verticesCube = cube.GetVertices();
@@ -46,28 +50,36 @@ Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
 
+
+glm::vec3 translationA(0.0f, 0.0f, 0.0f);
+glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
+
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 bool cameraOn = false;
+bool firstMouse = true;
+float lastX = width / 2.0f;
+float lastY = height / 2.0f;
 
 int main() {
 	if (!glfwInit())
 		return -1;
-
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-	GLFWwindow* window = glfwCreateWindow(960, 540, "Game Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Game Engine", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSwapInterval(1);
 	gladLoadGL();
 	{
@@ -91,7 +103,6 @@ int main() {
 		layout1.Push(GL_FLOAT, 3);
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, 36);
-
 
 		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 		//glm::perspective(fov, aspect, near, far)
@@ -141,43 +152,38 @@ int main() {
 		float r = 0.0f;
 		float increment = 0.01f;
 
-		glm::vec3 translationA(0.0f, 0.0f, 0.0f);
-		glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
 
-		Camera camera(glm::vec3(0.0f,0.0f,3.0f), translationA);
-		//glfwSetWindowUserPointer(window, &camera);
-		//glfwSetCursorPosCallback(window, mouse_callback);
-
-		//glfwSetWindowUserPointer(window, &camera);
-		//glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-		//	void* userPointer = glfwGetWindowUserPointer(window);
-		//	static_cast<Camera*>(userPointer)->mouse_callback(window, xpos, ypos);
-		//	});
-		//glfwMakeContextCurrent(window);
-		//glfwSwapInterval(1);
-
 		while (!glfwWindowShouldClose(window)) {
-
 
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
+
 			renderer.Clear();
-			if (cameraOn) {
-				//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				camera.processInput(window,deltaTime);
+
+			//to jakos ³adnie wyabstractowaæ do klasy 
+			if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+				cameraOn = !cameraOn;
+				if (cameraOn) {
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+					firstMouse = true;
+				}
+				else {
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				}
 			}
-			else {
-				//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+			if (cameraOn) {
+				keyboard_callback(window);
 			}
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
-				glm::mat4 proj = glm::perspective(glm::radians(45.0f), 960.0f / 540.0f, 0.1f, 100.0f);
+				glm::mat4 proj = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
 				glm::mat4 view;
 				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
@@ -188,10 +194,8 @@ int main() {
 					mvp = proj * view * model;
 				}
 				else {
-					camera.mouse_callback(window, 960.0f / 2.0f, 540.0f / 2.0f);
 					mvp = camera.CalculateMVP(proj, model);
 				}
-
 				if (renderObject != RenderObject::Sphere) {
 					shader1.Bind();
 					shader1.SetUniformMat4f("u_MVP", mvp);
@@ -203,7 +207,6 @@ int main() {
 					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
 				}
 			}
-
 			{
 			ImGui::Begin("Jabol");
 			if (ImGui::Button("Camera On/Off")) {
@@ -260,9 +263,44 @@ void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EB
 	}
 }
 
-//void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-//	Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
-//	if (camera) {
-//		camera->mouse_callback(window, xpos, ypos);
-//	}
-//}
+void keyboard_callback(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera.processInput(Camera_Movement::FORWARD, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera.processInput(Camera_Movement::BACKWARD, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		camera.processInput(Camera_Movement::LEFT, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		camera.processInput(Camera_Movement::RIGHT, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		camera.processInput(Camera_Movement::ACCELERATION, deltaTime);
+	}
+	else {
+		camera.processInput(Camera_Movement::NONE, deltaTime);
+	}
+}
+
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
+	float xpos = static_cast<float>(xposIn);
+	float ypos = static_cast<float>(yposIn);
+
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos;
+
+	lastX = xpos;
+	lastY = ypos;
+
+	if (cameraOn) {
+		camera.processMouseMovement(xoffset, yoffset);
+	}
+}
