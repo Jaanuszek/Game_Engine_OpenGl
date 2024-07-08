@@ -39,6 +39,7 @@ enum class RenderObject {
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
 void keyboard_callback(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 float width = 960.0f;
 float height = 540.0f;
@@ -80,6 +81,7 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetKeyCallback(window, key_callback);
 	glfwSwapInterval(1);
 	gladLoadGL();
 	{
@@ -163,18 +165,6 @@ int main() {
 			lastFrame = currentFrame;
 
 			renderer.Clear();
-
-			//to jakos ³adnie wyabstractowaæ do klasy 
-			if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
-				cameraOn = !cameraOn;
-				if (cameraOn) {
-					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-					firstMouse = true;
-				}
-				else {
-					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-				}
-			}
 
 			if (cameraOn) {
 				keyboard_callback(window);
@@ -302,5 +292,18 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
 
 	if (cameraOn) {
 		camera.processMouseMovement(xoffset, yoffset);
+	}
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+		cameraOn = !cameraOn;
+		if (cameraOn) {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			firstMouse = true;
+		}
+		else {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 }
