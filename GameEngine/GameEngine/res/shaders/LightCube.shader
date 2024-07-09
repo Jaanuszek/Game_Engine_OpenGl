@@ -20,17 +20,15 @@ void main()
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 color; //to i to dziala
+layout(location = 0) out vec4 color; 
 //out vec4 color;
 in vec2 v_TexCoord;
 in vec3 v_Color;
 
-//uniform vec4 u_Color;
-uniform sampler2D u_Texture;
+uniform vec4 u_Color;
 
 void main()
 {
-	vec4 texColor = texture(u_Texture, v_TexCoord);
-	color = texColor;
-	//color = vec4(v_Color, 1.0);
+	//color = vec4(u_Color, 1.0);
+	color = u_Color;
 };

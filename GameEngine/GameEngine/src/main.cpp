@@ -54,6 +54,7 @@ const unsigned int* indicesPyramid = pyramid.GetIndices();
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
+glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -98,13 +99,13 @@ int main() {
 
 		VAO vao1;
 		//cube
-		VBO vbo1(verticesCube, 8 * 6 * 4 * sizeof(float));
+		VBO vbo1(verticesCube, cube.GetVerticesSize()* sizeof(float));
 		VBL layout1;
 		layout1.Push(GL_FLOAT, 3);
 		layout1.Push(GL_FLOAT, 2);
 		layout1.Push(GL_FLOAT, 3);
 		vao1.AddBuffer(vbo1, layout1);
-		EBO ebo1(indicesCube, 6*2*3);
+		EBO ebo1(indicesCube, cube.GetIndicesSize());
 
 		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 		//glm::perspective(fov, aspect, near, far)
@@ -154,6 +155,24 @@ int main() {
 		eboSphere.Unbind();
 		shaderSphere.Unbind();
 
+		VAO lightCubeVAO;
+		VBO lightCubeVBO(verticesCube, cube.GetVerticesSize() * sizeof(float));
+		VBL lightCubeLayout;
+		lightCubeLayout.Push(GL_FLOAT, 3);
+		lightCubeLayout.Push(GL_FLOAT, 2);
+		lightCubeLayout.Push(GL_FLOAT, 3);
+		lightCubeVAO.AddBuffer(lightCubeVBO, lightCubeLayout);
+		EBO lightCubeEBO(indicesCube, cube.GetIndicesSize());
+
+		Shader lightCubeShader("res/shaders/LightCube.shader");
+		lightCubeShader.Bind();
+		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+
+		lightCubeVAO.Unbind();
+		lightCubeVBO.Unbind();
+		lightCubeEBO.Unbind();
+		lightCubeShader.Unbind();
+
 		Renderer renderer;
 
 		float r = 0.0f;
@@ -184,9 +203,18 @@ int main() {
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				model = glm::translate(model, translationA);
 				glm::mat4 mvp;
+				//light cube
+				glm::mat4 viewLightCube = glm::translate(glm::mat4(1.0f), glm::vec3(-0.0f, 0.0f, -3.0f));
+				glm::mat4 modelLightCube = glm::translate(glm::mat4(1.0f), lightCubeTranslation);
+				modelLightCube = glm::scale(modelLightCube, glm::vec3(0.2f));
+				glm::mat4 mvpLightCube;
 				if (!cameraOn) {
 					view = glm::translate(glm::mat4(1.0f), viewTranslation);
 					mvp = proj * view * model;
+					mvpLightCube = proj * viewLightCube * modelLightCube;
+					lightCubeShader.Bind();
+					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
+					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 				}
 				else {
 					mvp = camera.CalculateMVP(proj, model);
@@ -225,6 +253,7 @@ int main() {
 			ImGui::SliderFloat("View Translation A y", &viewTranslation.y, -1.0f, 1.0f);
 			ImGui::SliderFloat("View Translation A z", &viewTranslation.z, -10.0f, 10.0f);
 			ImGui::SliderFloat("Angle", &angle, 0.0f, 360.0f);
+			ImGui::SliderFloat3("Light Cube Translation x", &lightCubeTranslation.x, -1.0f, 1.0f);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 			}

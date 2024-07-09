@@ -499,6 +499,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="res\shaders\Sphere.shader" />
+    <None Include="res\shaders\LightCube.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
