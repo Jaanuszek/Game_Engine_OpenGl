@@ -1442,5 +1442,8 @@
     <Image Include="res\textures\pudzilla.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\monkey.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -98,13 +98,13 @@ int main() {
 
 		VAO vao1;
 		//cube
-		VBO vbo1(verticesCube, 8 * 8 * sizeof(float));
+		VBO vbo1(verticesCube, 8 * 6 * 4 * sizeof(float));
 		VBL layout1;
 		layout1.Push(GL_FLOAT, 3);
 		layout1.Push(GL_FLOAT, 2);
 		layout1.Push(GL_FLOAT, 3);
 		vao1.AddBuffer(vbo1, layout1);
-		EBO ebo1(indicesCube, 36);
+		EBO ebo1(indicesCube, 6*2*3);
 
 		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 		//glm::perspective(fov, aspect, near, far)
@@ -119,9 +119,9 @@ int main() {
 
 		Shader shader1("res/shaders/Basic.shader");
 		shader1.Bind();
-		shader1.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+		//shader1.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
-		Texture texture1("res/textures/pudzilla.png");
+		Texture texture1("res/textures/monkey.png");
 		texture1.Bind();
 		shader1.SetUniform1i("u_Texture", 0);
 
@@ -137,12 +137,17 @@ int main() {
 		VBO vboSphere(verticesSphere.data(), verticesSphere.size() * sizeof(float));
 		VBL layoutSphere;
 		layoutSphere.Push(GL_FLOAT, 3);
+		layoutSphere.Push(GL_FLOAT, 2);
 		layoutSphere.Push(GL_FLOAT, 3);
 		vaoSphere.AddBuffer(vboSphere, layoutSphere);
 		EBO eboSphere(indicesSphere.data(), indicesSphere.size());
 
 		Shader shaderSphere("res/shaders/Sphere.shader");
 		shaderSphere.Bind();
+
+		Texture textureSphere("res/textures/monkey.png");
+		textureSphere.Bind();
+		shaderSphere.SetUniform1i("u_Texture", 0);
 
 		vaoSphere.Unbind();
 		vboSphere.Unbind();
@@ -244,12 +249,12 @@ int main() {
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo) {
 	if (object == RenderObject::Cube) {
-		vbo.Update(verticesCube, 8 * 8 * sizeof(float));
-		ebo.Update(indicesCube, 36);
+		vbo.Update(verticesCube, cube.GetVerticesSize() * sizeof(float));
+		ebo.Update(indicesCube, cube.GetIndicesSize());
 	}
 	else if (object == RenderObject::Pyramid) {
-		vbo.Update(verticesPyramid, 5 * 8 * sizeof(float));
-		ebo.Update(indicesPyramid, 18);
+		vbo.Update(verticesPyramid, pyramid.GetVerticesSize()* sizeof(float));
+		ebo.Update(indicesPyramid, pyramid.GetIndicesSize());
 	}
 }
 
@@ -305,5 +310,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+	}
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 }

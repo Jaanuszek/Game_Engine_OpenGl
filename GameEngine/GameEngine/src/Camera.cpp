@@ -13,14 +13,10 @@ void Camera::updateCameraVectors()
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraTarget) : m_CameraPos(cameraPos), m_CameraTarget(cameraTarget), yaw(YAW), pitch(PITCH), cameraSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
-	//m_CameraDirection = glm::normalize(m_CameraPos - m_CameraTarget); //direction we are moving in negative z axis so object will move from us 
-	//m_CameraRight = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), m_CameraDirection)); //x-axis right vector we get it by cross product of up vector and direction vector
-	//m_CameraUp = glm::cross(m_CameraDirection, m_CameraRight); //up vector y-axis
-	//m_CameraFront = glm::normalize(m_CameraDirection - m_CameraPos); //front vector
-
 	updateCameraVectors();
 	m_ViewMatrix = glm::lookAt(m_CameraPos, m_CameraTarget + m_CameraFront, m_CameraUp); //view matrix, look at matrix
 }
+
 glm::mat4 Camera::CalculateMVP(glm::mat4 proj, glm::mat4 model)
 {
 	m_ViewMatrix = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
@@ -42,14 +38,6 @@ void Camera::processInput(Camera_Movement direction, float deltaTime)
 		cameraSpeed = 10.0f * deltaTime;
 	else
 		cameraSpeed = 2.5f * deltaTime;	
-	//if (direction == Camera_Movement::ON)
-	//{
-	//	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	//}
-	//if (direction == Camera_Movement::OFF)
-	//{
-	//	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	//}
 }
 
 void Camera::processMouseMovement(float xoffset, float yoffset)

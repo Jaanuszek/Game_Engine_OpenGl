@@ -10,20 +10,26 @@ void Sphere::RenderSphere(float radius, unsigned int sectors, unsigned int stack
 	int r, s; //r - sector(ring), s - stack
 
 
-	vertices.resize(sectors * stacks * 6); //sectors * stacks * 6. 3 position, 3 colors
-	std::vector<float>::iterator v = vertices.begin();
+	vertices.resize(sectors * stacks * 8); //sectors * stacks * 6. 3 position, 2 texture, 3 colors
+	std::vector<float>::iterator verticesIt = vertices.begin();
 	for (r = 0; r < sectors; r++) {
 		for (s = 0; s < stacks; s++) {
 			float const x = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * cos(2 * glm::pi<float>() * r * R);
 			float const y = cos(glm::half_pi<float>() - glm::pi<float>() * s * S) * sin(2 * glm::pi<float>() * r * R);
 			float const z = sin(glm::half_pi<float>() - glm::pi<float>() * s * S);
-			*v++ = x * radius;
-			*v++ = y * radius;
-			*v++ = z * radius;
+			float const u = r * R;
+			float const v = s * S;
 
-			*v++ = (x + 1) * 0.5f;
-			*v++ = (y + 1) * 0.5f;
-			*v++ = (z + 1) * 0.5f;
+			*verticesIt++ = x * radius;
+			*verticesIt++ = y * radius;
+			*verticesIt++ = z * radius;
+
+			*verticesIt++ = u;
+			*verticesIt++ = v;
+
+			*verticesIt++ = (x + 1) * 0.5f;
+			*verticesIt++ = (y + 1) * 0.5f;
+			*verticesIt++ = (z + 1) * 0.5f;
 		}
 	}
 

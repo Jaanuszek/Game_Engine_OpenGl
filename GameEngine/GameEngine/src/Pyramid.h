@@ -30,4 +30,10 @@ public:
 	const unsigned int* GetIndices(void) const {
 		return indicesPyramid;
 	}
+	const float GetVerticesSize(void) const {
+		return sizeof(verticesPyramid)/sizeof(float);
+	}
+	const float GetIndicesSize(void) const {
+		return sizeof(indicesPyramid) / sizeof(unsigned int);
+	}
 };
