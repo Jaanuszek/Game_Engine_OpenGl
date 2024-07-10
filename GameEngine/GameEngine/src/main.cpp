@@ -26,6 +26,7 @@
 #include "Sphere.h"
 
 #include "Camera.h"
+#include "IO/InputHandler.h"
 
 #include "tests/TestClearColor.h"
 
@@ -37,9 +38,8 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-void keyboard_callback(GLFWwindow* window);
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+//void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 float width = 960.0f;
 float height = 540.0f;
@@ -51,7 +51,6 @@ Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
 
-
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
@@ -59,11 +58,7 @@ glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
-bool cameraOn = false;
-bool firstMouse = true;
-float lastX = width / 2.0f;
-float lastY = height / 2.0f;
+auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 
 int main() {
 	if (!glfwInit())
@@ -81,16 +76,30 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetKeyCallback(window, key_callback);
-	glfwSwapInterval(1);
 	gladLoadGL();
+	glfwSwapInterval(1);
+	InputHandler inputHandler(window);
+	inputHandler.setCamera(camera);
+
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos){
+		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
+			if (handler) {
+				handler->mouse_callback(xpos, ypos);
+			}
+		});
+
+	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
+			if (handler) {
+				handler->key_callback(key, action);
+			}
+		});
+	glfwSetWindowUserPointer(window,&inputHandler);
 	{
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
 		
-
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -106,17 +115,6 @@ int main() {
 		layout1.Push(GL_FLOAT, 3);
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, cube.GetIndicesSize());
-
-		//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-		//glm::perspective(fov, aspect, near, far)
-		//ascpet = width/height
-		//near  - how close to the camera
-		//far - how far from the camera
-		//glm::mat4 proj = glm::perspective(glm::radians(45.0f), 960.0f / 540.0f, 0.1f, 100.0f); // first step
-		//moving object slightly backwards in the scene
-		//if we want to move object to the right we need to move the camera to the left if backwards to the front and so on
-		//
-		//glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)); // third step
 
 		Shader shader1("res/shaders/Basic.shader");
 		shader1.Bind();
@@ -189,9 +187,9 @@ int main() {
 			lastFrame = currentFrame;
 
 			renderer.Clear();
-
-			if (cameraOn) {
-				keyboard_callback(window);
+			inputHandler.setDeltaTime(deltaTime);
+			if (inputHandler.getCameraOn()) {
+				inputHandler.cameraMovement_callback();
 			}
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -208,7 +206,7 @@ int main() {
 				glm::mat4 modelLightCube = glm::translate(glm::mat4(1.0f), lightCubeTranslation);
 				modelLightCube = glm::scale(modelLightCube, glm::vec3(0.2f));
 				glm::mat4 mvpLightCube;
-				if (!cameraOn) {
+				if (!inputHandler.getCameraOn()) {
 					view = glm::translate(glm::mat4(1.0f), viewTranslation);
 					mvp = proj * view * model;
 					mvpLightCube = proj * viewLightCube * modelLightCube;
@@ -217,7 +215,7 @@ int main() {
 					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 				}
 				else {
-					mvp = camera.CalculateMVP(proj, model);
+					mvp = camera->CalculateMVP(proj, model);
 				}
 				if (renderObject != RenderObject::Sphere) {
 					shader1.Bind();
@@ -233,7 +231,7 @@ int main() {
 			{
 			ImGui::Begin("Jabol");
 			if (ImGui::Button("Camera On/Off")) {
-				cameraOn = !cameraOn;
+				inputHandler.setCameraOn(!inputHandler.getCameraOn());
 			}
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
@@ -287,60 +285,12 @@ void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EB
 	}
 }
 
-void keyboard_callback(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		camera.processInput(Camera_Movement::FORWARD, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		camera.processInput(Camera_Movement::BACKWARD, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		camera.processInput(Camera_Movement::LEFT, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		camera.processInput(Camera_Movement::RIGHT, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		camera.processInput(Camera_Movement::ACCELERATION, deltaTime);
-	}
-	else {
-		camera.processInput(Camera_Movement::NONE, deltaTime);
-	}
-}
-
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
-	float xpos = static_cast<float>(xposIn);
-	float ypos = static_cast<float>(yposIn);
-
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
-
-	lastX = xpos;
-	lastY = ypos;
-
-	if (cameraOn) {
-		camera.processMouseMovement(xoffset, yoffset);
-	}
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_T && action == GLFW_PRESS) {
-		cameraOn = !cameraOn;
-		if (cameraOn) {
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			firstMouse = true;
-		}
-		else {
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
-	}
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-	}
-}
+//void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
+//	InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
+//	handler->mouse_callback(xposIn, yposIn);
+//}
+//
+//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+//	InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
+//	handler->key_callback(key, action);
+//}
