@@ -47,4 +47,5 @@ public:
 	glm::mat4 CalculateMVP(glm::mat4 proj, glm::mat4 model);
 	void processInput(Camera_Movement direction, float deltaTime);
 	void processMouseMovement(float xoffset, float yoffset);
+	glm::vec3 GetCameraPos(void) const;
 };

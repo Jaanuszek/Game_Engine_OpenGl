@@ -503,6 +503,7 @@
     </None>
     <None Include="res\shaders\Sphere.shader" />
     <None Include="res\shaders\LightCube.shader" />
+    <None Include="res\shaders\LightningShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">

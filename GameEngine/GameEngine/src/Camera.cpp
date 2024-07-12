@@ -23,6 +23,11 @@ glm::mat4 Camera::CalculateMVP(glm::mat4 proj, glm::mat4 model)
 	return proj * m_ViewMatrix * model;
 }
 
+glm::vec3 Camera::GetCameraPos(void) const
+{
+	return m_CameraPos;
+}
+
 void Camera::processInput(Camera_Movement direction, float deltaTime)
 {
 	//float cameraSpeed = 2.5f * deltaTime;

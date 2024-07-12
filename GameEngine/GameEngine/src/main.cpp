@@ -113,12 +113,18 @@ int main() {
 		layout1.Push(GL_FLOAT, 3);
 		layout1.Push(GL_FLOAT, 2);
 		layout1.Push(GL_FLOAT, 3);
+		layout1.Push(GL_FLOAT, 3); //Lightning purposes 
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, cube.GetIndicesSize());
 
-		Shader shader1("res/shaders/Basic.shader");
+		//odkomentowac zeby wrocic do poprzedniej wersji
+		/*Shader shader1("res/shaders/Basic.shader");
+		shader1.Bind();*/
+		Shader shader1("res/shaders/LightningShader.shader");
 		shader1.Bind();
-		//shader1.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
+		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
+		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 
 		Texture texture1("res/textures/monkey.png");
 		texture1.Bind();
@@ -159,6 +165,7 @@ int main() {
 		lightCubeLayout.Push(GL_FLOAT, 3);
 		lightCubeLayout.Push(GL_FLOAT, 2);
 		lightCubeLayout.Push(GL_FLOAT, 3);
+		lightCubeLayout.Push(GL_FLOAT, 3); //lightning purposes
 		lightCubeVAO.AddBuffer(lightCubeVBO, lightCubeLayout);
 		EBO lightCubeEBO(indicesCube, cube.GetIndicesSize());
 
@@ -210,17 +217,22 @@ int main() {
 					view = glm::translate(glm::mat4(1.0f), viewTranslation);
 					mvp = proj * view * model;
 					mvpLightCube = proj * viewLightCube * modelLightCube;
-					lightCubeShader.Bind();
-					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 				}
 				else {
 					mvp = camera->CalculateMVP(proj, model);
+					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
 				if (renderObject != RenderObject::Sphere) {
 					shader1.Bind();
+					shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 					shader1.SetUniformMat4f("u_MVP", mvp);
+					shader1.SetUniformMat4f("u_view", view);
+					shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+					shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 					renderer.Draw(vao1, ebo1, shader1);
+					lightCubeShader.Bind();
+					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
+					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 				}
 				else {
 					shaderSphere.Bind();
@@ -284,13 +296,3 @@ void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EB
 		ebo.Update(indicesPyramid, pyramid.GetIndicesSize());
 	}
 }
-
-//void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
-//	InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
-//	handler->mouse_callback(xposIn, yposIn);
-//}
-//
-//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-//	InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
-//	handler->key_callback(key, action);
-//}
