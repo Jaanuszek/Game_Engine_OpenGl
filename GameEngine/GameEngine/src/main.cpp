@@ -47,9 +47,11 @@ float height = 540.0f;
 Cube cube;
 const float *verticesCube = cube.GetVertices();
 const unsigned int* indicesCube = cube.GetIndices();
+const VertexCube* verticesCu = cube.GetVerticesStruct();
 Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
+const VertexPyramid* verticesPyr = pyramid.GetVerticesStruct();
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -108,7 +110,9 @@ int main() {
 
 		VAO vao1;
 		//cube
-		VBO vbo1(verticesCube, cube.GetVerticesSize()* sizeof(float));
+		//VBO vbo1(verticesCube, cube.GetVerticesSize()* sizeof(float));
+		VBO vbo1(verticesCu, cube.GetVerticesSize() * sizeof(VertexCube));
+		//VBO vbo1(verticesPyr, pyramid.GetVerticesSize() * sizeof(VertexPyramid));
 		VBL layout1;
 		layout1.Push(GL_FLOAT, 3);
 		layout1.Push(GL_FLOAT, 2);
@@ -116,6 +120,7 @@ int main() {
 		layout1.Push(GL_FLOAT, 3); //Lightning purposes 
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, cube.GetIndicesSize());
+		//EBO ebo1(indicesPyramid, pyramid.GetIndicesSize());
 
 		//odkomentowac zeby wrocic do poprzedniej wersji
 		/*Shader shader1("res/shaders/Basic.shader");
@@ -288,11 +293,13 @@ int main() {
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo) {
 	if (object == RenderObject::Cube) {
-		vbo.Update(verticesCube, cube.GetVerticesSize() * sizeof(float));
+		//vbo.Update(verticesCube, cube.GetVerticesSize() * sizeof(float));
+		vbo.Update(verticesCu, cube.GetVerticesSize() * sizeof(VertexCube));
 		ebo.Update(indicesCube, cube.GetIndicesSize());
 	}
 	else if (object == RenderObject::Pyramid) {
-		vbo.Update(verticesPyramid, pyramid.GetVerticesSize()* sizeof(float));
+		//vbo.Update(verticesPyramid, pyramid.GetVerticesSize()* sizeof(float));
+		vbo.Update(verticesPyr, pyramid.GetVerticesSize() * sizeof(VertexPyramid));
 		ebo.Update(indicesPyramid, pyramid.GetIndicesSize());
 	}
 }

@@ -153,6 +153,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\IO\InputHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Pyramid.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
