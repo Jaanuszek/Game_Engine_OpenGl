@@ -21,10 +21,21 @@ void Renderer::Clear() const
 	GLCall(glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
 }
 
+
+//dorobic klase mesh, ktora bedzie przechowywala informacje o vao,ebo, shaderze, texture i innych rzeczach
+//t¹ klase przekazywac jako argument do funkcji draw
+// na podstawie informacji tej klasy bedziemy wiedziec czy obiekt ma byc rysowany przy pomocy indeksowania czy te¿ nie
 void Renderer::Draw(const VAO& vao, const EBO& ebo, const Shader& shader) const
 {
 	shader.Bind();
 	vao.Bind();
 	ebo.Bind();
 	GLCall(glDrawElements(GL_TRIANGLES, ebo.GetCount(), GL_UNSIGNED_INT, nullptr));
+}
+
+void Renderer::Draw(const VAO& vao, const Shader& shader, GLsizei count) const
+{
+	shader.Bind();
+	vao.Bind();
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
 }

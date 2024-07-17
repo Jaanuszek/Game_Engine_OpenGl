@@ -235,6 +235,7 @@ int main() {
 					shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 					shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 					renderer.Draw(vao1, ebo1, shader1);
+					//renderer.Draw(vao1, shader1, 24);
 					lightCubeShader.Bind();
 					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
