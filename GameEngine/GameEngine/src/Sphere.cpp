@@ -10,7 +10,7 @@ void Sphere::RenderSphere(float radius, unsigned int sectors, unsigned int stack
 	int r, s; //r - sector(ring), s - stack
 
 
-	vertices.resize(sectors * stacks * 8); //sectors * stacks * 6. 3 position, 2 texture, 3 colors
+	vertices.resize(sectors * stacks * 11); //sectors * stacks * 11. 3 position, 2 texture, 3 colors, 3 normals
 	std::vector<float>::iterator verticesIt = vertices.begin();
 	for (r = 0; r < sectors; r++) {
 		for (s = 0; s < stacks; s++) {
@@ -30,6 +30,10 @@ void Sphere::RenderSphere(float radius, unsigned int sectors, unsigned int stack
 			*verticesIt++ = (x + 1) * 0.5f;
 			*verticesIt++ = (y + 1) * 0.5f;
 			*verticesIt++ = (z + 1) * 0.5f;
+
+			*verticesIt++ = x;
+			*verticesIt++ = y;		
+			*verticesIt++ = z;
 		}
 	}
 

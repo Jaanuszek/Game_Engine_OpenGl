@@ -149,6 +149,7 @@ int main() {
 		layoutSphere.Push(GL_FLOAT, 3);
 		layoutSphere.Push(GL_FLOAT, 2);
 		layoutSphere.Push(GL_FLOAT, 3);
+		layoutSphere.Push(GL_FLOAT, 3); //lightning purposes	
 		vaoSphere.AddBuffer(vboSphere, layoutSphere);
 		EBO eboSphere(indicesSphere.data(), indicesSphere.size());
 
@@ -236,15 +237,18 @@ int main() {
 					shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 					renderer.Draw(vao1, ebo1, shader1);
 					//renderer.Draw(vao1, shader1, 24);
-					lightCubeShader.Bind();
+					/*lightCubeShader.Bind();
 					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
+					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);*/
 				}
 				else {
 					shaderSphere.Bind();
 					shaderSphere.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
 				}
+				lightCubeShader.Bind();
+				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
+				renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 			}
 			{
 			ImGui::Begin("Jabol");
