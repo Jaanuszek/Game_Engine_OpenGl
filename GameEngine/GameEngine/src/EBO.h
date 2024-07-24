@@ -1,4 +1,8 @@
-#pragma once
+#ifndef EBO_H
+#define EBO_H
+
+#include <glad/glad.h>
+#include <vector>
 
 class EBO {
 private:
@@ -6,6 +10,7 @@ private:
 	unsigned int m_Count;
 public:
 	EBO(const unsigned int* data, unsigned int count);
+	EBO(std::vector<GLuint>& indices);
 	~EBO();
 
 	void Bind() const;
@@ -14,3 +19,5 @@ public:
 
 	inline unsigned int GetCount() const { return m_Count; }
 };
+
+#endif
