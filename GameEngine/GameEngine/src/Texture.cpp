@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include "stb_image/stb_image.h"
 
-Texture::Texture(const std::string& path) :m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0)
+Texture::Texture(const std::string& path, const char* texType) :m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0), m_type(texType)
 {
 	stbi_set_flip_vertically_on_load(1); //jak ³adujemy zdjecia to stb_image laduje je od gory do dolu, a opengl od dolu do gory, wiec trzeba to zmienic
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);

@@ -16,17 +16,12 @@
 
 class Mesh {
 private:
-	//VAO m_VAO;
-	//VBO m_VBO;
-	//EBO m_EBO;
-	//GLsizei m_Count;
-
-	//unsigned int VAO, VBO, EBO;
+	VAO m_VAO;
 	void setupMesh();
 public:
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<Vertex> m_vertices;
+	std::vector<unsigned int> m_indices;
+	std::vector<Texture> m_textures;
 	
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 	~Mesh();

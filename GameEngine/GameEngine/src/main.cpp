@@ -4,31 +4,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include "Mesh.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
 #include <iostream>
-//#include <fstream>
-//#include <string>
-//#include <sstream>
 
 #include "Renderer.h"
-#include "VBO.h"
-#include "VBL.h"
-#include "EBO.h"
-#include "VAO.h"
-#include "Shader.h"
-#include "Texture.h"
 
 #include "Cube.h"
 #include "Pyramid.h"
 #include "Sphere.h"
 
-#include "Camera.h"
 #include "IO/InputHandler.h"
 
 #include "tests/TestClearColor.h"
+
+
 
 
 enum class RenderObject {
@@ -38,8 +32,6 @@ enum class RenderObject {
 };
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo);
-//void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
-//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 float width = 960.0f;
 float height = 540.0f;
@@ -47,11 +39,16 @@ float height = 540.0f;
 Cube cube;
 const float *verticesCube = cube.GetVertices();
 const unsigned int* indicesCube = cube.GetIndices();
-const VertexCube* verticesCu = cube.GetVerticesStruct();
+const Vertex* verticesCu = cube.GetVerticesStruct();
 Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
 const VertexPyramid* verticesPyr = pyramid.GetVerticesStruct();
+
+const Vertex* verticesLigthCube = cube.GetVerticesStruct();
+const unsigned int verticesLigthCubeSize = cube.GetVerticesSize();
+const unsigned int* indicesLightCube = cube.GetIndices();
+const unsigned int indicesLightCubeSize = cube.GetIndicesSize();
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -97,6 +94,7 @@ int main() {
 			}
 		});
 	glfwSetWindowUserPointer(window,&inputHandler);
+
 	{
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -110,9 +108,7 @@ int main() {
 
 		VAO vao1;
 		//cube
-		//VBO vbo1(verticesCube, cube.GetVerticesSize()* sizeof(float));
 		VBO vbo1(verticesCu, cube.GetVerticesSize() * sizeof(VertexCube));
-		//VBO vbo1(verticesPyr, pyramid.GetVerticesSize() * sizeof(VertexPyramid));
 		VBL layout1;
 		layout1.Push(GL_FLOAT, 3);
 		layout1.Push(GL_FLOAT, 2);
@@ -120,18 +116,14 @@ int main() {
 		layout1.Push(GL_FLOAT, 3); //Lightning purposes 
 		vao1.AddBuffer(vbo1, layout1);
 		EBO ebo1(indicesCube, cube.GetIndicesSize());
-		//EBO ebo1(indicesPyramid, pyramid.GetIndicesSize());
 
-		//odkomentowac zeby wrocic do poprzedniej wersji
-		/*Shader shader1("res/shaders/Basic.shader");
-		shader1.Bind();*/
 		Shader shader1("res/shaders/LightningShader.shader");
 		shader1.Bind();
 		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
 		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
 		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 
-		Texture texture1("res/textures/monkey.png");
+		Texture texture1("res/textures/monkey.png", "");
 		texture1.Bind();
 		shader1.SetUniform1i("u_Texture", 0);
 
@@ -156,7 +148,7 @@ int main() {
 		Shader shaderSphere("res/shaders/Sphere.shader");
 		shaderSphere.Bind();
 
-		Texture textureSphere("res/textures/monkey.png");
+		Texture textureSphere("res/textures/monkey.png", "");
 		textureSphere.Bind();
 		shaderSphere.SetUniform1i("u_Texture", 0);
 
@@ -165,24 +157,33 @@ int main() {
 		eboSphere.Unbind();
 		shaderSphere.Unbind();
 
-		VAO lightCubeVAO;
-		VBO lightCubeVBO(verticesCube, cube.GetVerticesSize() * sizeof(float));
-		VBL lightCubeLayout;
-		lightCubeLayout.Push(GL_FLOAT, 3);
-		lightCubeLayout.Push(GL_FLOAT, 2);
-		lightCubeLayout.Push(GL_FLOAT, 3);
-		lightCubeLayout.Push(GL_FLOAT, 3); //lightning purposes
-		lightCubeVAO.AddBuffer(lightCubeVBO, lightCubeLayout);
-		EBO lightCubeEBO(indicesCube, cube.GetIndicesSize());
+		//VAO lightCubeVAO;
+		//VBO lightCubeVBO(verticesCube, cube.GetVerticesSize() * sizeof(float));
+		//VBL lightCubeLayout;
+		//lightCubeLayout.Push(GL_FLOAT, 3);
+		//lightCubeLayout.Push(GL_FLOAT, 2);
+		//lightCubeLayout.Push(GL_FLOAT, 3);
+		//lightCubeLayout.Push(GL_FLOAT, 3); //lightning purposes
+		//lightCubeVAO.AddBuffer(lightCubeVBO, lightCubeLayout);
+		//EBO lightCubeEBO(indicesCube, cube.GetIndicesSize());
 
-		Shader lightCubeShader("res/shaders/LightCube.shader");
-		lightCubeShader.Bind();
-		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+		//Shader lightCubeShader("res/shaders/LightCube.shader");
+		//lightCubeShader.Bind();
+		//lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 
-		lightCubeVAO.Unbind();
-		lightCubeVBO.Unbind();
-		lightCubeEBO.Unbind();
-		lightCubeShader.Unbind();
+		//lightCubeVAO.Unbind();
+		//lightCubeVBO.Unbind();
+		//lightCubeEBO.Unbind();
+		//lightCubeShader.Unbind();
+		Texture textures[] = {
+			Texture("res/textures/monkey.png", "diffuse")
+		};
+
+		std::vector <Vertex> LightCubeverts(verticesLigthCube, verticesLigthCube +verticesLigthCubeSize/(sizeof(Vertex)/sizeof(float)));
+		std::vector <unsigned int> LightCubeinds(indicesLightCube, indicesLightCube + indicesLightCubeSize);
+		std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+		std::cout << indicesLightCubeSize << std::endl;
+		Mesh mesh(LightCubeverts, LightCubeinds, tex);
 
 		Renderer renderer;
 
@@ -236,19 +237,17 @@ int main() {
 					shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 					shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 					renderer.Draw(vao1, ebo1, shader1);
-					//renderer.Draw(vao1, shader1, 24);
-					/*lightCubeShader.Bind();
-					lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-					renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);*/
 				}
 				else {
 					shaderSphere.Bind();
 					shaderSphere.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
 				}
-				lightCubeShader.Bind();
-				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-				renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
+				//lightCubeShader.Bind();
+				//lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
+				//renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
+				
+				mesh.Draw(shader1, *camera);
 			}
 			{
 			ImGui::Begin("Jabol");
@@ -298,12 +297,10 @@ int main() {
 
 void SetupRenderObjects(RenderObject object, VAO& vao, VBO& vbo, VBL& layout, EBO& ebo) {
 	if (object == RenderObject::Cube) {
-		//vbo.Update(verticesCube, cube.GetVerticesSize() * sizeof(float));
 		vbo.Update(verticesCu, cube.GetVerticesSize() * sizeof(VertexCube));
 		ebo.Update(indicesCube, cube.GetIndicesSize());
 	}
 	else if (object == RenderObject::Pyramid) {
-		//vbo.Update(verticesPyramid, pyramid.GetVerticesSize()* sizeof(float));
 		vbo.Update(verticesPyr, pyramid.GetVerticesSize() * sizeof(VertexPyramid));
 		ebo.Update(indicesPyramid, pyramid.GetIndicesSize());
 	}

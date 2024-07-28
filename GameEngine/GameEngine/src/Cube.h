@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "VBO.h"
 
 struct VertexCube {
 	glm::vec3 Position;
@@ -12,7 +13,7 @@ struct VertexCube {
 
 class Cube{
 private:
-	VertexCube verticesCu[6*4] = {
+	Vertex verticesCu[6*4] = {
 		{glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
 		{glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},	
 		{glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f,0.0f,-1.0f)},
@@ -42,6 +43,38 @@ private:
 		{glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
 		{glm::vec3(0.5f,0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0,1.0f,0.0f)},	
 		{glm::vec3(-0.5f,0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0,1.0f,0.0f)}
+	};
+
+	Vertex verticesTest[6*4] = {
+		Vertex {glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,-0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,-1.0f)},
+
+		Vertex {glm::vec3(-0.5f,-0.5f,0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,1.0f)},
+
+		Vertex {glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(-0.5f,-0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+
+		Vertex {glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
+
+		Vertex {glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex {glm::vec3(-0.5f,-0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,-1.0f,0.0f)},
+
+		Vertex {glm::vec3(-0.5f,0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0,1.0f,0.0f)}
 	};
 	float verticesCube[6 * 4 * 11] = {
 		// Back face
@@ -114,7 +147,13 @@ public:
 	const unsigned int GetIndicesSize(void) const {
 		return sizeof(indicesCube)/sizeof(unsigned int);
 	}
-	const VertexCube* GetVerticesStruct(void) const {
+	const Vertex* GetVerticesStruct(void) const {
 		return verticesCu;
+	}
+	const unsigned int GetVerticesStructSize(void) const {
+		return sizeof(verticesCu)/sizeof(Vertex);
+	}
+	const Vertex* GetVerticesTest(void) const {
+		return verticesTest;
 	}
 };
