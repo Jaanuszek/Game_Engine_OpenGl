@@ -157,24 +157,10 @@ int main() {
 		eboSphere.Unbind();
 		shaderSphere.Unbind();
 
-		//VAO lightCubeVAO;
-		//VBO lightCubeVBO(verticesCube, cube.GetVerticesSize() * sizeof(float));
-		//VBL lightCubeLayout;
-		//lightCubeLayout.Push(GL_FLOAT, 3);
-		//lightCubeLayout.Push(GL_FLOAT, 2);
-		//lightCubeLayout.Push(GL_FLOAT, 3);
-		//lightCubeLayout.Push(GL_FLOAT, 3); //lightning purposes
-		//lightCubeVAO.AddBuffer(lightCubeVBO, lightCubeLayout);
-		//EBO lightCubeEBO(indicesCube, cube.GetIndicesSize());
+		Shader lightCubeShader("res/shaders/LightCube.shader");
+		lightCubeShader.Bind();
+		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 
-		//Shader lightCubeShader("res/shaders/LightCube.shader");
-		//lightCubeShader.Bind();
-		//lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-
-		//lightCubeVAO.Unbind();
-		//lightCubeVBO.Unbind();
-		//lightCubeEBO.Unbind();
-		//lightCubeShader.Unbind();
 		Texture textures[] = {
 			Texture("res/textures/monkey.png", "diffuse")
 		};
@@ -182,7 +168,6 @@ int main() {
 		std::vector <Vertex> LightCubeverts(verticesLigthCube, verticesLigthCube +verticesLigthCubeSize/(sizeof(Vertex)/sizeof(float)));
 		std::vector <unsigned int> LightCubeinds(indicesLightCube, indicesLightCube + indicesLightCubeSize);
 		std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-		std::cout << indicesLightCubeSize << std::endl;
 		Mesh mesh(LightCubeverts, LightCubeinds, tex);
 
 		Renderer renderer;
@@ -243,11 +228,11 @@ int main() {
 					shaderSphere.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
 				}
-				//lightCubeShader.Bind();
-				//lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
+				lightCubeShader.Bind();
+				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				//renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
-				
-				mesh.Draw(shader1, *camera);
+								
+				mesh.Draw(lightCubeShader, *camera);
 			}
 			{
 			ImGui::Begin("Jabol");
