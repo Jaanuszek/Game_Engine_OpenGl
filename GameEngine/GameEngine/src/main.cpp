@@ -22,9 +22,6 @@
 
 #include "tests/TestClearColor.h"
 
-
-
-
 enum class RenderObject {
 	Cube,
 	Pyramid,
@@ -43,7 +40,7 @@ const Vertex* verticesCu = cube.GetVerticesStruct();
 Pyramid pyramid;
 const float* verticesPyramid = pyramid.GetVertices();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
-const VertexPyramid* verticesPyr = pyramid.GetVerticesStruct();
+const Vertex* verticesPyr = pyramid.GetVerticesStruct();
 
 const Vertex* verticesLigthCube = cube.GetVerticesStruct();
 const unsigned int verticesLigthCubeSize = cube.GetVerticesSize();
@@ -164,11 +161,20 @@ int main() {
 		Texture textures[] = {
 			Texture("res/textures/monkey.png", "diffuse")
 		};
+		std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+		std::vector<Vertex> verticesCube(cube.GetVerticesStruct(), cube.GetVerticesStruct() + cube.GetVerticesSize() / (sizeof(Vertex) / sizeof(float)));
+		std::vector<unsigned int> indicesCube(cube.GetIndices(), cube.GetIndices() + cube.GetIndicesSize());
+		Mesh meshCube(verticesCube, indicesCube, tex);
+
+		//std::vector<Vertex> pyramidVertices(pyramid.GetVerticesStruct(), pyramid.GetVerticesStruct() + pyramid.GetVerticesSize() / (sizeof(Vertex) / sizeof(float)));
+		std::vector<unsigned int> indicesPyramid(pyramid.GetIndices(), pyramid.GetIndices() + pyramid.GetIndicesSize());
+		//Mesh meshPyramid(pyramidVertices, indicesPyramid, tex);
 
 		std::vector <Vertex> LightCubeverts(verticesLigthCube, verticesLigthCube +verticesLigthCubeSize/(sizeof(Vertex)/sizeof(float)));
 		std::vector <unsigned int> LightCubeinds(indicesLightCube, indicesLightCube + indicesLightCubeSize);
-		std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-		Mesh mesh(LightCubeverts, LightCubeinds, tex);
+
+		Mesh meshLight(LightCubeverts, LightCubeinds, tex);
 
 		Renderer renderer;
 
@@ -221,18 +227,25 @@ int main() {
 					shader1.SetUniformMat4f("u_view", view);
 					shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 					shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-					renderer.Draw(vao1, ebo1, shader1);
+					meshCube.Draw(shader1, *camera);
+					//renderer.Draw(vao1, ebo1, shader1);
 				}
 				else {
 					shaderSphere.Bind();
 					shaderSphere.SetUniformMat4f("u_MVP", mvp);
 					renderer.Draw(vaoSphere, eboSphere, shaderSphere);
 				}
+				if(renderObject == RenderObject::Cube) {
+					meshCube.Draw(shader1, *camera);
+				}
+				else if(renderObject == RenderObject::Pyramid) {
+					//meshPyramid.Draw(shader1, *camera);
+				}
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				//renderer.Draw(lightCubeVAO, lightCubeEBO, lightCubeShader);
 								
-				mesh.Draw(lightCubeShader, *camera);
+				meshLight.Draw(lightCubeShader, *camera);
 			}
 			{
 			ImGui::Begin("Jabol");
@@ -241,12 +254,12 @@ int main() {
 			}
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
-				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
+				//SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
-				SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
+				//SetupRenderObjects(renderObject, vao1, vbo1, layout1, ebo1);
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Render Sphere")) {

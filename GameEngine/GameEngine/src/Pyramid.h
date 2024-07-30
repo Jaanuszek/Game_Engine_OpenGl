@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "VBO.h"
 
 struct VertexPyramid {
 	glm::vec3 Position;
@@ -34,7 +35,7 @@ private:
 		0,1,4,
 		2,3,4
 	};
-	VertexPyramid verticesPyr[5] = {
+	Vertex verticesPyr[5] = {
 		{glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f)},
 		{glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f)},
 		{glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f)},
@@ -51,12 +52,13 @@ public:
 		return indicesPyramid;
 	}
 	const float GetVerticesSize(void) const {
-		return sizeof(verticesPyramid)/sizeof(float);
+		return sizeof(verticesPyr)/sizeof(Vertex);
+		//return 5*sizeof(Vertex);
 	}
 	const unsigned int GetIndicesSize(void) const {
 		return sizeof(indicesPyramid) / sizeof(unsigned int);
 	}
-	const VertexPyramid* GetVerticesStruct(void) const {
+	const Vertex* GetVerticesStruct(void) const {
 		return verticesPyr;
 	}
 };
