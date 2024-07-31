@@ -52,13 +52,13 @@ public:
 		return indicesPyramid;
 	}
 	const float GetVerticesSize(void) const {
-		return sizeof(verticesPyr)/sizeof(Vertex);
+		return sizeof(verticesPyr)/sizeof(float);
 		//return 5*sizeof(Vertex);
 	}
 	const unsigned int GetIndicesSize(void) const {
 		return sizeof(indicesPyramid) / sizeof(unsigned int);
 	}
-	const Vertex* GetVerticesStruct(void) const {
+	Vertex* GetVerticesStruct(void) {
 		return verticesPyr;
 	}
 };

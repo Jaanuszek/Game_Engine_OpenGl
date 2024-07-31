@@ -41,7 +41,7 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 
 	for (unsigned int i = 0; i < m_textures.size(); i++) {
 		if (i >= m_textures.size()) {
-						break;
+			break;
 		}
 		std::string num;
 		std::string type = m_textures[i].GetType();
