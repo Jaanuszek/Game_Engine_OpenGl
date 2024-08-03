@@ -35,7 +35,7 @@ out vec4 v_Color;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-uniform sampler2D u_Texture;
+uniform sampler2D diffuse0;
 uniform vec3 u_objectColor;
 uniform vec3 u_lightColor;
 uniform vec3 u_lightPos;
@@ -43,6 +43,7 @@ uniform vec3 u_viewPos;
 
 void main()
 {
+	//vec3 objectColor = texture(diffuse0, v_TexCoord).rgb;
 	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * u_lightColor;
 

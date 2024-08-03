@@ -26,13 +26,13 @@ layout(location = 0) out vec4 color; //to i to dziala
 in vec2 v_TexCoord;
 in vec3 v_Color;
 
-uniform sampler2D u_Texture;
+uniform sampler2D diffuse0;
 //uniform vec4 u_Color;
 
 void main()
 {
 	//color = vec4(v_Color, 1.0);
-	vec4 texColor = texture(u_Texture, v_TexCoord);
+	vec4 texColor = texture(diffuse0, v_TexCoord);
 	color = texColor;
 	//color = texColor * vec4(v_Color,1.0);
 };

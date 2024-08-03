@@ -53,7 +53,8 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 		}
 		m_textures[i].Bind(i);
 		shader.SetUniform1i((type+num).c_str(), i);
-		shader.SetUniform3f("u_viewPos", camera.GetCameraPos().x, camera.GetCameraPos().y, camera.GetCameraPos().z);
+		//shader.SetUniform3f("u_viewPos", camera.GetCameraPos().x, camera.GetCameraPos().y, camera.GetCameraPos().z);
+		shader.SetUniform3f("u_viewPos", camera.GetCameraPos());
 	}
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
 	m_VAO.Unbind();

@@ -109,9 +109,6 @@ int main() {
 		std::vector<Vertex> verticesSphereVertex = sphere.GetVerticesVertex();
 		std::vector<unsigned int> indicesSphere= sphere.GetIndices();
 		Shader shaderSphere("res/shaders/Sphere.shader");
-		shaderSphere.Bind();
-		shaderSphere.SetUniform1i("u_Texture", 0);
-		shaderSphere.Unbind();
 
 		Shader lightCubeShader("res/shaders/LightCube.shader");
 		lightCubeShader.Bind();
@@ -192,7 +189,7 @@ int main() {
 						shader1.Bind();
 						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 						shader1.SetUniformMat4f("u_MVP", mvp);
-						shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniformMat4f("u_view", view);
 						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 						meshCube.Draw(shader1, *camera);
@@ -201,7 +198,7 @@ int main() {
 						shader1.Bind();
 						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 						shader1.SetUniformMat4f("u_MVP", mvp);
-						shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniformMat4f("u_view", view);
 						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 						meshPyramid.Draw(shader1, *camera);
@@ -215,7 +212,7 @@ int main() {
 						shader1.Bind();
 						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 						shader1.SetUniformMat4f("u_MVP", mvp);
-						shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniformMat4f("u_view", view);
 						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
 						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 						meshCube.Draw(shader1, *camera);
