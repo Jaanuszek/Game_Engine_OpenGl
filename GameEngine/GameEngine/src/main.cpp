@@ -105,30 +105,12 @@ int main() {
 		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 		shader1.Unbind();
 
-		//Merge this to mesh class
 		Sphere sphere(1.0f,24,48);
-		std::vector<float> verticesSphere = sphere.GetVertices();
+		std::vector<Vertex> verticesSphereVertex = sphere.GetVerticesVertex();
 		std::vector<unsigned int> indicesSphere= sphere.GetIndices();
-		VAO vaoSphere;
-		VBO vboSphere(verticesSphere.data(), verticesSphere.size() * sizeof(float));
-		VBL layoutSphere;
-		layoutSphere.Push(GL_FLOAT, 3);
-		layoutSphere.Push(GL_FLOAT, 2);
-		layoutSphere.Push(GL_FLOAT, 3);
-		layoutSphere.Push(GL_FLOAT, 3); //lightning purposes	
-		vaoSphere.AddBuffer(vboSphere, layoutSphere);
-		EBO eboSphere(indicesSphere.data(), indicesSphere.size());
-
 		Shader shaderSphere("res/shaders/Sphere.shader");
 		shaderSphere.Bind();
-
-		Texture textureSphere("res/textures/monkey.png", "");
-		textureSphere.Bind();
 		shaderSphere.SetUniform1i("u_Texture", 0);
-
-		vaoSphere.Unbind();
-		vboSphere.Unbind();
-		eboSphere.Unbind();
 		shaderSphere.Unbind();
 
 		Shader lightCubeShader("res/shaders/LightCube.shader");
@@ -138,7 +120,13 @@ int main() {
 		Texture textures[] = {
 			Texture("res/textures/monkey.png", "diffuse")
 		};
+
+		Texture texturesSphere[] = {
+			Texture("res/textures/monkey.png", "diffuse")
+		};
+
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
+		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
 
 		std::vector<Vertex> verticesCubeVec(verticesCu, verticesCu + verticesSizeCube / (sizeof(Vertex) / sizeof(float)));
 		std::vector<unsigned int> indicesCubeVec(indicesCube, indicesCube + indicesCubeSize);
@@ -153,7 +141,7 @@ int main() {
 
 		Mesh meshLight(LightCubevertsVec, LightCubeindsVec, texVec);
 
-		//Mesh meshSphere(verticesSphere, indicesSphere, tex);
+		Mesh meshSphere(verticesSphereVertex, indicesSphere, texVecSph);
 
 		Renderer renderer;
 
@@ -221,7 +209,7 @@ int main() {
 					case RenderObject::Sphere:
 						shaderSphere.Bind();
 						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						renderer.Draw(vaoSphere, eboSphere, shaderSphere);
+						meshSphere.Draw(shaderSphere, *camera);
 						break;
 					default:
 						shader1.Bind();
