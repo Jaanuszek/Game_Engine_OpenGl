@@ -13,6 +13,8 @@
 #include "Mesh.h"
 #include "Renderer.h"
 
+//#include "objects/Solid.h"
+#include "objects/Cuboid.h"
 #include "Cube.h"
 #include "Pyramid.h"
 #include "Sphere.h"
@@ -97,7 +99,8 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-
+		Cuboid cuboid;
+		std::cout << cuboid.GetIndicesSize()<<std::endl;
 		Shader shader1("res/shaders/LightningShader.shader");
 		shader1.Bind();
 		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
