@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXTURE_H
+#define TEXTURE_H
 
 #include "Renderer.h"
 
@@ -20,3 +21,4 @@ public:
 	inline int GetHeight() const { return m_Height; }
 	inline const char* GetType() const { return m_type; }
 };
+#endif

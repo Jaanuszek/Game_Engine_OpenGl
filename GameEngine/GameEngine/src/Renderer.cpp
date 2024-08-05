@@ -33,9 +33,17 @@ void Renderer::Draw(const VAO& vao, const EBO& ebo, const Shader& shader) const
 	GLCall(glDrawElements(GL_TRIANGLES, ebo.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 
-void Renderer::Draw(const VAO& vao, const Shader& shader, GLsizei count) const
-{
-	shader.Bind();
-	vao.Bind();
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
-}
+//void Renderer::Draw(const VAO& vao, const Shader& shader, GLsizei count) const
+//{
+//	shader.Bind();
+//	vao.Bind();
+//	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
+//}
+
+//Mesh Renderer::CreateMesh(const Solid& solid, const std::vector<Texture>& textures)
+//{
+//	std::vector<Vertex> vertices = solid.GetVertices();
+//	std::vector<unsigned int> indices = solid.GetIndices();
+//	std::vector<Texture> _textures = textures;
+//	return Mesh(vertices,indices,_textures);
+//}
