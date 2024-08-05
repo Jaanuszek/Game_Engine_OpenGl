@@ -153,6 +153,7 @@
     <ClCompile Include="src\IO\InputHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\objects\Cube.cpp" />
     <ClCompile Include="src\objects\Cuboid.cpp" />
     <ClCompile Include="src\Pyramid.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="src\EBO.h" />
     <ClInclude Include="src\IO\InputHandler.h" />
     <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\objects\Cube.h" />
     <ClInclude Include="src\objects\Cuboid.h" />
     <ClInclude Include="src\objects\Solid.h" />
     <ClInclude Include="src\Pyramid.h" />

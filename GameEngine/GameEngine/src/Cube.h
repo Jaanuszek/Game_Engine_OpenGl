@@ -135,23 +135,14 @@ private:
 		22, 23, 20
 	};
 public:
-	const float* GetVertices(void) const {
-		return verticesCube;
-	}
 	const unsigned int* GetIndices(void) const {
 		return indicesCube;
-	}
-	const unsigned int GetVerticesSize(void) const {
-		return sizeof(verticesCube)/sizeof(float);
 	}
 	const unsigned int GetIndicesSize(void) const {
 		return sizeof(indicesCube)/sizeof(unsigned int);
 	}
-	const Vertex* GetVerticesStruct(void) const {
-		return verticesCu;
-	}
 	const unsigned int GetVerticesStructSize(void) const {
-		return sizeof(verticesCu)/sizeof(Vertex);
+		return sizeof(verticesTest)/sizeof(Vertex);
 	}
 	const Vertex* GetVerticesTest(void) const {
 		return verticesTest;

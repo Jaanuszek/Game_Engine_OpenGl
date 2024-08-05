@@ -31,8 +31,8 @@ float width = 960.0f;
 float height = 540.0f;
 
 Cube cube;
-const Vertex* verticesCu = cube.GetVerticesStruct();
-const unsigned int verticesSizeCube = cube.GetVerticesSize();
+const Vertex* verticesCu = cube.GetVerticesTest();
+const unsigned int verticesSizeCube = cube.GetVerticesStructSize();
 const unsigned int* indicesCube = cube.GetIndices();
 const unsigned int indicesCubeSize = cube.GetIndicesSize();
 
@@ -42,8 +42,8 @@ const unsigned int verticesSizePyramid = pyramid.GetVerticesSize();
 const unsigned int* indicesPyramid = pyramid.GetIndices();
 const unsigned int indicesPyramidSize = pyramid.GetIndicesSize();
 
-const Vertex* verticesLigthCube = cube.GetVerticesStruct();
-const unsigned int verticesLigthCubeSize = cube.GetVerticesSize();
+const Vertex* verticesLigthCube = cube.GetVerticesTest();
+const unsigned int verticesLigthCubeSize = cube.GetVerticesStructSize();
 const unsigned int* indicesLightCube = cube.GetIndices();
 const unsigned int indicesLightCubeSize = cube.GetIndicesSize();
 
@@ -99,8 +99,8 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-		Cuboid cuboid;
-		std::cout << cuboid.GetIndicesSize()<<std::endl;
+		//Cuboid cuboid;
+		//std::cout << cuboid.GetIndicesSize()<<std::endl;
 		Shader shader1("res/shaders/LightningShader.shader");
 		shader1.Bind();
 		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
@@ -128,7 +128,7 @@ int main() {
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
 
-		std::vector<Vertex> verticesCubeVec(verticesCu, verticesCu + verticesSizeCube / (sizeof(Vertex) / sizeof(float)));
+		std::vector<Vertex> verticesCubeVec(verticesCu, verticesCu + verticesSizeCube);
 		std::vector<unsigned int> indicesCubeVec(indicesCube, indicesCube + indicesCubeSize);
 		Mesh meshCube(verticesCubeVec, indicesCubeVec, texVec);
 
@@ -136,7 +136,9 @@ int main() {
 		std::vector<unsigned int> indicesPyramidVec(indicesPyramid, indicesPyramid + indicesPyramidSize);
 		Mesh meshPyramid(pyramidVerticesVec, indicesPyramidVec, texVec);
 
-		std::vector <Vertex> LightCubevertsVec(verticesLigthCube, verticesLigthCube +verticesLigthCubeSize/(sizeof(Vertex)/sizeof(float)));
+		std::vector <Vertex> LightCubevertsVec(verticesLigthCube, verticesLigthCube +verticesLigthCubeSize);
+		std::cout << "Sizeof Vertex" << sizeof(Vertex) << " " << "Sizeof float" << sizeof(float) << std::endl;
+		std::cout << verticesLigthCubeSize << std::endl;
 		std::vector <unsigned int> LightCubeindsVec(indicesLightCube, indicesLightCube + indicesLightCubeSize);
 
 		Mesh meshLight(LightCubevertsVec, LightCubeindsVec, texVec);

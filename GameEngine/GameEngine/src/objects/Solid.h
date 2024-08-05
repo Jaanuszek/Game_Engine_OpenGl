@@ -5,28 +5,28 @@
 
 class Solid {
 protected:
-	Vertex* vertices;
+	Vertex *vertices; //the size of array should depend on objects vertices size. Work on it !!!
 	unsigned int verticesSize;
-	unsigned int* indices;
+	unsigned int *indices;
 	unsigned int indicesSize;
+	virtual void Initalize() = 0;
 public:
-	Solid() : vertices(nullptr), verticesSize(0), indices(nullptr), indicesSize(0) {}
+	Solid() : verticesSize(0), indicesSize(0) {}
 	virtual ~Solid() {
 		delete[] vertices;
 		delete[] indices;
 	}
-	Vertex* GetVerticesStruct() {
+	const Vertex* GetVerticesStruct(void) const{
 		return vertices;
 	}
-	unsigned int GetVerticesSize() {
-		return verticesSize;
+	const unsigned int GetVerticesSize(void) const{
+		return verticesSize/sizeof(Vertex);
 	}
-	unsigned int* GetIndices(){
+	const unsigned int* GetIndices(void) const{
 		return indices;
 	}
-	unsigned int GetIndicesSize() {
-		return indicesSize;
+	const unsigned int GetIndicesSize(void) const{
+		return indicesSize/sizeof(unsigned int);
 	}
-	virtual void Initalize() = 0;
 };
 #endif

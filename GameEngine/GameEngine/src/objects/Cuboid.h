@@ -4,11 +4,10 @@
 #include "Solid.h"
 
 class Cuboid : public Solid {
-public:
-	Cuboid() {
-		indicesSize = 1;
-	};
-	~Cuboid() override;
+private:
 	void Initalize() override;
+public:
+	Cuboid();
+	~Cuboid() override;
 };
 #endif
