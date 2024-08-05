@@ -1,32 +1,34 @@
 #ifndef SOLID_H
 #define SOLID_H
 
+#include <vector>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "VBO.h"
 
 class Solid {
 protected:
-	Vertex *vertices; //the size of array should depend on objects vertices size. Work on it !!!
+	std::vector<Vertex> vertices;
 	unsigned int verticesSize;
-	unsigned int *indices;
+	std::vector<unsigned int> indices;
 	unsigned int indicesSize;
 	virtual void Initalize() = 0;
 public:
-	Solid() : verticesSize(0), indicesSize(0) {}
+	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
 	virtual ~Solid() {
-		delete[] vertices;
-		delete[] indices;
 	}
-	const Vertex* GetVerticesStruct(void) const{
+	const std::vector<Vertex> GetVertices(void) const{
 		return vertices;
 	}
 	const unsigned int GetVerticesSize(void) const{
-		return verticesSize/sizeof(Vertex);
+		return vertices.size();
 	}
-	const unsigned int* GetIndices(void) const{
+	const std::vector<unsigned int> GetIndices(void) const{
 		return indices;
 	}
 	const unsigned int GetIndicesSize(void) const{
-		return indicesSize/sizeof(unsigned int);
+		return indices.size();
 	}
 };
 #endif

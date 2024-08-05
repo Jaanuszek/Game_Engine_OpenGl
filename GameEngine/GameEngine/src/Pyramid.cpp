@@ -1,4 +1,5 @@
 #include "Pyramid.h"
+#include "Pyramid.h"
 
 void Pyramid::calculateNormals()
 {
@@ -23,6 +24,7 @@ void Pyramid::calculateNormals()
 		verticesPyr[i].Normal = glm::normalize(verticesPyr[i].Normal);
 	}
 }
+
 
 Pyramid::Pyramid()
 {
