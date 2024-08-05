@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CAMERA_H
+#define CAMERA_H
 
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
@@ -49,3 +50,4 @@ public:
 	void processMouseMovement(float xoffset, float yoffset);
 	glm::vec3 GetCameraPos(void) const;
 };
+#endif

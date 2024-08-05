@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "VBL.h"
+#include "objects/Solid.h"
 
 
 class Mesh {
@@ -23,10 +24,10 @@ public:
 	std::vector<unsigned int> m_indices;
 	std::vector<Texture> m_textures;
 	
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); //ew tu moze byc problem bo usunalem referencj
 	~Mesh();
-	void Draw(Shader& shader, Camera& camera);	
-
+	void Draw(Shader& shader, Camera& camera);
+	//Mesh CreateMesh(const Solid& solid, const std::vector<Texture>& textures); //this method should be somewhere else, or it should be static
 };
 
 #endif

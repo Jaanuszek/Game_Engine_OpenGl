@@ -1,8 +1,8 @@
-#pragma once
+#ifndef VAO_H
+#define VAO_H
 
 #include "VBO.h"
-
-class VBL;
+class VBL; //forward declaration informs compiler that VBL exusts abd will be defined later
 
 class VAO {
 private:
@@ -15,3 +15,5 @@ public:
 	void Bind() const;
 	void Unbind() const;
 };
+
+#endif

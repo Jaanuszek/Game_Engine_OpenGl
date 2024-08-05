@@ -59,3 +59,12 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
 	m_VAO.Unbind();
 }
+
+//Mesh Mesh::CreateMesh(const Solid& solid, const std::vector<Texture>& textures)
+//{
+//	std::vector<Vertex> vertices = solid.GetVertices();
+//	std::vector<unsigned int> indices = solid.GetIndices();
+//	std::vector<Texture> _textures = textures;
+//	return Mesh(vertices,indices,_textures);
+//}
+

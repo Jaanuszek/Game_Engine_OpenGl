@@ -15,8 +15,8 @@
 
 #include "objects/Cuboid.h"
 #include "objects/Cube.h"
-#include "Pyramid.h"
-#include "Sphere.h"
+#include "objects/Pyramid.h"
+#include "objects/Sphere.h"
 
 #include "IO/InputHandler.h"
 
@@ -28,12 +28,6 @@ enum class RenderObject {
 
 float width = 960.0f;
 float height = 540.0f;
-
-Pyramid pyramid;
-Vertex* verticesPyr = pyramid.GetVerticesStruct();
-const unsigned int verticesSizePyramid = pyramid.GetVerticesSize();
-const unsigned int* indicesPyramid = pyramid.GetIndices();
-const unsigned int indicesPyramidSize = pyramid.GetIndicesSize();
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -94,9 +88,6 @@ int main() {
 		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 		shader1.Unbind();
 
-		Sphere sphere(1.0f,24,48);
-		std::vector<Vertex> verticesSphereVertex = sphere.GetVerticesVertex();
-		std::vector<unsigned int> indicesSphere= sphere.GetIndices();
 		Shader shaderSphere("res/shaders/Sphere.shader");
 
 		Shader lightCubeShader("res/shaders/LightCube.shader");
@@ -110,20 +101,25 @@ int main() {
 		Texture texturesSphere[] = {
 			Texture("res/textures/monkey.png", "diffuse")
 		};
-
+		//maybe i should create a class for cleaning this code
+		//maybe some pattern design
+		Cube cube;
+		Pyramid pyramid;
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
-		Cube cube;
+
 		std::vector<Vertex> verticesCube = cube.GetVertices();
 		std::vector<unsigned int> indicesCube = cube.GetIndices();
 		Mesh meshCube(verticesCube, indicesCube, texVec);
 		Mesh meshLight(verticesCube, indicesCube, texVec);
 
-		std::vector<Vertex> pyramidVerticesVec(verticesPyr, verticesPyr + verticesSizePyramid / (sizeof(Vertex) / sizeof(float)));
-		std::vector<unsigned int> indicesPyramidVec(indicesPyramid, indicesPyramid + indicesPyramidSize);
-		Mesh meshPyramid(pyramidVerticesVec, indicesPyramidVec, texVec);
-
-		Mesh meshSphere(verticesSphereVertex, indicesSphere, texVecSph);
+		std::vector<Vertex> verticesPyramid = pyramid.GetVertices();
+		std::vector<unsigned int> indicesPyramid = pyramid.GetIndices();
+		Mesh meshPyramid(verticesPyramid, indicesPyramid, texVec);
+		Sphere sphere(1.0f, 24, 48);
+		std::vector<Vertex> verticesSphere = sphere.GetVertices();
+		std::vector<unsigned int> indicesSphere = sphere.GetIndices();
+		Mesh meshSphere(verticesSphere, indicesSphere, texVecSph);
 
 		Renderer renderer;
 
@@ -134,7 +130,6 @@ int main() {
 		RenderObject renderObject = RenderObject::Cube;
 
 		while (!glfwWindowShouldClose(window)) {
-
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
@@ -232,12 +227,9 @@ int main() {
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 			}
-
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 			glfwSwapBuffers(window);
-
 			glfwPollEvents();
 		}
 	}
