@@ -1,32 +1,34 @@
 #ifndef SOLID_H
 #define SOLID_H
 
+#include <vector>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "VBO.h"
 
 class Solid {
 protected:
-	Vertex* vertices;
+	std::vector<Vertex> vertices;
 	unsigned int verticesSize;
-	unsigned int* indices;
+	std::vector<unsigned int> indices;
 	unsigned int indicesSize;
+	virtual void Initalize() = 0;
 public:
-	Solid() : vertices(nullptr), verticesSize(0), indices(nullptr), indicesSize(0) {}
+	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
 	virtual ~Solid() {
-		delete[] vertices;
-		delete[] indices;
 	}
-	Vertex* GetVerticesStruct() {
+	const std::vector<Vertex> GetVertices(void) const{
 		return vertices;
 	}
-	unsigned int GetVerticesSize() {
-		return verticesSize;
+	const unsigned int GetVerticesSize(void) const{
+		return vertices.size();
 	}
-	unsigned int* GetIndices(){
+	const std::vector<unsigned int> GetIndices(void) const{
 		return indices;
 	}
-	unsigned int GetIndicesSize() {
-		return indicesSize;
+	const unsigned int GetIndicesSize(void) const{
+		return indices.size();
 	}
-	virtual void Initalize() = 0;
 };
 #endif
