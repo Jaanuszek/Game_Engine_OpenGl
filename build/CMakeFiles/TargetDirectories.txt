@@ -1,0 +1,11 @@
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/CMakeFiles/Game_Engine.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/CMakeFiles/INSTALL.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/CMakeFiles/uninstall.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/CMakeFiles/INSTALL.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/CMakeFiles/ALL_BUILD.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/src/CMakeFiles/glfw.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/src/CMakeFiles/update_mappings.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/Libraries/glfw/src/CMakeFiles/INSTALL.dir
+C:/Users/Kuba/Desktop/Game_Engine_OpenGL/build/GameEngine/GameEngine/src/vendor/glm/CMakeFiles/INSTALL.dir
