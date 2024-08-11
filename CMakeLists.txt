@@ -12,11 +12,11 @@ find_package (OpenGL REQUIRED)
 #include_directories can be replaced with newest target_include_directories()
 include_directories( ${OPENGL_INCLUDE_DIRS})
 
-include_directories(GameEngine/GameEngine/include)
-include_directories(GameEngine/GameEngine/res)
-include_directories(GameEngine/GameEngine/src)
-include_directories(GameEngine/Libraries/glad) #could potentially makes a problem
-include_directories(GameEngine/Libraries/KHR)
+#include_directories(GameEngine/GameEngine/include)
+#include_directories(GameEngine/GameEngine/res)
+#include_directories(GameEngine/GameEngine/src)
+#include_directories(GameEngine/Libraries/glad) #could potentially makes a problem
+#include_directories(GameEngine/Libraries/KHR)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -41,9 +41,6 @@ endif()
 
 set(GLFW_CMAKE_STARTER_SRC "GameEngine/GameEngine/src/main.cpp")
 
-source_group("Vendor Libraries\\Source Files" FILES ${VENDOR_SOURCES})
-source_group("Vendor Libraries\\Header Files" FILES ${VENDOR_HEADERS})
-
 #add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${GLAD_GL} ${SOURCES} ${HEADERS})
 add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${SOURCES} ${HEADERS})
 target_link_libraries("${CMAKE_PROJECT_NAME}" ${OPENGL_LIBRARIES} glfw glm)
@@ -52,6 +49,7 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PRIVATE
     GameEngine/Libraries/include/GLFW 
     GameEngine/Libraries/include/KHR
 )
+add_subdirectory(GameEngine/GameEngine/include)
 
 
 if( MSVC )

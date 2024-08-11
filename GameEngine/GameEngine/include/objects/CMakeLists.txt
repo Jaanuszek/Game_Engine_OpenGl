@@ -1,0 +1,10 @@
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+file(GLOB OBJECTS_HEADER_FILES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+)
+
+source_group("Header Files\\Objects" FILES ${OBJECTS_HEADER_FILES})
+
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${OBJECTS_HEADER_FILES})
