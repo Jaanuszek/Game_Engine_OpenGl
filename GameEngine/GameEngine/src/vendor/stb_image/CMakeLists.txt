@@ -1,0 +1,12 @@
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+file(GLOB VENDOR_STB_IMAGE_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
+
+source_group("Source Files\\vendor\\stb_image" FILES ${VENDOR_STB_IMAGE_FILES})
+
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${VENDOR_STB_IMAGE_FILES})

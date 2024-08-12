@@ -1,0 +1,10 @@
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+file(GLOB IO_SOURCE_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
+
+source_group("Source Files\\IO" FILES ${IO_SOURCE_FILES})
+
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${IO_SOURCE_FILES})
