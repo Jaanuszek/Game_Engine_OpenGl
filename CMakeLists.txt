@@ -1,56 +1,83 @@
 cmake_minimum_required(VERSION 3.28)
 
-project (Game_Engine)
+project (
+    Game_Engine
+    VERSION 0.1
+    DESCRIPTION "Game Engine project with CMake that will hoepfully make me pass my bachelor degree"
+    LANGUAGES CXX
+    )
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    #standard cpp 14
+    set(CMAKE_CXX_STANDARD 14)
+    # -std=c++xx instead of -std=g++xx
+    set(CMAKE_CXX_EXTENSIONS OFF)
+
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    #library to test CMake
+    include(Ctest)
+    #library for creating the documentation
+    find_package(Doxygen)
+    if(Doxygen_FOUND)
+        add_subdirectory(docs)
+    else()
+        message(STATUS "Doxygen not found, not building docs")
+    endif()
+endif()
 
 find_package (OpenGL REQUIRED)
+
+add_subdirectory(external/glfw)
+add_subdirectory(external/stb_image)
+#add_subdirectory(external/glm)
+
+
+
+include(FetchContent)
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e 
+)
+
+FetchContent_MakeAvailable(glm)
+
+add_subdirectory(GameEngine/src)
+add_subdirectory(GameEngine/include)
 
 #FindOpenGL Cmake component
 #include_directories can be replaced with newest target_include_directories()
 include_directories( ${OPENGL_INCLUDE_DIRS})
 
-#include_directories(GameEngine/GameEngine/include)
-#include_directories(GameEngine/GameEngine/res)
-#include_directories(GameEngine/GameEngine/src)
-#include_directories(GameEngine/Libraries/glad) #could potentially makes a problem
-#include_directories(GameEngine/Libraries/KHR)
-
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLAD_GL "")
-
-add_subdirectory(GameEngine/Libraries/glfw)
-#add_subdirectory(GameEngine/GameEngine/src/vendor/glm)
-#add_subdirectory(GameEngine/Libraries/include)
-
-#option (GLFW_CMAKE_USE_GLFW_GLAD "Use Glad from GLFW" ON)
-
-#if we want to use glad that is included into glfw
-#if(GLFW_CMAKE_USE_GLFW_GLAD)
-#    include_directories("${GLFW_SOURCE_DIR}/deps")
-#    set(GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h")
-#endif()
+#set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+#set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+#set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+#set(GLAD_GL "")
 
 if(MSVC)
     set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
 endif()
 
-set(GLFW_CMAKE_STARTER_SRC "GameEngine/GameEngine/src/main.cpp")
+set(GLFW_CMAKE_STARTER_SRC "GameEngine/src/main.cpp")
+set(GLAD_C_PATH "GameEngine/src/glad.c")
 
-#add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${GLAD_GL} ${SOURCES} ${HEADERS})
-add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${SOURCES} ${HEADERS})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${OPENGL_LIBRARIES} glfw glm)
-target_include_directories("${CMAKE_PROJECT_NAME}" PRIVATE 
-    GameEngine/Libraries/include
-    GameEngine/Libraries/include/GLFW 
-    GameEngine/Libraries/include/KHR
+add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${GLAD_C_PATH})
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    OpenGL::GL
+    glfw
+    #stb_image
+    #imgui
+    glm::glm
+    GameEngineLib
 )
-add_subdirectory(GameEngine/GameEngine/include)
 
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/GameEngine/include
+    ${CMAKE_SOURCE_DIR}/external/glfw/include
+    ${CMAKE_SOURCE_DIR}/external/stb_image
+    ${CMAKE_SOURCE_DIR}/external/glm
+    ${CMAKE_SOURCE_DIR}/external/imgui
+)
 
 if( MSVC )
     if(${CMAKE_VERSION} VERSION_LESS "3.6.0")
