@@ -6,11 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
-
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
-
 #include "Mesh.h"
 #include "Renderer.h"
 #include "objects/Cuboid.h"
@@ -82,25 +80,24 @@ int main() {
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
 		//Shader shader1("res/shaders/LightningShader.shader");
-		Shader shader1("../assets/shaders/LightningShader.shader");
+		Shader shader1("../../assets/shaders/LightningShader.shader");
 		shader1.Bind();
 		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
 		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
 		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
 		shader1.Unbind();
+		Shader shaderSphere("../../assets/shaders/Sphere.shader");
 
-		Shader shaderSphere("../assets/shaders/Sphere.shader");
-
-		Shader lightCubeShader("../assets/shaders/LightCube.shader");
+		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 		Texture textures[] = {
-			Texture("res/textures/monkey.png", "diffuse")
+			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
 
 		Texture texturesSphere[] = {
-			Texture("res/textures/monkey.png", "diffuse")
+			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
 		//maybe i should create a class for cleaning this code
 		//maybe some pattern design
