@@ -5,12 +5,12 @@
 
 class Sphere : public Solid {
 private:
-	void Initalize() override;
 	float m_radius;
 	unsigned int m_sectors;
 	unsigned int m_stacks;
+	void Initalize() override;
 public:
-	Sphere(float radius, unsigned int sectors, unsigned int stacks);
+	Sphere(float radius = 1.0f, unsigned int sectors = 24, unsigned int stacks = 48);
 	~Sphere() override;
 };
 

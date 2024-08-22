@@ -16,8 +16,7 @@ protected:
 	virtual void Initalize() = 0;
 public:
 	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
-	virtual ~Solid() {
-	}
+	virtual ~Solid() {}
 	const std::vector<Vertex> GetVertices(void) const{
 		return vertices;
 	}

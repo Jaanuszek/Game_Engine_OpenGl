@@ -1,22 +1,20 @@
 #include <iostream>
 #include "glad/glad.h"
-
-
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
-#include "vendor/imgui/imgui.h"
-#include "vendor/imgui/imgui_impl_glfw.h"
-#include "vendor/imgui/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "Mesh.h"
 #include "Renderer.h"
 #include "objects/Cuboid.h"
 #include "objects/Cube.h"
 #include "objects/Pyramid.h"
 #include "objects/Sphere.h"
-
 #include "IO/InputHandler.h"
+#include "MeshFactory.h"
 
 enum class RenderObject {
 	Cube,
@@ -99,30 +97,21 @@ int main() {
 		Texture texturesSphere[] = {
 			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
-		//maybe i should create a class for cleaning this code
-		//maybe some pattern design
+
 		Cube cube;
 		Pyramid pyramid;
+		Sphere sphere;
+		MeshFactory meshFactory;
+		
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
-
-		std::vector<Vertex> verticesCube = cube.GetVertices();
-		std::vector<unsigned int> indicesCube = cube.GetIndices();
-		Mesh meshCube(verticesCube, indicesCube, texVec);
-		Mesh meshLight(verticesCube, indicesCube, texVec);
-
-		std::vector<Vertex> verticesPyramid = pyramid.GetVertices();
-		std::vector<unsigned int> indicesPyramid = pyramid.GetIndices();
-		Mesh meshPyramid(verticesPyramid, indicesPyramid, texVec);
-		Sphere sphere(1.0f, 24, 48);
-		std::vector<Vertex> verticesSphere = sphere.GetVertices();
-		std::vector<unsigned int> indicesSphere = sphere.GetIndices();
-		Mesh meshSphere(verticesSphere, indicesSphere, texVecSph);
+		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
+		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
+		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
+		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
 
 		Renderer renderer;
 
-		float r = 0.0f;
-		float increment = 0.01f;
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;

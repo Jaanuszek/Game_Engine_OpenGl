@@ -1,5 +1,10 @@
 #include "Cuboid.h"
 
+void Cuboid::Initalize()
+{
+
+}
+
 Cuboid::Cuboid() {
 	Initalize();
 }
@@ -8,7 +13,4 @@ Cuboid::~Cuboid()
 {
 }
 
-void Cuboid::Initalize()
-{
 
-}

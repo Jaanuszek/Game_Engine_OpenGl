@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
+project(imgui)
 
 file(GLOB_RECURSE IMGUI_SRC
     "*.h"

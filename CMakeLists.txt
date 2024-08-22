@@ -4,7 +4,7 @@ project (
     Game_Engine
     VERSION 0.1
     DESCRIPTION "Game Engine project with CMake that will hoepfully make me pass my bachelor degree"
-    LANGUAGES CXX
+    LANGUAGES CXX C
     )
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -29,9 +29,6 @@ find_package (OpenGL REQUIRED)
 
 add_subdirectory(external/glfw)
 add_subdirectory(external/stb_image)
-#add_subdirectory(external/glm)
-
-
 
 include(FetchContent)
 FetchContent_Declare(
@@ -49,11 +46,6 @@ add_subdirectory(GameEngine/include)
 #include_directories can be replaced with newest target_include_directories()
 include_directories( ${OPENGL_INCLUDE_DIRS})
 
-#set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-#set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-#set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-#set(GLAD_GL "")
-
 if(MSVC)
     set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
 endif()
@@ -61,8 +53,9 @@ endif()
 set(GLFW_CMAKE_STARTER_SRC "GameEngine/src/main.cpp")
 set(GLAD_C_PATH "GameEngine/src/glad.c")
 
-add_executable("${CMAKE_PROJECT_NAME}" WIN32 ${GLFW_CMAKE_STARTER_SRC} ${GLAD_C_PATH})
-target_link_libraries(${PROJECT_NAME} PRIVATE
+add_executable("${CMAKE_PROJECT_NAME}" ${GLFW_CMAKE_STARTER_SRC} ${GLAD_C_PATH})
+#Adding external libraries to the project
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     OpenGL::GL
     glfw
     #stb_image
@@ -70,8 +63,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glm::glm
     GameEngineLib
 )
-
-target_include_directories(${PROJECT_NAME} PRIVATE
+#Adding header files to the project
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/GameEngine/include
     ${CMAKE_SOURCE_DIR}/external/glfw/include
     ${CMAKE_SOURCE_DIR}/external/stb_image
