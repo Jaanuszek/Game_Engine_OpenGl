@@ -18,6 +18,7 @@
 
 enum class RenderObject {
 	Cube,
+	Cuboid,
 	Pyramid,
 	Sphere
 };
@@ -99,6 +100,8 @@ int main() {
 		};
 
 		Cube cube;
+		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
+		Cuboid cuboid(cuboidWidht,cuboidHeight,cuboidDepth);
 		Pyramid pyramid;
 		Sphere sphere;
 		MeshFactory meshFactory;
@@ -106,6 +109,7 @@ int main() {
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
 		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
+		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, texVec);
 		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
 		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
@@ -161,6 +165,15 @@ int main() {
 						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
 						meshCube.Draw(shader1, *camera);
 						break;
+					case RenderObject::Cuboid:
+						shader1.Bind();
+						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						shader1.SetUniformMat4f("u_MVP", mvp);
+						//shader1.SetUniformMat4f("u_view", view);
+						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						meshCuboid.Draw(shader1, *camera);
+						break;
 					case RenderObject::Pyramid:
 						shader1.Bind();
 						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
@@ -197,6 +210,18 @@ int main() {
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
 			}
+			if (ImGui::Button("Render Cuboid")) {
+				renderObject = RenderObject::Cuboid;
+			}
+			//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
+			// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
+			// GL_DYNAMIC_DRAW
+			// leave it right now, but come to this later!!!
+			//if (renderObject == RenderObject::Cuboid) {
+			//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
+			//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
+			//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
+			//}
 			ImGui::SameLine();
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
