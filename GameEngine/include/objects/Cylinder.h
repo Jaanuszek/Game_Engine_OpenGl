@@ -1,5 +1,5 @@
-#ifndef SOLID_H
-#define SOLID_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 #include "Solid.h"
 
 class Cylinder : public Solid {
@@ -10,7 +10,7 @@ private:
 	void Initalize() override;
 	std::vector<float> getUnitCircleVertices();
 public:
-	Cylinder(float radius = 0.5, float height = 0.5, unsigned int m_sectors = 3);
+	Cylinder(float radius = 0.5, float height = 1, unsigned int m_sectors = 50);
 	~Cylinder() override;
 };
 #endif

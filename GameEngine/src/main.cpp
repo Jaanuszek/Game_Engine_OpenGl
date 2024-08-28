@@ -11,6 +11,7 @@
 #include "Renderer.h"
 #include "objects/Cuboid.h"
 #include "objects/Cube.h"
+#include "objects/Cylinder.h"
 #include "objects/Pyramid.h"
 #include "objects/Sphere.h"
 #include "IO/InputHandler.h"
@@ -19,6 +20,7 @@
 enum class RenderObject {
 	Cube,
 	Cuboid,
+	Cylinder,
 	Pyramid,
 	Sphere
 };
@@ -72,7 +74,6 @@ int main() {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
-		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -102,9 +103,11 @@ int main() {
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht,cuboidHeight,cuboidDepth);
+		Cylinder cylinder;
 		Pyramid pyramid;
 		Sphere sphere;
 		MeshFactory meshFactory;
+
 		
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
@@ -113,6 +116,7 @@ int main() {
 		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
 		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
+		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
 
 		Renderer renderer;
 
@@ -188,6 +192,15 @@ int main() {
 						shaderSphere.SetUniformMat4f("u_MVP", mvp);
 						meshSphere.Draw(shaderSphere, *camera);
 						break;
+					case RenderObject::Cylinder:
+						shader1.Bind();
+						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						shader1.SetUniformMat4f("u_MVP", mvp);
+						//shader1.SetUniformMat4f("u_view", view);
+						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						meshCylinder.Draw(shader1, *camera);
+						break;
 					default:
 						shader1.Bind();
 						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
@@ -222,6 +235,9 @@ int main() {
 			//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
 			//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
 			//}
+			if (ImGui::Button("Render Cylinder")) {
+				renderObject = RenderObject::Cylinder;
+			}
 			ImGui::SameLine();
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
