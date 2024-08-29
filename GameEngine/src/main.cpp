@@ -222,6 +222,7 @@ int main() {
 			if(ImGui::Button("Render Cube")) {
 				renderObject = RenderObject::Cube;
 			}
+			ImGui::SameLine();
 			if (ImGui::Button("Render Cuboid")) {
 				renderObject = RenderObject::Cuboid;
 			}
@@ -234,10 +235,11 @@ int main() {
 			//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
 			//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
 			//}
+			ImGui::SameLine();
 			if (ImGui::Button("Render Cylinder")) {
 				renderObject = RenderObject::Cylinder;
 			}
-			ImGui::SameLine();
+
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
 			}
