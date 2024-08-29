@@ -99,7 +99,6 @@ int main() {
 		Texture texturesSphere[] = {
 			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
-
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht,cuboidHeight,cuboidDepth);
