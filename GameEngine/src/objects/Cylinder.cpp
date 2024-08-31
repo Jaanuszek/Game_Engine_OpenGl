@@ -1,5 +1,4 @@
 #include "Cylinder.h"
-#include <iostream>
 
 // in case of any problems take a look at the post incremented values in loops, maybe it will be better if they were pre incremented
 
@@ -8,7 +7,8 @@ void Cylinder::Initalize()
 	int verticesSize = (m_sectors + 1) * 4; // 2 for top and bottom center points, 2 for top and bottom circle vertices
 	vertices.resize(verticesSize);
     std::vector<Vertex>::iterator verticesIt = vertices.begin();
-    std::vector<float> unitVertices = getUnitCircleVertices();
+	std::vector<float> unitVertices = getUnitCircleVertices(m_sectors);
+	unsigned int baseCenterIndex = 0;
 	//code for generating the walls of cylinder
 	for (int i = 0; i < 2; i++) { //for positive and negative height
 		float h = -m_height / 2.0f + i * m_height;
@@ -29,11 +29,11 @@ void Cylinder::Initalize()
 			(*verticesIt).Normal[1] = uy;
 			(*verticesIt).Normal[2] = uz;
 			verticesIt++;
+			baseCenterIndex++;
 		}
 	}
 	//these indexes are wrong, baseCenterIndex should be exactly in the middle of the vertices
-	int baseCenterIndex = verticesSize / 2;
-	int topCenterIndex = baseCenterIndex + m_sectors + 1;
+	unsigned int topCenterIndex = baseCenterIndex + m_sectors + 1;
 
 	for (int i = 0; i < 2; i++) {
 		float h = -m_height / 2.0f + i * m_height; //z value in terms -h/2, h/2
@@ -57,7 +57,7 @@ void Cylinder::Initalize()
 			(*verticesIt).Position[0] = ux * m_radius;
 			(*verticesIt).Position[1] = uy * m_radius;
 			(*verticesIt).Position[2] = h;
-			(*verticesIt).TexCoords[0] = -ux * 0.5f +0.5f;
+			(*verticesIt).TexCoords[0] = -ux * 0.5f + 0.5f;
 			(*verticesIt).TexCoords[1] = -uy * 0.5f + 0.5f;
 			(*verticesIt).Color[0] = 1;
 			(*verticesIt).Color[1] = 0.5;
@@ -112,24 +112,19 @@ void Cylinder::Initalize()
 	}
 }
 
-std::vector<float> Cylinder::getUnitCircleVertices()
+Cylinder::Cylinder(float radius, float height, unsigned int sectors, float bottomBaseRadius, float topBaseRadius)
+	: m_radius(radius), m_height(height), m_sectors(sectors), m_bottomBaseRadius(bottomBaseRadius), m_topBaseRadius(topBaseRadius)
 {
-	const float PI = glm::pi<float>();
-	const float sectorStep = 2 * PI / m_sectors; //360 / m_sectors
-    float sectorAngle;
-
-    std::vector<float> unitCircleVertices;
-    for (int i = 0; i <= m_sectors; ++i) {
-        sectorAngle = i * sectorStep; // fi
-        unitCircleVertices.push_back(cos(sectorAngle)); // x
-        unitCircleVertices.push_back(sin(sectorAngle)); // y 
-		unitCircleVertices.push_back(0);                // 0 because i want to render xy plane
-    }
-    return unitCircleVertices;
-}
-
-Cylinder::Cylinder(float radius, float height, unsigned int m_sectors) : m_radius(radius), m_height(height), m_sectors(m_sectors)
-{
+	if (m_radius < 0) m_radius = 0.1;
+	if (m_height < 0) m_height = 0.1;
+	if (m_sectors < 3) m_sectors = 3;
+	if (m_radius > 1) m_radius = 1;
+	if (m_height > 1) m_height = 1;
+	if (m_sectors > 360) m_sectors = 360;
+	if (m_bottomBaseRadius < 0) m_bottomBaseRadius = 0.1;
+	if (m_bottomBaseRadius > 1) m_bottomBaseRadius = 1;
+	if (m_topBaseRadius < 0) m_topBaseRadius = 0.1;
+	if (m_topBaseRadius > 1) m_topBaseRadius = 1;
 	Initalize();
 }
 

@@ -7,10 +7,11 @@ private:
 	float m_radius;
 	float m_height;
 	unsigned int m_sectors;
+	float m_bottomBaseRadius;
+	float m_topBaseRadius;
 	void Initalize() override;
-	std::vector<float> getUnitCircleVertices();
 public:
-	Cylinder(float radius = 0.5, float height = 1, unsigned int m_sectors = 50);
+	Cylinder(float radius = 0.5, float height = 1, unsigned int sectors = 50, float bottomBaseRadius = 0.5, float topBaseRadius = 0.1);
 	~Cylinder() override;
 };
 #endif
