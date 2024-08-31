@@ -1,6 +1,9 @@
 #include "../include/IO/InputHandler.h"
+#include <iostream>
 
-InputHandler::InputHandler(GLFWwindow* window) : m_cameraOn(false), m_firstMouse(true), m_deltaTime(0.0f), m_window(window), lastX(0.0f), lastY(0.0f)
+InputHandler::InputHandler(GLFWwindow* window)
+	: m_cameraOn(false), m_firstMouse(true), m_deltaTime(0.0f), m_window(window), lastX(0.0f), lastY(0.0f), m_camera(nullptr), m_renderer(nullptr),
+	m_GridLineOn(false), m_GridPointOn(false)
 {
 	InitializeKeyBindings();
 }
@@ -19,6 +22,11 @@ bool InputHandler::getFirstMouse(void) const
 	return m_firstMouse;
 }
 
+bool InputHandler::getTexture(void) const 
+{
+	return m_Texture;
+}
+
 std::unordered_map<int, std::function<void(int)>> InputHandler::getKeyActions(void) const
 {
 	return m_keyActions;
@@ -28,7 +36,10 @@ void InputHandler::setCamera(std::shared_ptr<Camera> cam)
 {
 	m_camera = cam;
 }
-
+void InputHandler::setRenderer(std::shared_ptr<Renderer> renderer)
+{
+	m_renderer = renderer;
+}
 void InputHandler::setDeltaTime(float deltaTime)
 {
 	m_deltaTime = deltaTime;
@@ -96,7 +107,7 @@ void InputHandler::InitializeKeyBindings()
 	};
 
 	m_keyActions = {
-		{GLFW_KEY_T,[this](int action) {
+		{GLFW_KEY_C,[this](int action) { //enabling/disabling camera
 			if (action == GLFW_PRESS)
 			{
 				m_cameraOn = !m_cameraOn;
@@ -109,6 +120,40 @@ void InputHandler::InitializeKeyBindings()
 				{
 					glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				}
+			}
+		}},
+		{GLFW_KEY_L,[this](int action) { //enabling linear Grid
+			if (action == GLFW_PRESS)
+			{
+				m_GridLineOn = !m_GridLineOn;
+				if (m_GridLineOn)
+				{
+					m_renderer->ShowGridLine();
+				}
+				else
+				{
+					m_renderer->DisableGrid();
+				}
+			}
+		}},
+		{GLFW_KEY_P,[this](int action) { //enabling point Grid
+			if (action == GLFW_PRESS)
+			{
+				m_GridPointOn = !m_GridPointOn;
+				if (m_GridPointOn)
+				{
+					m_renderer->ShowGridPoint();
+				}
+				else
+				{
+					m_renderer->DisableGrid();
+				}
+			}
+		}},
+		{GLFW_KEY_T,[this](int action) { // Toggling textures
+			if (action == GLFW_PRESS)
+			{
+				m_Texture = !m_Texture;
 			}
 		}},
 		{GLFW_KEY_ESCAPE, [this](int action) {

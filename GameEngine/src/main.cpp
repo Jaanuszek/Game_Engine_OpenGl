@@ -38,6 +38,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
+auto renderer = std::make_shared<Renderer>();
 
 int main() {
 	if (!glfwInit())
@@ -58,6 +59,8 @@ int main() {
 	glfwSwapInterval(1);
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
+	//Renderer renderer;
+	inputHandler.setRenderer(renderer);
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos){
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
@@ -120,9 +123,7 @@ int main() {
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
 		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
 		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
-
-		Renderer renderer;
-
+		
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
@@ -132,7 +133,7 @@ int main() {
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			renderer.Clear();
+			renderer->Clear();
 			inputHandler.setDeltaTime(deltaTime);
 			if (inputHandler.getCameraOn()) {
 				inputHandler.cameraMovement_callback();
@@ -161,72 +162,103 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-
+				bool textureChosen = inputHandler.getTexture();
 				switch (renderObject) {
 					case RenderObject::Cube:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCube.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCube.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshCube.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshCube.Draw(shaderSphere, *camera);
+						}
 						break;
 					case RenderObject::Cuboid:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCuboid.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCuboid.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshCuboid.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshCuboid.Draw(shaderSphere, *camera);
+						}
 						break;
 					case RenderObject::Cone:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCone.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCone.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshCone.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshCone.Draw(shaderSphere, *camera);
+						}
 						break;
 					case RenderObject::Pyramid:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshPyramid.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshPyramid.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshPyramid.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshPyramid.Draw(shaderSphere, *camera);
+						}
 						break;
 					case RenderObject::Sphere:
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshSphere.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshSphere.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshSphere.Draw(shaderSphere, *camera);
+						}
 						break;
 					case RenderObject::Cylinder:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCylinder.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCylinder.Draw(shaderSphere, *camera);
+						if (textureChosen) {
+							shader1.Bind();
+							shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+							shader1.SetUniformMat4f("u_MVP", mvp);
+							//shader1.SetUniformMat4f("u_view", view);
+							shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+							shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+							meshCylinder.Draw(shader1, *camera);
+						}
+						else {
+							shaderSphere.Bind();
+							shaderSphere.SetUniformMat4f("u_MVP", mvp);
+							meshCylinder.Draw(shaderSphere, *camera);
+						}
 						break;
 					default:
 						shader1.Bind();
