@@ -11,6 +11,8 @@
 #include "Renderer.h"
 #include "objects/Cuboid.h"
 #include "objects/Cube.h"
+#include "objects/Cylinder.h"
+#include "objects/Cone.h"
 #include "objects/Pyramid.h"
 #include "objects/Sphere.h"
 #include "IO/InputHandler.h"
@@ -18,6 +20,9 @@
 
 enum class RenderObject {
 	Cube,
+	Cuboid,
+	Cylinder,
+	Cone,
 	Pyramid,
 	Sphere
 };
@@ -71,7 +76,6 @@ int main() {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
-		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -97,18 +101,25 @@ int main() {
 		Texture texturesSphere[] = {
 			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
-
 		Cube cube;
+		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
+		Cuboid cuboid(cuboidWidht,cuboidHeight,cuboidDepth);
+		Cylinder cylinder;
+		Cone cone;
 		Pyramid pyramid;
 		Sphere sphere;
 		MeshFactory meshFactory;
+
 		
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
 		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
+		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, texVec);
 		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
 		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
+		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
+		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
 
 		Renderer renderer;
 
@@ -153,27 +164,69 @@ int main() {
 
 				switch (renderObject) {
 					case RenderObject::Cube:
-						shader1.Bind();
-						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						shader1.SetUniformMat4f("u_MVP", mvp);
-						//shader1.SetUniformMat4f("u_view", view);
-						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						meshCube.Draw(shader1, *camera);
+						//shader1.Bind();
+						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						//shader1.SetUniformMat4f("u_MVP", mvp);
+						////shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						//meshCube.Draw(shader1, *camera);
+						shaderSphere.Bind();
+						shaderSphere.SetUniformMat4f("u_MVP", mvp);
+						meshCube.Draw(shaderSphere, *camera);
+						break;
+					case RenderObject::Cuboid:
+						//shader1.Bind();
+						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						//shader1.SetUniformMat4f("u_MVP", mvp);
+						////shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						//meshCuboid.Draw(shader1, *camera);
+						shaderSphere.Bind();
+						shaderSphere.SetUniformMat4f("u_MVP", mvp);
+						meshCuboid.Draw(shaderSphere, *camera);
+						break;
+					case RenderObject::Cone:
+						//shader1.Bind();
+						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						//shader1.SetUniformMat4f("u_MVP", mvp);
+						////shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						//meshCone.Draw(shader1, *camera);
+						shaderSphere.Bind();
+						shaderSphere.SetUniformMat4f("u_MVP", mvp);
+						meshCone.Draw(shaderSphere, *camera);
 						break;
 					case RenderObject::Pyramid:
-						shader1.Bind();
-						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						shader1.SetUniformMat4f("u_MVP", mvp);
-						//shader1.SetUniformMat4f("u_view", view);
-						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						meshPyramid.Draw(shader1, *camera);
+						//shader1.Bind();
+						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						//shader1.SetUniformMat4f("u_MVP", mvp);
+						////shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						//meshPyramid.Draw(shader1, *camera);
+						shaderSphere.Bind();
+						shaderSphere.SetUniformMat4f("u_MVP", mvp);
+						meshPyramid.Draw(shaderSphere, *camera);
 						break;
 					case RenderObject::Sphere:
 						shaderSphere.Bind();
 						shaderSphere.SetUniformMat4f("u_MVP", mvp);
 						meshSphere.Draw(shaderSphere, *camera);
+						break;
+					case RenderObject::Cylinder:
+						//shader1.Bind();
+						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
+						//shader1.SetUniformMat4f("u_MVP", mvp);
+						////shader1.SetUniformMat4f("u_view", view);
+						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
+						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
+						//meshCylinder.Draw(shader1, *camera);
+						shaderSphere.Bind();
+						shaderSphere.SetUniformMat4f("u_MVP", mvp);
+						meshCylinder.Draw(shaderSphere, *camera);
 						break;
 					default:
 						shader1.Bind();
@@ -198,12 +251,32 @@ int main() {
 				renderObject = RenderObject::Cube;
 			}
 			ImGui::SameLine();
+			if (ImGui::Button("Render Cuboid")) {
+				renderObject = RenderObject::Cuboid;
+			}
+			//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
+			// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
+			// GL_DYNAMIC_DRAW
+			// leave it right now, but come to this later!!!
+			//if (renderObject == RenderObject::Cuboid) {
+			//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
+			//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
+			//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
+			//}
+			ImGui::SameLine();
+			if (ImGui::Button("Render Cylinder")) {
+				renderObject = RenderObject::Cylinder;
+			}
+
 			if(ImGui::Button("Render Pyramid")) {
 				renderObject = RenderObject::Pyramid;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Render Sphere")) {
 				renderObject = RenderObject::Sphere;
+			}
+			if (ImGui::Button("Render Cone")) {
+				renderObject = RenderObject::Cone;
 			}
 			ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);  
 			ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
