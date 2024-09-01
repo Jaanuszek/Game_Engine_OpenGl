@@ -44,6 +44,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
+auto renderer = std::make_shared<Renderer>();
 
 int main() {
 	if (!glfwInit())
@@ -64,20 +65,22 @@ int main() {
 	glfwSwapInterval(1);
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
+	//Renderer renderer;
+	inputHandler.setRenderer(renderer);
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos){
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
-			if (handler) {
-				handler->mouse_callback(xpos, ypos);
-			}
+		if (handler) {
+			handler->mouse_callback(xpos, ypos);
+		}
 		});
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
-			if (handler) {
-				handler->key_callback(key, action);
-			}
+		if (handler) {
+			handler->key_callback(key, action);
+		}
 		});
-	glfwSetWindowUserPointer(window,&inputHandler);
+	glfwSetWindowUserPointer(window, &inputHandler);
 	{
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -117,7 +120,7 @@ int main() {
 		};
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
-		Cuboid cuboid(cuboidWidht,cuboidHeight,cuboidDepth);
+		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
 		Cylinder cylinder;
 		Cone cone;
 		Pyramid pyramid;
@@ -151,7 +154,7 @@ int main() {
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			renderer.Clear();
+			renderer->Clear();
 			inputHandler.setDeltaTime(deltaTime);
 			if (inputHandler.getCameraOn()) {
 				inputHandler.cameraMovement_callback();
@@ -186,53 +189,53 @@ int main() {
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
 				// rendering light cube
 				lightCubeShader.Bind();
-				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);						
+				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				meshLight.Draw(lightCubeShader, *camera);
 			}
 			{
-			ImGui::Begin("Jabol");
-			if (ImGui::Button("Camera On/Off")) {
-				inputHandler.setCameraOn(!inputHandler.getCameraOn());
-			}
-			if(ImGui::Button("Render Cube")) {
-				renderObject = RenderObject::Cube;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Render Cuboid")) {
-				renderObject = RenderObject::Cuboid;
-			}
-			//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
-			// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
-			// GL_DYNAMIC_DRAW
-			// leave it right now, but come to this later!!!
-			//if (renderObject == RenderObject::Cuboid) {
-			//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
-			//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
-			//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
-			//}
-			ImGui::SameLine();
-			if (ImGui::Button("Render Cylinder")) {
-				renderObject = RenderObject::Cylinder;
-			}
+				ImGui::Begin("Jabol");
+				if (ImGui::Button("Camera On/Off")) {
+					inputHandler.setCameraOn(!inputHandler.getCameraOn());
+				}
+				if (ImGui::Button("Render Cube")) {
+					renderObject = RenderObject::Cube;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Render Cuboid")) {
+					renderObject = RenderObject::Cuboid;
+				}
+				//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
+				// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
+				// GL_DYNAMIC_DRAW
+				// leave it right now, but come to this later!!!
+				//if (renderObject == RenderObject::Cuboid) {
+				//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
+				//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
+				//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
+				//}
+				ImGui::SameLine();
+				if (ImGui::Button("Render Cylinder")) {
+					renderObject = RenderObject::Cylinder;
+				}
 
-			if(ImGui::Button("Render Pyramid")) {
-				renderObject = RenderObject::Pyramid;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Render Sphere")) {
-				renderObject = RenderObject::Sphere;
-			}
-			if (ImGui::Button("Render Cone")) {
-				renderObject = RenderObject::Cone;
-			}
-			ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);  
-			ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
-			ImGui::SliderFloat("View Translation A y", &viewTranslation.y, -1.0f, 1.0f);
-			ImGui::SliderFloat("View Translation A z", &viewTranslation.z, -10.0f, 10.0f);
-			ImGui::SliderFloat("Angle", &angle, 0.0f, 360.0f);
-			ImGui::SliderFloat3("Light Cube Translation x", &lightCubeTranslation.x, -1.0f, 1.0f);
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
+				if (ImGui::Button("Render Pyramid")) {
+					renderObject = RenderObject::Pyramid;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Render Sphere")) {
+					renderObject = RenderObject::Sphere;
+				}
+				if (ImGui::Button("Render Cone")) {
+					renderObject = RenderObject::Cone;
+				}
+				ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);
+				ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
+				ImGui::SliderFloat("View Translation A y", &viewTranslation.y, -1.0f, 1.0f);
+				ImGui::SliderFloat("View Translation A z", &viewTranslation.z, -10.0f, 10.0f);
+				ImGui::SliderFloat("Angle", &angle, 0.0f, 360.0f);
+				ImGui::SliderFloat3("Light Cube Translation x", &lightCubeTranslation.x, -1.0f, 1.0f);
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::End();
 			}
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

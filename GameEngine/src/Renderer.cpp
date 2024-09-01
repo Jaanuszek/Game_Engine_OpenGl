@@ -18,13 +18,19 @@ bool GLLogCall(const char* function, const char* file, int line)
 
 void Renderer::Clear() const
 {
-	GLCall(glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
+void Renderer::ShowGridLine()const {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+void Renderer::ShowGridPoint()const {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+}
+void Renderer::DisableGrid()const {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
-//dorobic klase mesh, ktora bedzie przechowywala informacje o vao,ebo, shaderze, texture i innych rzeczach
-//t¹ klase przekazywac jako argument do funkcji draw
-// na podstawie informacji tej klasy bedziemy wiedziec czy obiekt ma byc rysowany przy pomocy indeksowania czy te¿ nie
 void Renderer::Draw(const VAO& vao, const EBO& ebo, const Shader& shader) const
 {
 	shader.Bind();
