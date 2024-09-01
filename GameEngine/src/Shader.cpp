@@ -15,7 +15,16 @@ Shader::Shader(const std::string& filepath) :m_FilePath(filepath), m_RendererID(
 
 Shader::~Shader()
 {
-	GLCall(glDeleteProgram(m_RendererID));
+	//there can be potential bug here
+	// I think there can be a situation where some shaders are not deleted
+	// But I may be wrong
+	GLint currentProgram;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+	if (currentProgram == m_RendererID) {
+		GLCall(glUseProgram(0));
+		GLCall(glDeleteProgram(m_RendererID));
+	}
+	//GLCall(glDeleteProgram(m_RendererID));
 }
 
 
@@ -85,6 +94,10 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 
 void Shader::Bind() const
 {
+	if (m_RendererID == 0) {
+		std::cerr << "Shader program ID is invalid." << std::endl;
+		return;
+	}
 	GLCall(glUseProgram(m_RendererID));
 }
 
