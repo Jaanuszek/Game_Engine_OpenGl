@@ -44,7 +44,6 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
-auto renderer = std::make_shared<Renderer>();
 
 int main() {
 	if (!glfwInit())
@@ -65,8 +64,6 @@ int main() {
 	glfwSwapInterval(1);
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
-	//Renderer renderer;
-	inputHandler.setRenderer(renderer);
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos){
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
@@ -154,7 +151,7 @@ int main() {
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			renderer->Clear();
+			renderer.Clear();
 			inputHandler.setDeltaTime(deltaTime);
 			if (inputHandler.getCameraOn()) {
 				inputHandler.cameraMovement_callback();
