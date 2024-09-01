@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -26,6 +27,11 @@ enum class RenderObject {
 	Pyramid,
 	Sphere
 };
+
+void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
+void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
+void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
+	const glm::mat4& model, Camera* camera);
 
 float width = 960.0f;
 float height = 540.0f;
@@ -83,6 +89,7 @@ int main() {
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
 		//Shader shader1("res/shaders/LightningShader.shader");
 		Shader shader1("../../assets/shaders/LightningShader.shader");
+		//is these lines below necessary?
 		shader1.Bind();
 		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
 		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
@@ -93,7 +100,14 @@ int main() {
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+		lightCubeShader.Unbind(); //????
 
+		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
+		std::map<std::string, std::shared_ptr<Shader>> shaders = {
+			{"LightningShader", std::make_shared<Shader>(shader1)},
+			{"SphereShader", std::make_shared<Shader>(shaderSphere)},
+			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)}
+		};
 		Texture textures[] = {
 			Texture("../../assets/textures/monkey.png", "diffuse")
 		};
@@ -110,7 +124,7 @@ int main() {
 		Sphere sphere;
 		MeshFactory meshFactory;
 
-		
+		// Do something with that
 		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
 		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
 		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
@@ -120,9 +134,14 @@ int main() {
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
 		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
 		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
-
-		Renderer renderer;
-
+		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
+			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
+			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
+			{RenderObject::Cylinder, std::make_shared<Mesh>(meshCylinder)},
+			{RenderObject::Cone, std::make_shared<Mesh>(meshCone)},
+			{RenderObject::Pyramid, std::make_shared<Mesh>(meshPyramid)},
+			{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)}
+		};
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
@@ -161,83 +180,11 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-
-				switch (renderObject) {
-					case RenderObject::Cube:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCube.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCube.Draw(shaderSphere, *camera);
-						break;
-					case RenderObject::Cuboid:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCuboid.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCuboid.Draw(shaderSphere, *camera);
-						break;
-					case RenderObject::Cone:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCone.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCone.Draw(shaderSphere, *camera);
-						break;
-					case RenderObject::Pyramid:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshPyramid.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshPyramid.Draw(shaderSphere, *camera);
-						break;
-					case RenderObject::Sphere:
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshSphere.Draw(shaderSphere, *camera);
-						break;
-					case RenderObject::Cylinder:
-						//shader1.Bind();
-						//shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						//shader1.SetUniformMat4f("u_MVP", mvp);
-						////shader1.SetUniformMat4f("u_view", view);
-						//shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						//shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						//meshCylinder.Draw(shader1, *camera);
-						shaderSphere.Bind();
-						shaderSphere.SetUniformMat4f("u_MVP", mvp);
-						meshCylinder.Draw(shaderSphere, *camera);
-						break;
-					default:
-						shader1.Bind();
-						shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-						shader1.SetUniformMat4f("u_MVP", mvp);
-						//shader1.SetUniformMat4f("u_view", view);
-						shader1.SetUniform3f("u_viewPos", camera->GetCameraPos());
-						shader1.SetUniformMat4f("u_model", model);//lightnig purposes
-						meshCube.Draw(shader1, *camera);
-						break;
-				}
+				bool textureChosen = inputHandler.getTexture();
+				// rendering objects using map
+				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
+				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);						
 				meshLight.Draw(lightCubeShader, *camera);
@@ -301,4 +248,43 @@ int main() {
 	glfwTerminate();
 
 	return 0;
+}
+
+void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera) {
+	shader.Bind();
+	shader.SetUniform3f("u_lightPos", lightPos);
+	shader.SetUniformMat4f("u_MVP", mvp);
+	shader.SetUniform3f("u_viewPos", camera->GetCameraPos());
+	shader.SetUniformMat4f("u_model", model);
+}
+void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp) {
+	shader.Bind();
+	shader.SetUniformMat4f("u_MVP", mvp);
+	mesh.Draw(shader, *camera);
+}
+void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
+	const glm::mat4& model, Camera* camera) {
+	if (textureChosen) {
+		auto it = shader.find("LightningShader");
+		if (it != shader.end()) {
+			std::shared_ptr<Shader>& shaderWithLight = it->second;
+			BindShaderWithLightning(*shaderWithLight, lightPos, mvp, model, camera);
+			mesh.Draw(*shaderWithLight, *camera);
+		}
+		else {
+			std::cerr << "LightningShader not found" << std::endl;
+			return;
+		}
+	}
+	else {
+		auto it = shader.find("SphereShader");
+		if (it != shader.end()) {
+			std::shared_ptr<Shader>& shaderWithoutLight = it->second;
+			DrawObjectWithShader(mesh, *shaderWithoutLight, mvp);
+		}
+		else {
+			std::cerr << "SphereShader not found" << std::endl;
+			return;
+		}
+	}
 }
