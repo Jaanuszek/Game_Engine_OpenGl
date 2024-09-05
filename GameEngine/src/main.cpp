@@ -16,6 +16,7 @@
 #include "objects/Cone.h"
 #include "objects/Pyramid.h"
 #include "objects/Sphere.h"
+#include "objects/Torus.h"
 #include "IO/InputHandler.h"
 #include "MeshFactory.h"
 
@@ -25,7 +26,8 @@ enum class RenderObject {
 	Cylinder,
 	Cone,
 	Pyramid,
-	Sphere
+	Sphere,
+	Torus
 };
 
 void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
@@ -125,6 +127,7 @@ int main() {
 		Cone cone;
 		Pyramid pyramid;
 		Sphere sphere;
+		Torus torus;
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -137,13 +140,15 @@ int main() {
 		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
 		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
 		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
+		Mesh meshTorus = meshFactory.CreateMesh(torus, texVec);
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
 			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
 			{RenderObject::Cylinder, std::make_shared<Mesh>(meshCylinder)},
 			{RenderObject::Cone, std::make_shared<Mesh>(meshCone)},
 			{RenderObject::Pyramid, std::make_shared<Mesh>(meshPyramid)},
-			{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)}
+			{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)},
+			{RenderObject::Torus, std::make_shared<Mesh>(meshTorus)}
 		};
 		float angle = 0.0f;
 
@@ -227,6 +232,10 @@ int main() {
 				}
 				if (ImGui::Button("Render Cone")) {
 					renderObject = RenderObject::Cone;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Render Torus")) {
+					renderObject = RenderObject::Torus;
 				}
 				ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);
 				ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
