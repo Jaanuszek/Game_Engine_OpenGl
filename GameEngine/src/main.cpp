@@ -127,7 +127,9 @@ int main() {
 		Cone cone;
 		Pyramid pyramid;
 		Sphere sphere;
-		Torus torus;
+		float minorRadius = 0.2f, majorRadius = 0.5f;
+		int sectors = 48, side = 24;
+		Torus torus(minorRadius,majorRadius,sectors,side);
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -192,6 +194,22 @@ int main() {
 				// rendering objects using map
 				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+				if (renderObject == RenderObject::Torus) {
+					bool torusUpdated = false;
+					torusUpdated |= ImGui::SliderFloat("torus minor radius", &minorRadius, 0.0f, 2.0f);
+					torusUpdated |= ImGui::SliderFloat("torus major radius", &majorRadius, 0.0f, 2.0f);
+					torusUpdated |= ImGui::SliderInt("torus sectors", &sectors, 3, 100);
+					torusUpdated |= ImGui::SliderInt("torus side", &side, 3, 24);
+
+					//// Only update the cuboid and mesh if any dimension has changed
+					if (torusUpdated) {
+						torus.Update(minorRadius, majorRadius, sectors, side);
+						std::vector <Vertex> verticesTemp = torus.GetVertices();
+						std::vector <unsigned int> indicesTemp = torus.GetIndices();
+
+						meshTorus.updateMesh(verticesTemp,indicesTemp, texVec);
+					}
+				}
 				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
@@ -209,15 +227,6 @@ int main() {
 				if (ImGui::Button("Render Cuboid")) {
 					renderObject = RenderObject::Cuboid;
 				}
-				//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
-				// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
-				// GL_DYNAMIC_DRAW
-				// leave it right now, but come to this later!!!
-				//if (renderObject == RenderObject::Cuboid) {
-				//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
-				//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
-				//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
-				//}
 				ImGui::SameLine();
 				if (ImGui::Button("Render Cylinder")) {
 					renderObject = RenderObject::Cylinder;

@@ -43,6 +43,7 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 		if (i >= m_textures.size()) {
 			break;
 		}
+		//glActiveTexture(GL_TEXTURE0 + i);
 		std::string num;
 		std::string type = m_textures[i].GetType();
 		if(type == "diffuse") {
@@ -57,14 +58,16 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 		shader.SetUniform3f("u_viewPos", camera.GetCameraPos());
 	}
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
+	for (unsigned int i = 0; i < m_textures.size(); i++) {
+		m_textures[i].Unbind();
+	}
+	shader.Unbind();
 	m_VAO.Unbind();
 }
 
-//Mesh Mesh::CreateMesh(const Solid& solid, const std::vector<Texture>& textures)
-//{
-//	std::vector<Vertex> vertices = solid.GetVertices();
-//	std::vector<unsigned int> indices = solid.GetIndices();
-//	std::vector<Texture> _textures = textures;
-//	return Mesh(vertices,indices,_textures);
-//}
-
+void Mesh::updateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures) {
+	m_vertices = vertices;
+	m_indices = indices;
+	m_textures = textures;
+	setupMesh();
+}

@@ -11,6 +11,9 @@ void Torus::Initalize() {
 	float sectorStep = 2 * PI / m_sectors;
 	float sideStep = 2 * PI / m_sides;
 	float sectorAngle, sideAngle;
+	if (vertices.size() > 0) {
+		vertices.clear();
+	}
 	unsigned int totalVertices = (m_sides + 1) * (m_sectors + 1);
 	vertices.resize(totalVertices);
 	std::vector<Vertex>::iterator verticesIt = vertices.begin();
@@ -51,6 +54,9 @@ void Torus::Initalize() {
 			verticesIt++;
 		}
 	}
+	if (indices.size() > 0) {
+		indices.clear();
+	}
 	unsigned int totalIndices = m_sides * m_sectors * 6;
 	indices.resize(totalIndices);
 	std::vector<unsigned int>::iterator indicesIt = indices.begin();
@@ -78,4 +84,12 @@ Torus::Torus(float minorRadius, float majorRadius, unsigned int sectors, unsigne
 
 Torus::~Torus(){
 
+}
+
+void Torus::Update(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides) {
+	m_minorRadius = minorRadius;
+	m_majorRadius = majorRadius;
+	m_sectors = sectors;
+	m_sides = sides;
+	Initalize();
 }

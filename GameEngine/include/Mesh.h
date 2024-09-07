@@ -27,6 +27,7 @@ public:
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); //ew tu moze byc problem bo usunalem referencj
 	~Mesh();
 	void Draw(Shader& shader, Camera& camera);
+	void updateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 };
 
 #endif

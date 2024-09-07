@@ -12,6 +12,7 @@ VBO::VBO(std::vector<Vertex>& vertices)
 	GLCall(glGenBuffers(1, &m_ID));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_ID));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW));
+	//GLCall(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW));
 }
 
 VBO::~VBO() {
