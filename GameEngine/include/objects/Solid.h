@@ -18,13 +18,13 @@ protected:
 public:
 	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
 	virtual ~Solid() {}
-	const std::vector<Vertex> GetVertices(void) const{
+	const std::vector<Vertex>& GetVertices(void) const{
 		return vertices;
 	}
 	const unsigned int GetVerticesSize(void) const{
 		return vertices.size();
 	}
-	const std::vector<unsigned int> GetIndices(void) const{
+	const std::vector<unsigned int>& GetIndices(void) const{
 		return indices;
 	}
 	const unsigned int GetIndicesSize(void) const{

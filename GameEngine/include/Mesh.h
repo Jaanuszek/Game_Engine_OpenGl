@@ -12,12 +12,17 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "VBL.h"
+#include <memory>
 #include "objects/Solid.h"
 
 
 class Mesh {
 private:
-	VAO m_VAO;
+	std::shared_ptr<VAO> m_VAO;
+	std::shared_ptr<VBO> m_VBO;
+	std::shared_ptr<VBL> m_layout;
+	std::shared_ptr<EBO> m_EBO;
+	bool m_updateVBO = false;
 	void setupMesh();
 public:
 	std::vector<Vertex> m_vertices;
@@ -27,7 +32,7 @@ public:
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); //ew tu moze byc problem bo usunalem referencj
 	~Mesh();
 	void Draw(Shader& shader, Camera& camera);
-	void updateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 };
 
 #endif

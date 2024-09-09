@@ -1,22 +1,26 @@
 #include "Mesh.h"
 
-
-
 void Mesh::setupMesh()
 {
-	m_VAO.Bind(); // glGenVertexArrays(1, &m_RendererID)
-	VBO vbo(m_vertices);
-	VBL layout;
-	EBO ebo(m_indices);
-	layout.Push(GL_FLOAT, 3);
-	layout.Push(GL_FLOAT, 2);
-	layout.Push(GL_FLOAT, 3);
-	layout.Push(GL_FLOAT, 3);
-	m_VAO.AddBuffer(vbo, layout);
-
-	m_VAO.Unbind();
-	vbo.Unbind();
-	ebo.Unbind();
+	if (!m_updateVBO) {
+		m_VAO->Bind(); // glGenVertexArrays(1, &m_RendererID)
+		m_VBO->Bind();
+		m_EBO->Bind();
+		m_layout->Push(GL_FLOAT, 3);
+		m_layout->Push(GL_FLOAT, 2);
+		m_layout->Push(GL_FLOAT, 3);
+		m_layout->Push(GL_FLOAT, 3);
+		m_VAO->AddBuffer(*m_VBO, *m_layout);
+		m_EBO->Unbind();
+		m_VBO->Unbind();
+		m_VAO->Unbind();
+	}
+	else {
+		m_VBO->Bind();
+		m_EBO->Bind();
+		m_VBO->Update(m_vertices);
+		m_EBO->Update(m_indices);
+	}
 }
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
@@ -24,7 +28,12 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
 	this->m_vertices = vertices;
 	this->m_indices = indices;
 	this->m_textures = textures;
+	m_VAO = std::make_shared<VAO>();
+	m_VBO = std::make_shared<VBO>(m_vertices);
+	m_layout = std::make_shared<VBL>();
+	m_EBO = std::make_shared<EBO>(m_indices);
 	setupMesh();
+	m_updateVBO = true;
 }
 
 Mesh::~Mesh()
@@ -34,7 +43,7 @@ Mesh::~Mesh()
 void Mesh::Draw(Shader& shader, Camera& camera)
 {
 	shader.Bind();
-	m_VAO.Bind();
+	m_VAO->Bind();
 
 	unsigned int  numDiffuse = 0;
 	unsigned int  numSpecular = 0;
@@ -58,14 +67,15 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 		shader.SetUniform3f("u_viewPos", camera.GetCameraPos());
 	}
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
+	//Do I need this unbids?
 	for (unsigned int i = 0; i < m_textures.size(); i++) {
 		m_textures[i].Unbind();
 	}
 	shader.Unbind();
-	m_VAO.Unbind();
+	m_VAO->Unbind();
 }
 
-void Mesh::updateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures) {
+void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures) {
 	m_vertices = vertices;
 	m_indices = indices;
 	m_textures = textures;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include "wtypes.h"
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -34,9 +35,11 @@ void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const gl
 void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
 void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
 	const glm::mat4& model, Camera* camera);
+void GetDesktopResolution(float& horizontal, float& vertical);
 
-float width = 960.0f;
-float height = 540.0f;
+float width = 0;
+float height = 0;
+
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -55,7 +58,7 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	GetDesktopResolution(width, height);
 	GLFWwindow* window = glfwCreateWindow(width, height, "Game Engine", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -128,7 +131,9 @@ int main() {
 		Pyramid pyramid;
 		Sphere sphere;
 		float minorRadius = 0.2f, majorRadius = 0.5f;
-		int sectors = 48, side = 24;
+		int sectors = 48, side = 48;
+		int maxAmountSectors = sectors;
+		int maxAmountSide = side;
 		Torus torus(minorRadius,majorRadius,sectors,side);
 		MeshFactory meshFactory;
 
@@ -196,18 +201,22 @@ int main() {
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
 				if (renderObject == RenderObject::Torus) {
 					bool torusUpdated = false;
-					torusUpdated |= ImGui::SliderFloat("torus minor radius", &minorRadius, 0.0f, 2.0f);
-					torusUpdated |= ImGui::SliderFloat("torus major radius", &majorRadius, 0.0f, 2.0f);
-					torusUpdated |= ImGui::SliderInt("torus sectors", &sectors, 3, 100);
-					torusUpdated |= ImGui::SliderInt("torus side", &side, 3, 24);
-
-					//// Only update the cuboid and mesh if any dimension has changed
+					torusUpdated |= ImGui::SliderFloat("torus minor radius", &minorRadius, 0.0f, 1.0f);
+					torusUpdated |= ImGui::SliderFloat("torus major radius", &majorRadius, 0.0f, 1.0f);
+					torusUpdated |= ImGui::InputInt("torus sectors", &sectors, 1, maxAmountSectors);
+					torusUpdated |= ImGui::InputInt("torus side", &side, 1, maxAmountSide);
+					if (sectors < 3) sectors = 3;
+					if (sectors > maxAmountSectors)
+						sectors = maxAmountSectors;
+					if (side < 3) side = 3;
+					if (side > maxAmountSide)
+						side = maxAmountSide;
 					if (torusUpdated) {
-						torus.Update(minorRadius, majorRadius, sectors, side);
+						torus.Update(minorRadius, majorRadius, (unsigned int)sectors, (unsigned int)side);
 						std::vector <Vertex> verticesTemp = torus.GetVertices();
 						std::vector <unsigned int> indicesTemp = torus.GetIndices();
 
-						meshTorus.updateMesh(verticesTemp,indicesTemp, texVec);
+						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
 					}
 				}
 				// rendering light cube
@@ -308,4 +317,11 @@ void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> 
 			return;
 		}
 	}
+}
+void GetDesktopResolution(float& horizontal, float& vertical) {
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	horizontal = desktop.right;
+	vertical = desktop.bottom;
 }
