@@ -44,10 +44,6 @@ void Torus::Initalize() {
 			(*verticesIt).TexCoords[0] = s;
 			(*verticesIt).TexCoords[1] = t;
 
-			(*verticesIt).Color[0] =  0.5f;
-			(*verticesIt).Color[1] =  0.5f;
-			(*verticesIt).Color[2] =  0.5f;
-
 			(*verticesIt).Normal[0] = nx;
 			(*verticesIt).Normal[1] = ny;
 			(*verticesIt).Normal[2] = nz;

@@ -9,7 +9,6 @@ void Mesh::setupMesh()
 		m_layout->Push(GL_FLOAT, 3);
 		m_layout->Push(GL_FLOAT, 2);
 		m_layout->Push(GL_FLOAT, 3);
-		m_layout->Push(GL_FLOAT, 3);
 		m_VAO->AddBuffer(*m_VBO, *m_layout);
 		m_EBO->Unbind();
 		m_VBO->Unbind();

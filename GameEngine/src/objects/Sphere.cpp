@@ -22,10 +22,6 @@ void Sphere::Initalize()
 			(*verticesIt).TexCoords[0] = u;
 			(*verticesIt).TexCoords[1] = v;
 
-			(*verticesIt).Color[0] = (x + 1) * 0.5f;
-			(*verticesIt).Color[1] = (y + 1) * 0.5f;
-			(*verticesIt).Color[2] = (z + 1) * 0.5f;
-
 			(*verticesIt).Normal[0] = x;
 			(*verticesIt).Normal[1] = y;
 			(*verticesIt).Normal[2] = z;

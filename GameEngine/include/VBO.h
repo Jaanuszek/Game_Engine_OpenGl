@@ -11,7 +11,6 @@
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec2 TexCoords;
-	glm::vec3 Color; //it should be deleted, because i wont need that
 	glm::vec3 Normal;
 };
 

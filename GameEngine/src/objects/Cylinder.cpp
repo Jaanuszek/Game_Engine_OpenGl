@@ -22,9 +22,6 @@ void Cylinder::Initalize()
 			(*verticesIt).Position[2] = h;
 			(*verticesIt).TexCoords[0] = (float)j / m_sectors;
 			(*verticesIt).TexCoords[1] = t;
-			(*verticesIt).Color[0] = 1;
-			(*verticesIt).Color[1] = 0.5;
-			(*verticesIt).Color[2] = 0.5;
 			(*verticesIt).Normal[0] = ux;
 			(*verticesIt).Normal[1] = uy;
 			(*verticesIt).Normal[2] = uz;
@@ -44,9 +41,6 @@ void Cylinder::Initalize()
 		(*verticesIt).Position[2] = 0;
 		(*verticesIt).TexCoords[0] = 0.5f;
 		(*verticesIt).TexCoords[1] = 0.5f;
-		(*verticesIt).Color[0] = 1;
-		(*verticesIt).Color[1] = 0.5;
-		(*verticesIt).Color[2] = 0.5;
 		(*verticesIt).Normal[0] = 0;
 		(*verticesIt).Normal[1] = 0;
 		(*verticesIt).Normal[2] = 0;
@@ -59,9 +53,6 @@ void Cylinder::Initalize()
 			(*verticesIt).Position[2] = h;
 			(*verticesIt).TexCoords[0] = -ux * 0.5f + 0.5f;
 			(*verticesIt).TexCoords[1] = -uy * 0.5f + 0.5f;
-			(*verticesIt).Color[0] = 1;
-			(*verticesIt).Color[1] = 0.5;
-			(*verticesIt).Color[2] = 0.5;
 			(*verticesIt).Normal[0] = 0;
 			(*verticesIt).Normal[1] = 0;
 			(*verticesIt).Normal[2] = nz;
