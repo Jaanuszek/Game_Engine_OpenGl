@@ -13,5 +13,8 @@ private:
 public:
 	Cylinder(float radius = 0.5, float height = 1, unsigned int sectors = 50, float bottomBaseRadius = 0.5, float topBaseRadius = 0.1);
 	~Cylinder() override;
+	void UpdateVerticesAndIndices() override;
+	void UpdateVerticesAndIndices(float radius, float height, unsigned int sectors, float bottomBaseRadius, float topBaseRadius);
+	void UpdateParams() override;
 };
 #endif

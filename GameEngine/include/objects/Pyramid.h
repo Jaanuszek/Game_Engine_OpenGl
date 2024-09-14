@@ -10,6 +10,8 @@ private:
 public:
 	Pyramid();
 	~Pyramid() override;
+	void UpdateVerticesAndIndices() override;
+	void UpdateParams() override;
 };
 
 #endif

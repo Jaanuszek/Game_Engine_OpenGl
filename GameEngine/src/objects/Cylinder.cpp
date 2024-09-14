@@ -122,3 +122,11 @@ Cylinder::Cylinder(float radius, float height, unsigned int sectors, float botto
 Cylinder::~Cylinder()
 {
 }
+
+void Cylinder::UpdateVerticesAndIndices() {
+
+}
+
+void Cylinder::UpdateParams() {
+
+}

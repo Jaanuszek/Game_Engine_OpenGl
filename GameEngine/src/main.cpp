@@ -42,7 +42,6 @@ void GetDesktopResolution(float& horizontal, float& vertical);
 float width = 0;
 float height = 0;
 
-
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
@@ -80,7 +79,6 @@ int main() {
 
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
-	//Renderer renderer;
 	inputHandler.setRenderer(renderer);
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
@@ -105,7 +103,6 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-		//Shader shader1("res/shaders/LightningShader.shader");
 		Shader shader1("../../assets/shaders/LightningShader.shader");
 		//is these lines below necessary?
 		shader1.Bind();
@@ -137,20 +134,13 @@ int main() {
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
 		Cylinder cylinder;
-		Cone cone;
+		//cone
+		Cone cone(0.5f, 1.0f, 48, 48);
 		Pyramid pyramid;
 		//sphere
-		float sphereRadius = 0.5f;
-		int sphereSectors = 48, sphereStacks = 48;
-		int sphereMaxAmountSectors = sphereSectors;
-		int sphereMaxAmountStacks = sphereStacks;
-		Sphere sphere(sphereRadius,sphereSectors,sphereStacks);
+		Sphere sphere(0.5f, 48, 48);
 		//torus
-		float minorRadius = 0.2f, majorRadius = 0.5f;
-		int torusSectors = 48, torusSides = 48;
-		int torusMaxAmountSectors = torusSectors;
-		int torusMaxAmountSide = torusSides;
-		Torus torus(minorRadius,majorRadius,torusSectors,torusSides);
+		Torus torus(0.2f,0.5f,48,50);
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -220,43 +210,16 @@ int main() {
 				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
 				if (renderObject == RenderObject::Sphere) {
-					bool sphereUpdated = false;
-					sphereUpdated |= ImGui::SliderFloat("sphere radius", &sphereRadius, 0.0f, 1.0f);
-					sphereUpdated |= ImGui::SliderInt("sphere sectors", &sphereSectors, 3, sphereMaxAmountSectors);
-					sphereUpdated |= ImGui::SliderInt("sphere side", &sphereStacks, 3, sphereMaxAmountStacks);
-					//sphereUpdated |= ImGui::InputInt("sphere sectors", &sectors, 1, maxAmountSectors);
-					//sphereUpdated |= ImGui::InputInt("sphere side", &side, 1, maxAmountSide);
-					if (sphereSectors < 3) sphereSectors = 3;
-					if (sphereSectors > sphereMaxAmountSectors)
-						sphereSectors = sphereMaxAmountSectors;
-					if (sphereStacks < 3) sphereStacks = 3;
-					if (sphereStacks > sphereMaxAmountStacks)
-						sphereStacks = sphereMaxAmountStacks;
-					if (sphereUpdated) {
-						sphere.Update(sphereRadius, (unsigned int)sphereSectors, (unsigned int)sphereStacks);
-						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVec);
-						sphereUpdated = false; // ensuring that it will update only once every frame
-					}
+					sphere.UpdateParams();
+					meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+				}
+				if (renderObject == RenderObject::Cone) {
+					cone.UpdateParams();
+					meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
 				}
 				if (renderObject == RenderObject::Torus) {
-					bool torusUpdated = false;
-					torusUpdated |= ImGui::SliderFloat("torus minor radius", &minorRadius, 0.0f, 1.0f);
-					torusUpdated |= ImGui::SliderFloat("torus major radius", &majorRadius, 0.0f, 1.0f);
-					torusUpdated |= ImGui::SliderInt("torus sectors", &torusSectors, 3, torusMaxAmountSectors);
-					torusUpdated |= ImGui::SliderInt("torus side", &torusSides, 3, torusMaxAmountSide);
-					//torusUpdated |= ImGui::InputInt("torus sectors", &sectors, 1, maxAmountSectors);
-					//torusUpdated |= ImGui::InputInt("torus side", &side, 1, maxAmountSide);
-					if (torusSectors < 3) torusSectors = 3;
-					if (torusSectors > torusMaxAmountSectors)
-						torusSectors = torusMaxAmountSectors;
-					if (torusSides < 3) torusSides = 3;
-					if (torusSides > torusMaxAmountSide)
-						torusSides = torusMaxAmountSide;
-					if (torusUpdated) {
-						torus.Update(minorRadius, majorRadius, (unsigned int)torusSectors, (unsigned int)torusSides);
-						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
-						torusUpdated = false; // ensuring that it will update only once every frame
-					}
+					torus.UpdateParams();
+					meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
 				}
 				// rendering light cube
 				lightCubeShader.Bind();

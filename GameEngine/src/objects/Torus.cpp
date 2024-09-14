@@ -6,7 +6,7 @@ void Torus::Initalize() {
 	float nx, ny, nz; // vertex normal
 	float lengthInv = 1.0f / m_minorRadius; // vertex normal
 	float s, t; // vertex texCoord
-	const float PI = glm::pi<float>();
+	//const float PI = glm::pi<float>();
 
 	float sectorStep = 2 * PI / m_sectors;
 	float sideStep = 2 * PI / m_sides;
@@ -82,10 +82,22 @@ Torus::~Torus(){
 
 }
 
-void Torus::Update(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides){
+void Torus::UpdateVerticesAndIndices() {
+	Initalize();
+}
+
+void Torus::UpdateVerticesAndIndices(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides){
 	m_minorRadius = minorRadius;
 	m_majorRadius = majorRadius;
 	m_sectors = sectors;
 	m_sides = sides;
 	Initalize();
+}
+
+void Torus::UpdateParams() {
+	ImGui::SliderFloat("torus minor radius", &m_minorRadius, 0.0f, 1.0f);
+	ImGui::SliderFloat("torus major radius", &m_majorRadius, 0.0f, 1.0f);
+    ImGui::SliderInt("torus sectors", reinterpret_cast<int*>(&m_sectors), 3, m_maxSectors);
+	ImGui::SliderInt("torus side", reinterpret_cast<int*>(&m_sides), 3, m_maxSides);
+	UpdateVerticesAndIndices();
 }

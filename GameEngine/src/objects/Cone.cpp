@@ -2,7 +2,7 @@
 #include <iostream>
 
 std::vector<float> Cone::getSideNormals() {
-	const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
+	//const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
 	float sectorStep = 2 * PI / m_sectors;
 	float sectorAngle;
 	std::vector<float> sideNormals;
@@ -133,4 +133,27 @@ Cone::Cone(float radius, float height, unsigned int sectors, unsigned int stacks
 
 Cone::~Cone()
 {
+}
+
+void Cone::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
+
+void Cone::UpdateVerticesAndIndices(float radius, float height, unsigned int sectors, unsigned int stacks)
+{
+	m_radius = radius;
+	m_height = height;
+	m_sectors = sectors;
+	m_stacks = stacks;
+	Initalize();
+}
+
+void Cone::UpdateParams()
+{
+	ImGui::SliderFloat("cone radius", &m_radius, 0.0f, 1.0f);
+	ImGui::SliderFloat("cone height", &m_height, 0.0f, 1.0f);
+	ImGui::SliderInt("cone sectors", reinterpret_cast<int*>(&m_sectors), 3, m_maxSectors);
+	ImGui::SliderInt("cone stacks", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks);
+	UpdateVerticesAndIndices();
 }

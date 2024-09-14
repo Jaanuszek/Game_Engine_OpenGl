@@ -51,13 +51,26 @@ Sphere::Sphere(float radius, unsigned int sectors, unsigned int stacks)
 
 Sphere::~Sphere()
 {
-	
+	vertices.clear();
+	indices.clear();
 }
 
-void Sphere::Update(float radius, unsigned int sectors, unsigned int stacks)
+void Sphere::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
+
+void Sphere::UpdateVerticesAndIndices(float radius, unsigned int sectors, unsigned int stacks)
 {
 	m_radius = radius;
 	m_sectors = sectors;
 	m_stacks = stacks;
 	Initalize();
+}
+
+void Sphere::UpdateParams() {
+	ImGui::SliderFloat("sphere radius", &m_radius, 0.0f, 1.0f);
+	ImGui::SliderInt("sphere sectors", reinterpret_cast<int*>(& m_sectors), 4, m_maxSectors);
+	ImGui::SliderInt("sphere side", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks);
+	UpdateVerticesAndIndices();
 }

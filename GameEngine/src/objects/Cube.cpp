@@ -63,3 +63,13 @@ Cube::Cube()
 Cube::~Cube()
 {
 }
+
+void Cube::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
+
+void Cube::UpdateParams()
+{
+
+}

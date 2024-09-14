@@ -64,4 +64,12 @@ Cuboid::~Cuboid()
 {
 }
 
+void Cuboid::UpdateVerticesAndIndices()
+{
+	/*Initalize();*/
+}
 
+void Cuboid::UpdateParams()
+{
+	//Initalize();
+}
