@@ -124,9 +124,14 @@ Cylinder::~Cylinder()
 }
 
 void Cylinder::UpdateVerticesAndIndices() {
-
+	Initalize();
 }
 
 void Cylinder::UpdateParams() {
-
+	ImGui::SliderFloat("Cylinder radius", &m_radius, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cylinder height", &m_height, 0.01f, 1.0f);
+	ImGui::SliderInt("Cylinder sectors", reinterpret_cast<int*>(&m_sectors), 4, m_maxSectors);
+	ImGui::SliderFloat("Cylinder bottom base radius", &m_bottomBaseRadius, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cylinder top base radius", &m_topBaseRadius, 0.01f, 1.0f);
+	UpdateVerticesAndIndices();
 }

@@ -221,6 +221,10 @@ int main() {
 					torus.UpdateParams();
 					meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
 				}
+				if (renderObject == RenderObject::Cylinder) {
+					cylinder.UpdateParams();
+					meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
+				}
 				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
