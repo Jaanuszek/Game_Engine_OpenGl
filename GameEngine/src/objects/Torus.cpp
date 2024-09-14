@@ -86,7 +86,7 @@ Torus::~Torus(){
 
 }
 
-void Torus::Update(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides) {
+void Torus::Update(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides){
 	m_minorRadius = minorRadius;
 	m_majorRadius = majorRadius;
 	m_sectors = sectors;

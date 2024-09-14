@@ -1,6 +1,8 @@
 #include <iostream>
 #include <map>
-#include "wtypes.h"
+#include "wtypes.h" // for GetDesktopWindow
+//#include <thread>
+//#include <chrono>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -67,7 +69,15 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-	glfwSwapInterval(1);
+	//enable vsync
+	glfwSwapInterval(1); 
+
+	std::cout << "OpenGL version, and graphics card driver version: ";
+	std::cout << glGetString(GL_VERSION) << std::endl;
+	std::cout << "\033[31m" << "MAKE SURE YOU RUN THIS PROGRAM WITH DEDICATED GRAPHICS CARD!!" << "\033[0m" << std::endl;
+	std::cout << "Graphics card: ";
+	std::cout << glGetString(GL_RENDERER) << std::endl;
+
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
 	//Renderer renderer;
@@ -108,7 +118,7 @@ int main() {
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-		lightCubeShader.Unbind(); //????
+		lightCubeShader.Unbind();
 
 		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
 		std::map<std::string, std::shared_ptr<Shader>> shaders = {
@@ -129,12 +139,18 @@ int main() {
 		Cylinder cylinder;
 		Cone cone;
 		Pyramid pyramid;
-		Sphere sphere;
+		//sphere
+		float sphereRadius = 0.5f;
+		int sphereSectors = 48, sphereStacks = 48;
+		int sphereMaxAmountSectors = sphereSectors;
+		int sphereMaxAmountStacks = sphereStacks;
+		Sphere sphere(sphereRadius,sphereSectors,sphereStacks);
+		//torus
 		float minorRadius = 0.2f, majorRadius = 0.5f;
-		int sectors = 48, side = 48;
-		int maxAmountSectors = sectors;
-		int maxAmountSide = side;
-		Torus torus(minorRadius,majorRadius,sectors,side);
+		int torusSectors = 48, torusSides = 48;
+		int torusMaxAmountSectors = torusSectors;
+		int torusMaxAmountSide = torusSides;
+		Torus torus(minorRadius,majorRadius,torusSectors,torusSides);
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -161,7 +177,11 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 
+		//float targetFrameRate = 120.0f;
+		//float targetFrameTime = 1.0f / targetFrameRate;
+
 		while (!glfwWindowShouldClose(window)) {
+			//auto frameStart = std::chrono::high_resolution_clock::now();
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
@@ -199,24 +219,43 @@ int main() {
 				// rendering objects using map
 				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+				if (renderObject == RenderObject::Sphere) {
+					bool sphereUpdated = false;
+					sphereUpdated |= ImGui::SliderFloat("sphere radius", &sphereRadius, 0.0f, 1.0f);
+					sphereUpdated |= ImGui::SliderInt("sphere sectors", &sphereSectors, 3, sphereMaxAmountSectors);
+					sphereUpdated |= ImGui::SliderInt("sphere side", &sphereStacks, 3, sphereMaxAmountStacks);
+					//sphereUpdated |= ImGui::InputInt("sphere sectors", &sectors, 1, maxAmountSectors);
+					//sphereUpdated |= ImGui::InputInt("sphere side", &side, 1, maxAmountSide);
+					if (sphereSectors < 3) sphereSectors = 3;
+					if (sphereSectors > sphereMaxAmountSectors)
+						sphereSectors = sphereMaxAmountSectors;
+					if (sphereStacks < 3) sphereStacks = 3;
+					if (sphereStacks > sphereMaxAmountStacks)
+						sphereStacks = sphereMaxAmountStacks;
+					if (sphereUpdated) {
+						sphere.Update(sphereRadius, (unsigned int)sphereSectors, (unsigned int)sphereStacks);
+						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVec);
+						sphereUpdated = false; // ensuring that it will update only once every frame
+					}
+				}
 				if (renderObject == RenderObject::Torus) {
 					bool torusUpdated = false;
 					torusUpdated |= ImGui::SliderFloat("torus minor radius", &minorRadius, 0.0f, 1.0f);
 					torusUpdated |= ImGui::SliderFloat("torus major radius", &majorRadius, 0.0f, 1.0f);
-					torusUpdated |= ImGui::InputInt("torus sectors", &sectors, 1, maxAmountSectors);
-					torusUpdated |= ImGui::InputInt("torus side", &side, 1, maxAmountSide);
-					if (sectors < 3) sectors = 3;
-					if (sectors > maxAmountSectors)
-						sectors = maxAmountSectors;
-					if (side < 3) side = 3;
-					if (side > maxAmountSide)
-						side = maxAmountSide;
+					torusUpdated |= ImGui::SliderInt("torus sectors", &torusSectors, 3, torusMaxAmountSectors);
+					torusUpdated |= ImGui::SliderInt("torus side", &torusSides, 3, torusMaxAmountSide);
+					//torusUpdated |= ImGui::InputInt("torus sectors", &sectors, 1, maxAmountSectors);
+					//torusUpdated |= ImGui::InputInt("torus side", &side, 1, maxAmountSide);
+					if (torusSectors < 3) torusSectors = 3;
+					if (torusSectors > torusMaxAmountSectors)
+						torusSectors = torusMaxAmountSectors;
+					if (torusSides < 3) torusSides = 3;
+					if (torusSides > torusMaxAmountSide)
+						torusSides = torusMaxAmountSide;
 					if (torusUpdated) {
-						torus.Update(minorRadius, majorRadius, (unsigned int)sectors, (unsigned int)side);
-						std::vector <Vertex> verticesTemp = torus.GetVertices();
-						std::vector <unsigned int> indicesTemp = torus.GetIndices();
-
+						torus.Update(minorRadius, majorRadius, (unsigned int)torusSectors, (unsigned int)torusSides);
 						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
+						torusUpdated = false; // ensuring that it will update only once every frame
 					}
 				}
 				// rendering light cube
@@ -268,6 +307,14 @@ int main() {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
+
+			//auto frameEnd = std::chrono::high_resolution_clock::now();
+			//std::chrono::duration<float> duration = frameEnd - frameStart;
+
+			//float sleepTime = targetFrameTime - duration.count();
+			//if (sleepTime > 0) {
+			//	std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
+			//}
 		}
 	}
 	ImGui_ImplOpenGL3_Shutdown();

@@ -12,6 +12,7 @@ private:
 public:
 	Sphere(float radius = 1.0f, unsigned int sectors = 24, unsigned int stacks = 48);
 	~Sphere() override;
+	void Update(float radius, unsigned int sectors, unsigned int stacks);
 };
 
 #endif

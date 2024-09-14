@@ -57,3 +57,11 @@ Sphere::~Sphere()
 {
 	
 }
+
+void Sphere::Update(float radius, unsigned int sectors, unsigned int stacks)
+{
+	m_radius = radius;
+	m_sectors = sectors;
+	m_stacks = stacks;
+	Initalize();
+}
