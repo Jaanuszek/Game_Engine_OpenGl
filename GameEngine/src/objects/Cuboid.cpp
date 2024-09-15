@@ -66,10 +66,13 @@ Cuboid::~Cuboid()
 
 void Cuboid::UpdateVerticesAndIndices()
 {
-	/*Initalize();*/
+	Initalize();
 }
 
 void Cuboid::UpdateParams()
 {
-	//Initalize();
+	ImGui::SliderFloat("Cuboid width", &m_width, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cuboid height", &m_height, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cuboid depth", &m_depth, 0.01f, 1.0f);
+	UpdateVerticesAndIndices();
 }
