@@ -22,19 +22,21 @@ This is also my bachelor's thesis project.
 ### Build on windows
 1. Clone the repository
 2. Open the project in Visual Studio 17<br>
-![Open project](../readme_dependencies/running_vs.png)
+![Open project](readme_dependencies/running_vs.png)
 	- Wait a little bit to let cmake generate the project
 	- (optional) go to CMakeLists.txt in main directory and use CTRL + S to make sure that the project is generated
 3. Build and run the project (F5)<br>
 
-	#### In case of some artifacts:
-	- Make sure your PC is running this program with dedicated graphics card.
-	- After building the project, check if in your directory is .exe file.
-		* If no check if cmake is generated without any errors
-	- Go to Settings -> System -> Display -> Graphics
-		- In "Custom options for apps" browse and search for Game_Engine.exe
-		- Set option High Performance
-	![Force graphic card](../readme_dependencies/forcing_dedicated_graphic_card.png)
+#### In case of some artifacts:
+**on Windows:**
+- If you see some artifacts while running the program, it may be caused by running the program on integrated graphics card.
+- Make sure your PC is running this program with dedicated graphics card.
+- After building the project, check if in your directory is .exe file.
+	* If no check if cmake is generated without any errors
+- Go to Settings -> System -> Display -> Graphics
+	- In "Custom options for apps" browse and search for Game_Engine.exe
+	- Set option High Performance
+![Force graphic card](readme_dependencies/forcing_dedicated_graphic_card.png)
 
 ### Build on Linux
 TODO
@@ -45,7 +47,7 @@ TODO
 ## INSTRUCTION
 After runing the program there will be GUI with buttons that generates 3D objects.
 Some objects have option to dynamically change their values (f.e. Cylinder).
-If there are artifacts wile changing objects parameters go [here](#in-case-of-some-artifacts) (TODO add link to forcing running program on dedicated graphic card) for quick fix.
+If there are artifacts wile changing objects parameters go [here](#in-case-of-some-artifacts) for quick fix.
 In order to use translation on object, use sliders that are below rendering buttons.
 
 ### Keybinds
