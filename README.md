@@ -1,78 +1,50 @@
-## Game_Engine_OpenGL
+# Game_Engine_OpenGL
 
-## PROJECT STRUCTURE
+## DESCRIPTION
+TODO: create and change the name of project<br>
+<name_of_project> is a simple game engine that renders some basic 3D objects. 
+Using a GUI you can generate various 3D objects, execute transformation (such as rotating, translating, scaling), apply shaders and place custom textures. 
+User can move around the scene using a camera and change the view with the mouse. 
+There is also straightforward light physics (one source of light that affects the objects). 
+The project is written in C++ and uses OpenGL, and other external libraries that are described�[here](##external-libraries).<br>
+This is also my bachelor's thesis project.
+## INSTALLATION
+   
+### Prerequisites
+- CMake
+- C++ compiler
+- OpenGL
+- GLFW
+- On Windows: Visual Studio 17
+- On Linux: TODO
+- On MacOS: TODO
+- 
+### Build on windows
+1. Clone the repository
+2. Open the project in Visual Studio 17<br>
+TODO add screenshots
+	- Wait a little bit to let cmake generate the project
+	- (optional) go to CMakeLists.txt in main directory and use CTRL + S to make sure that the project is generated
+3. Build the project
+4. Run the project
 
-├── Game_Engine_OpenGL/
-├── ├── assets/                      # All non-code assets like shaders, textures
-├── │   ├── shaders/
-├── │   │   ├── Basic.shader
-├── │   │   ├── LightCube.shader
-├── │   │   ├── LightningShader.shader
-├── │   │   └── Sphere.shader
-├── │   ├── textures/
-├── │   │   ├── monkey.png
-├── │   │   └── pudzilla.png
-├── ├── external/                    # External third-party libraries
-├── │   ├── glfw/                    # GLFW library
-├── │   │   ├── include/
-├── │   │   │   ├── glad/
-├── │   │   │   │   └── glad.h
-├── │   │   │   ├── GLFW/
-├── │   │   │   │   ├── glfw3.h
-├── │   │   │   │   └── glfw3native.h
-├── │   │   │   └── KHR/
-├── │   │   │       └── khrplatform.h
-├── │   │   └── lib/
-├── │   │       └── glfw3.lib
-├── │   ├── glm/                     # GLM library 
-├── │   │   ├── CMakeLists.txt
-├── │   │   └── (GLM source files)
-├── │   ├── imgui/                   # ImGui library 
-├── │   │   ├── CMakeLists.txt
-├── │   │   └── (ImGui source files)
-├── │   └── stb_image/               # stb_image library
-├── │       ├── stb_image.cpp
-├── │       └── stb_image.h
-├── ├── GameEngine/                  # Main game engine code
-├── │   ├── include/                 # Public headers
-├── │   │   ├── IO/
-├── │   │   │   └── InputHandler.h
-├── │   │   ├── objects/
-├── │   │   │   ├── Cube.h
-├── │   │   │   ├── Cuboid.h
-├── │   │   │   ├── Pyramid.h
-├── │   │   │   ├── Solid.h
-├── │   │   │   └── Sphere.h
-├── │   │   ├── Camera.h
-├── │   │   ├── EBO.h
-├── │   │   ├── Mesh.h
-├── │   │   ├── Renderer.h
-├── │   │   ├── Shader.h
-├── │   │   ├── Texture.h
-├── │   │   ├── VAO.h
-├── │   │   └── VBO.h
-├── │   ├── src/                     # Source files
-├── │   │   ├── IO/
-├── │   │   │   └── InputHandler.cpp
-├── │   │   ├── objects/
-├── │   │   │   ├── Cube.cpp
-├── │   │   │   ├── Cuboid.cpp
-├── │   │   │   ├── Pyramid.cpp
-├── │   │   │   └── Sphere.cpp
-├── │   │   ├── Camera.cpp
-├── │   │   ├── EBO.cpp
-├── │   │   ├── Mesh.cpp
-├── │   │   ├── Renderer.cpp
-├── │   │   ├── Shader.cpp
-├── │   │   ├── Texture.cpp
-├── │   │   ├── VAO.cpp
-├── │   │   └── VBO.cpp
-├── │   └── tests/                   # Test files
-├── │       └── (Test-related files)
-├── ├── docs/                        # Documentation
-├── │   ├── CMakeLists.txt
-├── │   └── README.md
-├── ├── build/                       # Build folder
-├── │   └── (Build files and directories)
-├── ├── CMakeLists.txt              
-└── └── Readme.md   
+### Build on Linux
+TODO
+
+### Build on MacOS
+TODO
+
+## INSTRUCTIONS
+
+## EXTERNAL LIBRARIES
+
+| Library | Description | Link |
+| --- | --- | --- |
+| GLAD | OpenGL loader | [GLAD](https://glad.dav1d.de/) |
+| GLFW | Windowing library | [GLFW](https://www.glfw.org/) |
+| GLM | Math library | [GLM](https://glm.g-truc.net/0.9.9/index.html) |
+| STB | Image loading library | [STB](https://github.com/nothings/stb/blob/master/stb_image.h)|
+| IMGUI | GUI library | [IMGUI](https://github.com/ocornut/imgui)|
+| ASSIMP | Model loading library | [ASSIMP](https://www.assimp.org/) |
+
+## LICENSE
