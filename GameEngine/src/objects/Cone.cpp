@@ -2,7 +2,7 @@
 #include <iostream>
 
 std::vector<float> Cone::getSideNormals() {
-	const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
+	//const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
 	float sectorStep = 2 * PI / m_sectors;
 	float sectorAngle;
 	std::vector<float> sideNormals;
@@ -48,9 +48,6 @@ void Cone::Initalize()
 			(*verticesIt).Position[2] = z;
 			(*verticesIt).TexCoords[0] = (float)j / m_sectors;
 			(*verticesIt).TexCoords[1] = t;
-			(*verticesIt).Color[0] = 1;
-			(*verticesIt).Color[1] = 0.5;
-			(*verticesIt).Color[2] = 0.5;
 			(*verticesIt).Normal[0] = sideNormals[k];
 			(*verticesIt).Normal[1] = sideNormals[k + 1];
 			(*verticesIt).Normal[2] = sideNormals[k + 2];
@@ -65,9 +62,6 @@ void Cone::Initalize()
 	(*verticesIt).Position[2] = z;
 	(*verticesIt).TexCoords[0] = 0.5f;
 	(*verticesIt).TexCoords[1] = 0.5f;
-	(*verticesIt).Color[0] = 1;
-	(*verticesIt).Color[1] = 0.5;
-	(*verticesIt).Color[2] = 0.5;
 	(*verticesIt).Normal[0] = 0;
 	(*verticesIt).Normal[1] = 0;
 	(*verticesIt).Normal[2] = -1;
@@ -80,9 +74,6 @@ void Cone::Initalize()
 		(*verticesIt).Position[2] = z;
 		(*verticesIt).TexCoords[0] = -x * 0.5f + 0.5f;
 		(*verticesIt).TexCoords[1] = -y * 0.5f + 0.5f;
-		(*verticesIt).Color[0] = 1;
-		(*verticesIt).Color[1] = 0.5;
-		(*verticesIt).Color[2] = 0.5;
 		(*verticesIt).Normal[0] = 0;
 		(*verticesIt).Normal[1] = 0;
 		(*verticesIt).Normal[2] = -1;
@@ -142,4 +133,27 @@ Cone::Cone(float radius, float height, unsigned int sectors, unsigned int stacks
 
 Cone::~Cone()
 {
+}
+
+void Cone::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
+
+void Cone::UpdateVerticesAndIndices(float radius, float height, unsigned int sectors, unsigned int stacks)
+{
+	m_radius = radius;
+	m_height = height;
+	m_sectors = sectors;
+	m_stacks = stacks;
+	Initalize();
+}
+
+void Cone::UpdateParams()
+{
+	ImGui::SliderFloat("cone radius", &m_radius, 0.0f, 1.0f);
+	ImGui::SliderFloat("cone height", &m_height, 0.0f, 1.0f);
+	ImGui::SliderInt("cone sectors", reinterpret_cast<int*>(&m_sectors), 3, m_maxSectors);
+	ImGui::SliderInt("cone stacks", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks);
+	UpdateVerticesAndIndices();
 }

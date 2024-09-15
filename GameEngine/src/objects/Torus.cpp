@@ -6,11 +6,14 @@ void Torus::Initalize() {
 	float nx, ny, nz; // vertex normal
 	float lengthInv = 1.0f / m_minorRadius; // vertex normal
 	float s, t; // vertex texCoord
-	const float PI = glm::pi<float>();
+	//const float PI = glm::pi<float>();
 
 	float sectorStep = 2 * PI / m_sectors;
 	float sideStep = 2 * PI / m_sides;
 	float sectorAngle, sideAngle;
+	if (vertices.size() > 0) {
+		vertices.clear();
+	}
 	unsigned int totalVertices = (m_sides + 1) * (m_sectors + 1);
 	vertices.resize(totalVertices);
 	std::vector<Vertex>::iterator verticesIt = vertices.begin();
@@ -41,15 +44,14 @@ void Torus::Initalize() {
 			(*verticesIt).TexCoords[0] = s;
 			(*verticesIt).TexCoords[1] = t;
 
-			(*verticesIt).Color[0] =  0.5f;
-			(*verticesIt).Color[1] =  0.5f;
-			(*verticesIt).Color[2] =  0.5f;
-
 			(*verticesIt).Normal[0] = nx;
 			(*verticesIt).Normal[1] = ny;
 			(*verticesIt).Normal[2] = nz;
 			verticesIt++;
 		}
+	}
+	if (indices.size() > 0) {
+		indices.clear();
 	}
 	unsigned int totalIndices = m_sides * m_sectors * 6;
 	indices.resize(totalIndices);
@@ -78,4 +80,24 @@ Torus::Torus(float minorRadius, float majorRadius, unsigned int sectors, unsigne
 
 Torus::~Torus(){
 
+}
+
+void Torus::UpdateVerticesAndIndices() {
+	Initalize();
+}
+
+void Torus::UpdateVerticesAndIndices(float minorRadius, float majorRadius, unsigned int sectors, unsigned int sides){
+	m_minorRadius = minorRadius;
+	m_majorRadius = majorRadius;
+	m_sectors = sectors;
+	m_sides = sides;
+	Initalize();
+}
+
+void Torus::UpdateParams() {
+	ImGui::SliderFloat("torus minor radius", &m_minorRadius, 0.01f, 1.0f);
+	ImGui::SliderFloat("torus major radius", &m_majorRadius, 0.01f, 1.0f);
+    ImGui::SliderInt("torus sectors", reinterpret_cast<int*>(&m_sectors), 3, m_maxSectors);
+	ImGui::SliderInt("torus side", reinterpret_cast<int*>(&m_sides), 3, m_maxSides);
+	UpdateVerticesAndIndices();
 }

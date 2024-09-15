@@ -2,11 +2,11 @@
 
 void Pyramid::Initalize() {
 	vertices = {
-		Vertex {glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f)},
-		Vertex {glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f)},
-		Vertex {glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f)},
-		Vertex {glm::vec3(-0.5f,0.5f,-0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f)},
-		Vertex {glm::vec3(0.0f,0.0f,0.5f), glm::vec2(0.5f,0.5f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(0.0f)}
+		Vertex {glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(0.0f,0.0f), glm::vec3(0.0f)},
+		Vertex {glm::vec3(0.5f,-0.5f,-0.5f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f)},
+		Vertex {glm::vec3(0.5f,0.5f,-0.5f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f)},
+		Vertex {glm::vec3(-0.5f,0.5f,-0.5f), glm::vec2(0.0f,1.0f), glm::vec3(0.0f)},
+		Vertex {glm::vec3(0.0f,0.0f,0.5f), glm::vec2(0.5f,0.5f), glm::vec3(0.0f)}
 	};
 	indices = {
 		//back wall
@@ -50,5 +50,14 @@ Pyramid::Pyramid() {
 	CalculateNormals();
 }
 Pyramid::~Pyramid() {
+
+}
+
+void Pyramid::UpdateVerticesAndIndices() {
+	//Initalize();
+	//CalculateNormals();
+}
+
+void Pyramid::UpdateParams() {
 
 }

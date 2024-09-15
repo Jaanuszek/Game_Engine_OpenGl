@@ -12,5 +12,7 @@ private:
 public:
 	Cuboid(float width = 0.75, float height = 0.5, float depth = 0.5);
 	~Cuboid() override;
+	void UpdateVerticesAndIndices() override;
+	void UpdateParams() override;
 };
 #endif

@@ -22,10 +22,6 @@ void Sphere::Initalize()
 			(*verticesIt).TexCoords[0] = u;
 			(*verticesIt).TexCoords[1] = v;
 
-			(*verticesIt).Color[0] = (x + 1) * 0.5f;
-			(*verticesIt).Color[1] = (y + 1) * 0.5f;
-			(*verticesIt).Color[2] = (z + 1) * 0.5f;
-
 			(*verticesIt).Normal[0] = x;
 			(*verticesIt).Normal[1] = y;
 			(*verticesIt).Normal[2] = z;
@@ -55,5 +51,26 @@ Sphere::Sphere(float radius, unsigned int sectors, unsigned int stacks)
 
 Sphere::~Sphere()
 {
-	
+	vertices.clear();
+	indices.clear();
+}
+
+void Sphere::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
+
+void Sphere::UpdateVerticesAndIndices(float radius, unsigned int sectors, unsigned int stacks)
+{
+	m_radius = radius;
+	m_sectors = sectors;
+	m_stacks = stacks;
+	Initalize();
+}
+
+void Sphere::UpdateParams() {
+	ImGui::SliderFloat("sphere radius", &m_radius, 0.01f, 1.0f);
+	ImGui::SliderInt("sphere sectors", reinterpret_cast<int*>(& m_sectors), 4, m_maxSectors);
+	ImGui::SliderInt("sphere side", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks);
+	UpdateVerticesAndIndices();
 }

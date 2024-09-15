@@ -3,35 +3,35 @@
 void Cuboid::Initalize()
 {
 	vertices = {
-		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
-		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
-		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f,0.0f,-1.0f)},
-		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,-1.0f)},
+		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.0f,0.0f,-1.0f)},
 
-		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
-		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
-		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f)},
-		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f)},
+		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f)},
 
-		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(-1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(-1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(-1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(-1.0f,0.0f,0.0f)},
 
-		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(1.0f,0.0f,0.0f)},
-		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(1.0f,0.0f,0.0f)},
+		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(1.0f,0.0f,0.0f)},
 
-		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
-		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
-		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(1.0f,1.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
-		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex{glm::vec3(m_width,-m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex{glm::vec3(m_width,-m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,-1.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,-m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.0f,-1.0f,0.0f)},
 
-		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
-		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
-		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0,1.0f,0.0f)},
-		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0,1.0f,0.0f)}
+		Vertex{glm::vec3(-m_width,m_height,-m_depth), glm::vec2(0.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex{glm::vec3(m_width,m_height,-m_depth), glm::vec2(1.0f,0.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex{glm::vec3(m_width,m_height,m_depth), glm::vec2(1.0f,1.0f), glm::vec3(0.0,1.0f,0.0f)},
+		Vertex{glm::vec3(-m_width,m_height,m_depth), glm::vec2(0.0f,1.0f), glm::vec3(0.0,1.0f,0.0f)}
 	};
 	indices = {
 		// Back face
@@ -64,4 +64,15 @@ Cuboid::~Cuboid()
 {
 }
 
+void Cuboid::UpdateVerticesAndIndices()
+{
+	Initalize();
+}
 
+void Cuboid::UpdateParams()
+{
+	ImGui::SliderFloat("Cuboid width", &m_width, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cuboid height", &m_height, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cuboid depth", &m_depth, 0.01f, 1.0f);
+	UpdateVerticesAndIndices();
+}

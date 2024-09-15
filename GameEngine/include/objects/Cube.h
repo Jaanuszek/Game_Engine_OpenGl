@@ -9,6 +9,8 @@ private:
 public:
 	Cube();
 	~Cube() override;
+	void UpdateVerticesAndIndices() override;
+	void UpdateParams() override;
 };
 
 #endif

@@ -13,59 +13,85 @@ void Cylinder::Initalize()
 	for (int i = 0; i < 2; i++) { //for positive and negative height
 		float h = -m_height / 2.0f + i * m_height;
 		float t = 1.0f - i; //tex cord [1,0]
-		for (int j = 0, k = 0; j <= m_sectors; j++, k += 3) {
-			float ux = unitVertices[k];
-			float uy = unitVertices[k + 1];
-			float uz = unitVertices[k + 2];
-			(*verticesIt).Position[0] = ux * m_radius;
-			(*verticesIt).Position[1] = uy * m_radius;
-			(*verticesIt).Position[2] = h;
-			(*verticesIt).TexCoords[0] = (float)j / m_sectors;
-			(*verticesIt).TexCoords[1] = t;
-			(*verticesIt).Color[0] = 1;
-			(*verticesIt).Color[1] = 0.5;
-			(*verticesIt).Color[2] = 0.5;
-			(*verticesIt).Normal[0] = ux;
-			(*verticesIt).Normal[1] = uy;
-			(*verticesIt).Normal[2] = uz;
-			verticesIt++;
-			baseCenterIndex++;
+		if (i == 0) {//bottom base
+			for (int j = 0, k = 0; j <= m_sectors; j++, k += 3) {
+				float ux = unitVertices[k];
+				float uy = unitVertices[k + 1];
+				float uz = unitVertices[k + 2];
+				(*verticesIt).Position[0] = ux * m_radius * m_bottomBaseRadius;
+				(*verticesIt).Position[1] = uy * m_radius * m_bottomBaseRadius;
+				(*verticesIt).Position[2] = h;
+				(*verticesIt).TexCoords[0] = (float)j / m_sectors;
+				(*verticesIt).TexCoords[1] = t;
+				(*verticesIt).Normal[0] = ux;
+				(*verticesIt).Normal[1] = uy;
+				(*verticesIt).Normal[2] = uz;
+				verticesIt++;
+				baseCenterIndex++;
+			}
+		}
+		else {
+			for (int j = 0, k = 0; j <= m_sectors; j++, k += 3) {
+				float ux = unitVertices[k];
+				float uy = unitVertices[k + 1];
+				float uz = unitVertices[k + 2];
+				(*verticesIt).Position[0] = ux * m_radius * m_topBaseRadius;
+				(*verticesIt).Position[1] = uy * m_radius * m_topBaseRadius;
+				(*verticesIt).Position[2] = h;
+				(*verticesIt).TexCoords[0] = (float)j / m_sectors;
+				(*verticesIt).TexCoords[1] = t;
+				(*verticesIt).Normal[0] = ux;
+				(*verticesIt).Normal[1] = uy;
+				(*verticesIt).Normal[2] = uz;
+				verticesIt++;
+				baseCenterIndex++;
+			}
 		}
 	}
 	//these indexes are wrong, baseCenterIndex should be exactly in the middle of the vertices
 	unsigned int topCenterIndex = baseCenterIndex + m_sectors + 1;
-
 	for (int i = 0; i < 2; i++) {
 		float h = -m_height / 2.0f + i * m_height; //z value in terms -h/2, h/2
 		float nz = -1 + i * 2;						// z value of normal [-1, 1]
 		//coords of center point
 		(*verticesIt).Position[0] = 0;
 		(*verticesIt).Position[1] = 0;
-		(*verticesIt).Position[2] = 0;
+		(*verticesIt).Position[2] = h;
 		(*verticesIt).TexCoords[0] = 0.5f;
 		(*verticesIt).TexCoords[1] = 0.5f;
-		(*verticesIt).Color[0] = 1;
-		(*verticesIt).Color[1] = 0.5;
-		(*verticesIt).Color[2] = 0.5;
 		(*verticesIt).Normal[0] = 0;
 		(*verticesIt).Normal[1] = 0;
-		(*verticesIt).Normal[2] = 0;
+		(*verticesIt).Normal[2] = nz;
 		verticesIt++;
-		for (int j = 0, k = 0; j < m_sectors; ++j, k += 3) {
-			float ux = unitVertices[k];
-			float uy = unitVertices[k + 1];
-			(*verticesIt).Position[0] = ux * m_radius;
-			(*verticesIt).Position[1] = uy * m_radius;
-			(*verticesIt).Position[2] = h;
-			(*verticesIt).TexCoords[0] = -ux * 0.5f + 0.5f;
-			(*verticesIt).TexCoords[1] = -uy * 0.5f + 0.5f;
-			(*verticesIt).Color[0] = 1;
-			(*verticesIt).Color[1] = 0.5;
-			(*verticesIt).Color[2] = 0.5;
-			(*verticesIt).Normal[0] = 0;
-			(*verticesIt).Normal[1] = 0;
-			(*verticesIt).Normal[2] = nz;
-			verticesIt++;
+		if (i == 0) {
+			for (int j = 0, k = 0; j < m_sectors; ++j, k += 3) {
+				float ux = unitVertices[k];
+				float uy = unitVertices[k + 1];
+				(*verticesIt).Position[0] = ux * m_radius * m_bottomBaseRadius;
+				(*verticesIt).Position[1] = uy * m_radius * m_bottomBaseRadius;
+				(*verticesIt).Position[2] = h;
+				(*verticesIt).TexCoords[0] = -ux * 0.5f + 0.5f;
+				(*verticesIt).TexCoords[1] = -uy * 0.5f + 0.5f;
+				(*verticesIt).Normal[0] = 0;
+				(*verticesIt).Normal[1] = 0;
+				(*verticesIt).Normal[2] = nz;
+				verticesIt++;
+			}
+		}
+		else {
+			for (int j = 0, k = 0; j < m_sectors; ++j, k += 3) {
+				float ux = unitVertices[k];
+				float uy = unitVertices[k + 1];
+				(*verticesIt).Position[0] = ux * m_radius * m_topBaseRadius;
+				(*verticesIt).Position[1] = uy * m_radius * m_topBaseRadius;
+				(*verticesIt).Position[2] = h;
+				(*verticesIt).TexCoords[0] = -ux * 0.5f + 0.5f;
+				(*verticesIt).TexCoords[1] = -uy * 0.5f + 0.5f;
+				(*verticesIt).Normal[0] = 0;
+				(*verticesIt).Normal[1] = 0;
+				(*verticesIt).Normal[2] = nz;
+				verticesIt++;
+			}
 		}
 	}
 	indices.resize(m_sectors * 6 * 2);
@@ -130,4 +156,17 @@ Cylinder::Cylinder(float radius, float height, unsigned int sectors, float botto
 
 Cylinder::~Cylinder()
 {
+}
+
+void Cylinder::UpdateVerticesAndIndices() {
+	Initalize();
+}
+
+void Cylinder::UpdateParams() {
+	ImGui::SliderFloat("Cylinder radius", &m_radius, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cylinder height", &m_height, 0.01f, 1.0f);
+	ImGui::SliderInt("Cylinder sectors", reinterpret_cast<int*>(&m_sectors), 4, m_maxSectors);
+	ImGui::SliderFloat("Cylinder bottom base radius", &m_bottomBaseRadius, 0.01f, 1.0f);
+	ImGui::SliderFloat("Cylinder top base radius", &m_topBaseRadius, 0.01f, 1.0f);
+	UpdateVerticesAndIndices();
 }

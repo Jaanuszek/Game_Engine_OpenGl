@@ -11,7 +11,6 @@
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec2 TexCoords;
-	glm::vec3 Color;
 	glm::vec3 Normal;
 };
 
@@ -23,6 +22,7 @@ struct TextureStruct {
 class VBO {
 private:
 	unsigned int m_ID;
+	unsigned int m_currentSizeOfBuffer;
 public:
 	VBO(const void* data, unsigned int size);
 	VBO(std::vector<Vertex>& vertices);
@@ -31,6 +31,7 @@ public:
 	void Bind() const;
 	void Unbind() const;
 	void Update(const void* data, unsigned int size) const;
+	void Update(std::vector<Vertex>& vertices);
 };
 
 #endif

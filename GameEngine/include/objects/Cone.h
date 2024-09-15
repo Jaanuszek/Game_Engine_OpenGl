@@ -8,11 +8,16 @@ private:
 	float m_height;
 	unsigned int m_sectors;
 	unsigned int m_stacks;
+	int m_maxSectors = m_sectors;
+	int m_maxStacks = m_stacks;
 	std::vector<float> getSideNormals();
 	void Initalize() override;
 public:
-	Cone(float radius = 0.5, float height = 1, unsigned int sectors = 50, unsigned int stacks = 10);
+	Cone(float radius = 0.5f, float height = 1.0f, unsigned int sectors = 50, unsigned int stacks = 10);
 	~Cone() override;
+	void UpdateVerticesAndIndices() override;
+	void UpdateVerticesAndIndices(float radius, float height, unsigned int sectors, unsigned int stacks);
+	void UpdateParams() override;
 };
 
 #endif

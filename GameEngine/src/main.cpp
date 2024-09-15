@@ -1,5 +1,8 @@
 #include <iostream>
 #include <map>
+#include "wtypes.h" // for GetDesktopWindow
+//#include <thread>
+//#include <chrono>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -34,9 +37,10 @@ void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const gl
 void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
 void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
 	const glm::mat4& model, Camera* camera);
+void GetDesktopResolution(float& horizontal, float& vertical);
 
-float width = 960.0f;
-float height = 540.0f;
+float width = 0;
+float height = 0;
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -55,7 +59,7 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	GetDesktopResolution(width, height);
 	GLFWwindow* window = glfwCreateWindow(width, height, "Game Engine", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -64,10 +68,17 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-	glfwSwapInterval(1);
+	//enable vsync
+	glfwSwapInterval(1); 
+
+	std::cout << "OpenGL version, and graphics card driver version: ";
+	std::cout << glGetString(GL_VERSION) << std::endl;
+	std::cout << "\033[31m" << "MAKE SURE YOU RUN THIS PROGRAM WITH DEDICATED GRAPHICS CARD!!" << "\033[0m" << std::endl;
+	std::cout << "Graphics card: ";
+	std::cout << glGetString(GL_RENDERER) << std::endl;
+
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
-	//Renderer renderer;
 	inputHandler.setRenderer(renderer);
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
@@ -92,7 +103,6 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-		//Shader shader1("res/shaders/LightningShader.shader");
 		Shader shader1("../../assets/shaders/LightningShader.shader");
 		//is these lines below necessary?
 		shader1.Bind();
@@ -105,7 +115,7 @@ int main() {
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-		lightCubeShader.Unbind(); //????
+		lightCubeShader.Unbind();
 
 		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
 		std::map<std::string, std::shared_ptr<Shader>> shaders = {
@@ -124,10 +134,13 @@ int main() {
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
 		Cylinder cylinder;
-		Cone cone;
+		//cone
+		Cone cone(0.5f, 1.0f, 48, 48);
 		Pyramid pyramid;
-		Sphere sphere;
-		Torus torus;
+		//sphere
+		Sphere sphere(0.5f, 48, 48);
+		//torus
+		Torus torus(0.2f,0.5f,48,50);
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -154,7 +167,11 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 
+		//float targetFrameRate = 120.0f;
+		//float targetFrameTime = 1.0f / targetFrameRate;
+
 		while (!glfwWindowShouldClose(window)) {
+			//auto frameStart = std::chrono::high_resolution_clock::now();
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
@@ -192,6 +209,26 @@ int main() {
 				// rendering objects using map
 				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+				if (renderObject == RenderObject::Sphere) {
+					sphere.UpdateParams();
+					meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+				}
+				if (renderObject == RenderObject::Cone) {
+					cone.UpdateParams();
+					meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
+				}
+				if (renderObject == RenderObject::Torus) {
+					torus.UpdateParams();
+					meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
+				}
+				if (renderObject == RenderObject::Cylinder) {
+					cylinder.UpdateParams();
+					meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
+				}
+				if (renderObject == RenderObject::Cuboid) {
+					cuboid.UpdateParams();
+					meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), texVec);
+				}
 				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
@@ -209,15 +246,6 @@ int main() {
 				if (ImGui::Button("Render Cuboid")) {
 					renderObject = RenderObject::Cuboid;
 				}
-				//if I wnat to make it work i need to create function that will get reference to the cuboid vertices and change them
-				// but there is problemwith that, because cuboid is endered only once, so I need to create new cuboid every time I want to change it
-				// GL_DYNAMIC_DRAW
-				// leave it right now, but come to this later!!!
-				//if (renderObject == RenderObject::Cuboid) {
-				//	ImGui::SliderFloat("Cuboid width", &cuboidWidht, 0.0f, 1.0f);
-				//	ImGui::SliderFloat("Cuboid height", &cuboidHeight, 0.0f, 1.0f);
-				//	ImGui::SliderFloat("Cuboid depth", &cuboidDepth, 0.0f, 1.0f);
-				//}
 				ImGui::SameLine();
 				if (ImGui::Button("Render Cylinder")) {
 					renderObject = RenderObject::Cylinder;
@@ -250,6 +278,14 @@ int main() {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
+
+			//auto frameEnd = std::chrono::high_resolution_clock::now();
+			//std::chrono::duration<float> duration = frameEnd - frameStart;
+
+			//float sleepTime = targetFrameTime - duration.count();
+			//if (sleepTime > 0) {
+			//	std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
+			//}
 		}
 	}
 	ImGui_ImplOpenGL3_Shutdown();
@@ -299,4 +335,11 @@ void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> 
 			return;
 		}
 	}
+}
+void GetDesktopResolution(float& horizontal, float& vertical) {
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	horizontal = desktop.right;
+	vertical = desktop.bottom;
 }
