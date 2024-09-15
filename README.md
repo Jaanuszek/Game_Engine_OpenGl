@@ -1,4 +1,4 @@
-# Game_Engine_OpenGL
+# Game Engine OpenGL TODO CHANGE NAME!!
 
 ## DESCRIPTION
 TODO: create and change the name of project<br>
@@ -6,7 +6,7 @@ TODO: create and change the name of project<br>
 Using a GUI you can generate various 3D objects, execute transformation (such as rotating, translating, scaling), apply shaders and place custom textures. 
 User can move around the scene using a camera and change the view with the mouse. 
 There is also straightforward light physics (one source of light that affects the objects). 
-The project is written in C++ and uses OpenGL, and other external libraries that are described [here](##external-libraries).<br>
+The project is written in C++ and uses OpenGL, and other external libraries that are described [here](#external-libraries).<br>
 This is also my bachelor's thesis project.
 ## INSTALLATION
    
