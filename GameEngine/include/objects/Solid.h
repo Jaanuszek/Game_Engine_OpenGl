@@ -10,10 +10,6 @@
 
 #define PI glm::pi<float>()
 
-struct {
-
-};
-
 class Solid {
 protected:
 	std::vector<Vertex> vertices;
