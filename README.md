@@ -27,7 +27,7 @@ This is also my bachelor's thesis project.
 	- (optional) go to CMakeLists.txt in main directory and use CTRL + S to make sure that the project is generated
 3. Build and run the project (F5)<br>
 
-	**In case of some artifacts:**
+	#### In case of some artifacts:
 	- Make sure your PC is running this program with dedicated graphics card.
 	- After building the project, check if in your directory is .exe file.
 		* If no check if cmake is generated without any errors
@@ -45,7 +45,7 @@ TODO
 ## INSTRUCTION
 After runing the program there will be GUI with buttons that generates 3D objects.
 Some objects have option to dynamically change their values (f.e. Cylinder).
-If there are artifacts wile changing objects parameters go here (TODO add link to forcing running program on dedicated graphic card) for quick fix.
+If there are artifacts wile changing objects parameters go [here](#in-case-of-some-artifacts) (TODO add link to forcing running program on dedicated graphic card) for quick fix.
 In order to use translation on object, use sliders that are below rendering buttons.
 
 ### Keybinds
