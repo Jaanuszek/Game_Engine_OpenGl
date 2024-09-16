@@ -6,7 +6,7 @@ TODO: create and change the name of project<br>
 Using a GUI you can generate various 3D objects, execute transformation (such as rotating, translating, scaling), apply shaders and place custom textures. 
 User can move around the scene using a camera and change the view with the mouse. 
 There is also straightforward light physics (one source of light that affects the objects). 
-The project is written in C++ and uses OpenGL, and other external libraries that are described [here](#external-libraries).<br>
+The project is written in C++ and uses OpenGL, and other external libraries that are describedÂ [here](#external-libraries).<br>
 This is also my bachelor's thesis project.
 ## INSTALLATION
    
@@ -49,7 +49,7 @@ TODO
 After running the program there will be GUI with buttons that generate 3D objects.
 ![Game main screen](readme_dependencies/main_screen.png)
 Some objects can dynamically change their values (f.e. Cylinder).
-If there are artifacts while changing object parameters go [here](#in-case-of-some-artifacts) for a quick fix.
+If there are artifacts while changing object parameters go [here](#in-case-of-some-artefacts) for a quick fix.
 ![Additional gui](readme_dependencies/additional_gui.png)
 To use translation on an object, use sliders that are below the rendering buttons.
 
