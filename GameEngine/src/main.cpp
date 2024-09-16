@@ -5,9 +5,9 @@
 //#include <chrono>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/constants.hpp>
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/constants.hpp>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -235,10 +235,7 @@ int main() {
 				meshLight.Draw(lightCubeShader, *camera);
 			}
 			{
-				ImGui::Begin("Jabol");
-				if (ImGui::Button("Camera On/Off")) {
-					inputHandler.setCameraOn(!inputHandler.getCameraOn());
-				}
+				ImGui::Begin("Game_Engine");
 				if (ImGui::Button("Render Cube")) {
 					renderObject = RenderObject::Cube;
 				}

@@ -24,19 +24,20 @@ This is also my bachelor's thesis project.
 2. Open the project in Visual Studio 17<br>
 ![Open project](readme_dependencies/running_vs.png)
 	- Wait a little bit to let cmake generate the project
-	- (optional) go to CMakeLists.txt in main directory and use CTRL + S to make sure that the project is generated
+	- (optional) Go to CMakeLists.txt in the main directory and use CTRL + S to make sure that the project is generated
 3. Build and run the project (F5)<br>
 
-#### In case of some artifacts:
+#### In case of some artefacts:
 **on Windows:**
-- If you see some artifacts while running the program, it may be caused by running the program on integrated graphics card.
-- Make sure your PC is running this program with dedicated graphics card.
+- If you see some artefacts while running the program, it may be caused by running the program on the integrated graphics card.
+- Make sure your PC runs this program with the dedicated graphics card.
 - After building the project, check if in your directory is .exe file.
 	* If no check if cmake is generated without any errors
 - Go to Settings -> System -> Display -> Graphics
 	- In "Custom options for apps" browse and search for Game_Engine.exe
-	- Set option High Performance
-![Force graphic card](readme_dependencies/forcing_dedicated_graphic_card.png)
+	- Set option High Performance<br>
+	![Force graphic card](readme_dependencies/forcing_dedicated_graphic_card.png)
+
 
 ### Build on Linux
 TODO
@@ -45,16 +46,18 @@ TODO
 TODO
 
 ## INSTRUCTION
-After runing the program there will be GUI with buttons that generates 3D objects.
-Some objects have option to dynamically change their values (f.e. Cylinder).
-If there are artifacts wile changing objects parameters go [here](#in-case-of-some-artifacts) for quick fix.
-In order to use translation on object, use sliders that are below rendering buttons.
+After running the program there will be GUI with buttons that generate 3D objects.
+![Game main screen](readme_dependencies/main_screen.png)
+Some objects can dynamically change their values (f.e. Cylinder).
+If there are artifacts while changing object parameters go [here](#in-case-of-some-artifacts) for a quick fix.
+![Additional gui](readme_dependencies/additional_gui.png)
+To use translation on an object, use sliders that are below the rendering buttons.
 
 ### Keybinds
 - T - Change objects shader (lightning shader, texture shader)
-- C - Toggle camera mode. In this mode user can move around the scene.
-- L - Toggle object's mesh
-- P - Toggle object's vertices points
+- C - Toggle camera mode. In this mode, the user can move around the scene.
+- L - Toggle the object's mesh
+- P - Toggle the object's vertices points
 
 ## EXTERNAL LIBRARIES
 
@@ -63,7 +66,7 @@ In order to use translation on object, use sliders that are below rendering butt
 | GLAD | OpenGL loader | [GLAD](https://glad.dav1d.de/) |
 | GLFW | Windowing library | [GLFW](https://www.glfw.org/) |
 | GLM | Math library | [GLM](https://glm.g-truc.net/0.9.9/index.html) |
-| STB | Image loading library | [STB](https://github.com/nothings/stb/blob/master/stb_image.h)|
+| STB image | Image loading library | [STB](https://github.com/nothings/stb/blob/master/stb_image.h)|
 | IMGUI | GUI library | [IMGUI](https://github.com/ocornut/imgui)|
 | ASSIMP | Model loading library | [ASSIMP](https://www.assimp.org/) |
 

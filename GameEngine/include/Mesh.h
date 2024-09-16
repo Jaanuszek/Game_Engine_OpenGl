@@ -13,8 +13,6 @@
 #include "Camera.h"
 #include "VBL.h"
 #include <memory>
-#include "objects/Solid.h"
-
 
 class Mesh {
 private:
