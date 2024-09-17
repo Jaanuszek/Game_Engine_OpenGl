@@ -13,8 +13,8 @@ EBO::EBO(std::vector<unsigned int>& indices)
 {
 	GLCall(glGenBuffers(1, &m_ID));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID));
-	m_currentSize = indices.size() * sizeof(unsigned int);
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_currentSize, indices.data(), GL_DYNAMIC_DRAW));
+	m_CurrentSize = indices.size() * sizeof(unsigned int);
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_CurrentSize, indices.data(), GL_DYNAMIC_DRAW));
 }
 
 EBO::~EBO() {
@@ -40,9 +40,9 @@ void EBO::Update(std::vector<unsigned int>& indices)
 {
 	unsigned int updatedSize = indices.size() * sizeof(unsigned int);
 	Bind();
-	if (updatedSize != m_currentSize) {
+	if (updatedSize != m_CurrentSize) {
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW));
-		m_currentSize = updatedSize;
+		m_CurrentSize = updatedSize;
 	}
 	else {
 		GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), indices.data()));

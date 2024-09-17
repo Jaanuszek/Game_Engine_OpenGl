@@ -8,7 +8,7 @@ class EBO {
 private:
 	unsigned int m_ID;
 	unsigned int m_Count;
-	unsigned int m_currentSize;
+	unsigned int m_CurrentSize;
 public:
 	EBO(const unsigned int* data, unsigned int count);
 	EBO(std::vector<GLuint>& indices);
