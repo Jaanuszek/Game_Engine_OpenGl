@@ -6,8 +6,6 @@
 #include "VAO.h";
 #include "EBO.h";
 #include "Shader.h";
-//#include "Mesh.h";
-
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\

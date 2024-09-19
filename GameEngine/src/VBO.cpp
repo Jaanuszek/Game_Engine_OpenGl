@@ -1,6 +1,5 @@
 #include "VBO.h"
 #include "Renderer.h"
-#include <iostream>
 
 VBO::VBO(const void* data, unsigned int size) {
 	GLCall(glGenBuffers(1, &m_ID));

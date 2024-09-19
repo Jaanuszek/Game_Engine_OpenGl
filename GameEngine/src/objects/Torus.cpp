@@ -1,5 +1,4 @@
 #include "Torus.h"
-#include <iostream>
 
 void Torus::Initalize() {
 	float x, y, z, xy; // vertex position

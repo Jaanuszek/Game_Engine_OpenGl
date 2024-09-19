@@ -10,8 +10,8 @@ private:
 	float m_majorRadius;
 	unsigned int m_sectors;
 	unsigned int m_sides;
-	unsigned int m_maxSectors = m_sectors;
-	unsigned int m_maxSides = m_sides;
+	int m_maxSectors = m_sectors;
+	int m_maxSides = m_sides;
 	void Initalize() override;
 public:
 	Torus(float minorRadius = 0.2f, float majorRadius = 0.5f, unsigned int sectors = 48, unsigned int side = 24);

@@ -1,5 +1,6 @@
 #ifndef MESH_FACTORY_H
 #define MESH_FACTORY_H
+
 #include "objects/Solid.h"
 #include "Mesh.h"
 #include <vector>

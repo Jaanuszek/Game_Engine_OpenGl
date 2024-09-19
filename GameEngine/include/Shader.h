@@ -1,10 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-
 #include <string>
 #include <unordered_map>
-
 #include <glm/glm.hpp>
 
 struct ShaderProgramSource {

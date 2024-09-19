@@ -54,8 +54,7 @@ Pyramid::~Pyramid() {
 }
 
 void Pyramid::UpdateVerticesAndIndices() {
-	//Initalize();
-	//CalculateNormals();
+
 }
 
 void Pyramid::UpdateParams() {
