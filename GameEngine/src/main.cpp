@@ -124,11 +124,11 @@ int main() {
 			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)}
 		};
 		Texture textures[] = {
-			Texture("../../assets/textures/monkey.png", "diffuse")
+			Texture("../../assets/textures/rubics_cube.png", "diffuse")
 		};
 
 		Texture texturesSphere[] = {
-			Texture("../../assets/textures/monkey.png", "diffuse")
+			Texture("../../assets/textures/rubics_cube.png", "diffuse")
 		};
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
