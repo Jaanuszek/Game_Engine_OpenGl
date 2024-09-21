@@ -17,6 +17,7 @@ struct Vertex {
 struct TextureStruct {
 	unsigned int id;
 	std::string type;
+	std::string path;
 };
 
 class VBO {

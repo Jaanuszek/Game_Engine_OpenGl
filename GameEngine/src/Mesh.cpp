@@ -22,6 +22,19 @@ void Mesh::setupMesh()
 	}
 }
 
+void Mesh::setupMeshStruct() {
+	m_VAO->Bind(); // glGenVertexArrays(1, &m_RendererID)
+	m_VBO->Bind();
+	m_EBO->Bind();
+	m_layout->Push(GL_FLOAT, 3);
+	m_layout->Push(GL_FLOAT, 2);
+	m_layout->Push(GL_FLOAT, 3);
+	m_VAO->AddBuffer(*m_VBO, *m_layout);
+	m_EBO->Unbind();
+	m_VBO->Unbind();
+	m_VAO->Unbind();
+}
+
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
 {
 	this->m_vertices = vertices;
@@ -33,6 +46,18 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
 	m_EBO = std::make_shared<EBO>(m_indices);
 	setupMesh();
 	m_updateVBO = true;
+}
+
+Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TextureStruct>& textures)
+{
+	this->m_vertices = vertices;
+	this->m_indices = indices;
+	this->m_texturesStruct = textures;
+	m_VAO = std::make_shared<VAO>();
+	m_VBO = std::make_shared<VBO>(m_vertices);
+	m_layout = std::make_shared<VBL>();
+	m_EBO = std::make_shared<EBO>(m_indices);
+	setupMeshStruct();
 }
 
 Mesh::~Mesh()
@@ -60,6 +85,7 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 		else if(type == "specular") {
 			num = std::to_string(numSpecular++);
 		}
+		shader.SetUniform1f(("material." + type + num).c_str(), i);
 		m_textures[i].Bind(i);
 		shader.SetUniform1i((type+num).c_str(), i);
 		//shader.SetUniform3f("u_viewPos", camera.GetCameraPos().x, camera.GetCameraPos().y, camera.GetCameraPos().z);
@@ -73,7 +99,38 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 	shader.Unbind();
 	m_VAO->Unbind();
 }
+void Mesh::DrawStruct(Shader& shader, Camera& camera) {
+	shader.Bind();
+	m_VAO->Bind();
 
+	unsigned int  numDiffuse = 1;
+	unsigned int  numSpecular = 1;
+
+	for (unsigned int i = 0; i < m_texturesStruct.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		std::string num;
+		std::string type = m_texturesStruct[i].type;
+		if (type == "texture_diffuse") {
+			num = std::to_string(numDiffuse++);
+		}
+		else if (type == "texture_specular") {
+			num = std::to_string(numSpecular++);
+		}
+		shader.SetUniform1f(("material." + type + num).c_str(), i);
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_texturesStruct[i].id));
+		shader.SetUniform1i((type + num).c_str(), i);
+	}
+	glActiveTexture(GL_TEXTURE0);
+	m_VAO->Bind();
+	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
+	m_VAO->Unbind();
+	//Do I need this unbids?
+	for (unsigned int i = 0; i < m_texturesStruct.size(); i++) {
+		//m_texturesStruct[i].Unbind();
+	}
+	shader.Unbind();
+	m_VAO->Unbind();
+}
 void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures) {
 	m_vertices = vertices;
 	m_indices = indices;

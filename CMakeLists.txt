@@ -29,7 +29,6 @@ find_package (OpenGL REQUIRED)
 
 add_subdirectory(external/glfw)
 add_subdirectory(external/stb_image)
-#add_subdirectory(external/assimp)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -38,6 +37,7 @@ FetchContent_Declare(
     GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e 
 )
 FetchContent_MakeAvailable(glm)
+
 FetchContent_Declare(
     assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
@@ -48,18 +48,15 @@ FetchContent_MakeAvailable(assimp)
 add_subdirectory(GameEngine/src)
 add_subdirectory(GameEngine/include)
 
-#FindOpenGL Cmake component
-#include_directories can be replaced with newest target_include_directories()
-include_directories( ${OPENGL_INCLUDE_DIRS})
-
 if(MSVC)
     set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
 endif()
 
 set(GLFW_CMAKE_STARTER_SRC "GameEngine/src/main.cpp")
 set(GLAD_C_PATH "GameEngine/src/glad.c")
-#set(BUILD_SHARED_LIBS OFF)
+
 add_executable("${CMAKE_PROJECT_NAME}" ${GLFW_CMAKE_STARTER_SRC} ${GLAD_C_PATH})
+
 #Adding external libraries to the project
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     OpenGL::GL
@@ -69,7 +66,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     assimp
 )
 #Adding header files to the project
-#message("======================= ${CMAKE_SOURCE_DIR}/external/assimp/include")
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/GameEngine/include
     ${CMAKE_SOURCE_DIR}/external/glfw/include

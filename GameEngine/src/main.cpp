@@ -26,6 +26,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Model.h"
+
 
 enum class RenderObject {
 	Cube,
@@ -34,7 +36,8 @@ enum class RenderObject {
 	Cone,
 	Pyramid,
 	Sphere,
-	Torus
+	Torus,
+	Assimp
 };
 
 void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
@@ -120,7 +123,11 @@ int main() {
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 		lightCubeShader.Unbind();
-
+		
+		Shader shaderAssimp("../../assets/shaders/CustomModel.shader");
+		shaderAssimp.Bind();
+		shaderAssimp.Unbind();
+		
 		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
 		std::map<std::string, std::shared_ptr<Shader>> shaders = {
 			{"LightningShader", std::make_shared<Shader>(shader1)},
@@ -145,6 +152,7 @@ int main() {
 		Sphere sphere(0.5f, 48, 48);
 		//torus
 		Torus torus(0.2f,0.5f,48,50);
+		Model backpack("../../assets/models/backpack/backpack.obj");
 		MeshFactory meshFactory;
 
 		// Do something with that
@@ -210,28 +218,38 @@ int main() {
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
 				bool textureChosen = inputHandler.getTexture();
+
 				// rendering objects using map
-				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
-				if (renderObject == RenderObject::Sphere) {
-					sphere.UpdateParams();
-					meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+				if (renderObject != RenderObject::Assimp) {
+					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
+					HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+					if (renderObject == RenderObject::Sphere) {
+						sphere.UpdateParams();
+						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+					}
+					if (renderObject == RenderObject::Cone) {
+						cone.UpdateParams();
+						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
+					}
+					if (renderObject == RenderObject::Torus) {
+						torus.UpdateParams();
+						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
+					}
+					if (renderObject == RenderObject::Cylinder) {
+						cylinder.UpdateParams();
+						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
+					}
+					if (renderObject == RenderObject::Cuboid) {
+						cuboid.UpdateParams();
+						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), texVec);
+					}
 				}
-				if (renderObject == RenderObject::Cone) {
-					cone.UpdateParams();
-					meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
-				}
-				if (renderObject == RenderObject::Torus) {
-					torus.UpdateParams();
-					meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
-				}
-				if (renderObject == RenderObject::Cylinder) {
-					cylinder.UpdateParams();
-					meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
-				}
-				if (renderObject == RenderObject::Cuboid) {
-					cuboid.UpdateParams();
-					meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), texVec);
+				else {
+					//render assimp model
+					shaderAssimp.Bind();
+					shaderAssimp.SetUniformMat4f("u_MVP", mvp);
+					backpack.Draw(shaderAssimp, *camera);
+
 				}
 				// rendering light cube
 				lightCubeShader.Bind();
@@ -251,7 +269,6 @@ int main() {
 				if (ImGui::Button("Render Cylinder")) {
 					renderObject = RenderObject::Cylinder;
 				}
-
 				if (ImGui::Button("Render Pyramid")) {
 					renderObject = RenderObject::Pyramid;
 				}
@@ -265,6 +282,9 @@ int main() {
 				ImGui::SameLine();
 				if (ImGui::Button("Render Torus")) {
 					renderObject = RenderObject::Torus;
+				}
+				if (ImGui::Button("Render custom model")) {
+					renderObject = RenderObject::Assimp;
 				}
 				ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);
 				ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
@@ -310,6 +330,7 @@ void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp) {
 	shader.Bind();
 	shader.SetUniformMat4f("u_MVP", mvp);
 	mesh.Draw(shader, *camera);
+	shader.Unbind();
 }
 void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
 	const glm::mat4& model, Camera* camera) {
@@ -319,6 +340,7 @@ void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> 
 			std::shared_ptr<Shader>& shaderWithLight = it->second;
 			BindShaderWithLightning(*shaderWithLight, lightPos, mvp, model, camera);
 			mesh.Draw(*shaderWithLight, *camera);
+			shaderWithLight->Unbind();
 		}
 		else {
 			std::cerr << "LightningShader not found" << std::endl;
