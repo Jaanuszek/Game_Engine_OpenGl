@@ -22,6 +22,10 @@
 #include "objects/Torus.h"
 #include "IO/InputHandler.h"
 #include "MeshFactory.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 
 enum class RenderObject {
 	Cube,
@@ -55,7 +59,7 @@ auto renderer = std::make_shared<Renderer>();
 int main() {
 	if (!glfwInit())
 		return -1;
-
+	Assimp::Importer importer;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

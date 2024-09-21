@@ -9,7 +9,24 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "Assimp_DIR",
+          "value": "C:/Users/Kuba/Desktop/Game_Engine_OpenGL/external/assimp/lib",
+          "type": "PATH"
+        },
+        {
+          "name": "assimp_DIR",
+          "value": "C:/Users/Kuba/Desktop/Game_Engine_OpenGL/external/assimp/lib",
+          "type": "PATH"
+        },
+        {
+          "name": "LIBRARY_SUFFIX",
+          "value": "-vc143-mtd",
+          "type": "STRING"
+        }
+      ]
     }
   ]
 }
