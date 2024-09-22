@@ -1,6 +1,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <iostream>
+#include <string>
 #include "Renderer.h"
 
 class Texture {
@@ -20,5 +22,7 @@ public:
 	inline int GetWidth() const { return m_Width; }
 	inline int GetHeight() const { return m_Height; }
 	inline const char* GetType() const { return m_type; }
+
+	static unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 };
 #endif

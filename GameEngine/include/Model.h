@@ -6,13 +6,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "Texture.h"
 
 
 class Model {
 private:
 	std::vector<Mesh> m_meshes;
-	std::string directory;
-	std::vector<TextureStruct> textures_loaded;
+	std::string m_directory;
+	std::vector<TextureStruct> m_textures_loaded;
 
 	void loadModel(std::string path);
 	void processNode(aiNode* node, const aiScene* scene);

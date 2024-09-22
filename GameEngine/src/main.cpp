@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <filesystem>
 #include "wtypes.h" // for GetDesktopWindow
 //#include <thread>
 //#include <chrono>
@@ -84,6 +85,12 @@ int main() {
 	std::cout << "Graphics card: ";
 	std::cout << glGetString(GL_RENDERER) << std::endl;
 
+	std::string currentPath = std::filesystem::current_path().string();
+	std::string pathToModels = "../../assets/shaders";
+	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
+		std::string fileName = entry.path().filename().string();
+		std::cout << fileName << std::endl;
+	}
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
 	inputHandler.setRenderer(renderer);
