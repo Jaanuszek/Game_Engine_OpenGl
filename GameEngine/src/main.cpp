@@ -41,6 +41,14 @@ enum class RenderObject {
 	Assimp
 };
 
+enum class ShaderType {
+	Basic,
+	Lightning,
+	LightCube,
+	CustomModel,
+	Sphere
+};
+
 void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
 void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
 void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
@@ -59,6 +67,12 @@ float lastFrame = 0.0f;
 
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 auto renderer = std::make_shared<Renderer>();
+
+// ImGui Variables
+static int currentShaderImGui = 0;
+static int currentObjectImGui = 0;
+static int currentTextureImGui = 0;
+static int currentCustomModelImGui = 0;
 
 int main() {
 	if (!glfwInit())
@@ -85,11 +99,21 @@ int main() {
 	std::cout << "Graphics card: ";
 	std::cout << glGetString(GL_RENDERER) << std::endl;
 
+	std::vector<std::string> shaderFiles;
+	std::vector<const char*> shaderFilesCStr;
 	std::string currentPath = std::filesystem::current_path().string();
 	std::string pathToModels = "../../assets/shaders";
+	// Consider doing a class that handle saving variables that are important for imgui
+	// and consider doing class that handle imgui to not make this code so messy
 	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
 		std::string fileName = entry.path().filename().string();
-		std::cout << fileName << std::endl;
+		fileName = fileName.substr(0, fileName.find_last_of('.'));
+		shaderFiles.push_back(fileName);
+	}
+	for (const auto& fileName : shaderFiles) {
+		// I had to do this this way, because if when i was passing pointer to c_str() in previous scope
+		// after leaving scope it was deallocated and I was getting garbage
+		shaderFilesCStr.push_back(fileName.c_str());
 	}
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
@@ -117,13 +141,16 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-		Shader shader1("../../assets/shaders/LightningShader.shader");
+
+		Shader basicShader("../../assets/shaders/Basic.shader");
+
+		Shader lightningShader("../../assets/shaders/LightningShader.shader");
 		//is these lines below necessary?
-		shader1.Bind();
-		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
-		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
-		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-		shader1.Unbind();
+		lightningShader.Bind();
+		lightningShader.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
+		lightningShader.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
+		lightningShader.SetUniform3f("u_lightPos", lightCubeTranslation);
+		lightningShader.Unbind();
 		Shader shaderSphere("../../assets/shaders/Sphere.shader");
 
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
@@ -131,15 +158,24 @@ int main() {
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 		lightCubeShader.Unbind();
 		
-		Shader shaderAssimp("../../assets/shaders/CustomModel.shader");
-		shaderAssimp.Bind();
-		shaderAssimp.Unbind();
+		Shader customModelShader("../../assets/shaders/CustomModel.shader");
+		customModelShader.Bind();
+		customModelShader.Unbind();
 		
 		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
 		std::map<std::string, std::shared_ptr<Shader>> shaders = {
-			{"LightningShader", std::make_shared<Shader>(shader1)},
-			{"SphereShader", std::make_shared<Shader>(shaderSphere)},
-			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)}
+			{"BasicShader", std::make_shared<Shader>(lightningShader)},
+			{"CustomModelShader", std::make_shared<Shader>(customModelShader)},
+			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)},
+			{"LightningShader", std::make_shared<Shader>(lightningShader)},
+			{"SphereShader", std::make_shared<Shader>(shaderSphere) },
+		};
+		std::map<ShaderType, std::shared_ptr<Shader>> shadersMap = {
+			{ShaderType::Basic, std::make_shared<Shader>(basicShader)},
+			{ShaderType::Lightning, std::make_shared<Shader>(lightningShader)},
+			{ShaderType::LightCube, std::make_shared<Shader>(lightCubeShader)},
+			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
+			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
 		Texture textures[] = {
 			Texture("../../assets/textures/rubics_cube.png", "diffuse")
@@ -253,9 +289,9 @@ int main() {
 				}
 				else {
 					//render assimp model
-					shaderAssimp.Bind();
-					shaderAssimp.SetUniformMat4f("u_MVP", mvp);
-					backpack.Draw(shaderAssimp, *camera);
+					customModelShader.Bind();
+					customModelShader.SetUniformMat4f("u_MVP", mvp);
+					backpack.Draw(customModelShader, *camera);
 
 				}
 				// rendering light cube
@@ -265,6 +301,16 @@ int main() {
 			}
 			{
 				ImGui::Begin("Game_Engine");
+				if (ImGui::BeginCombo("Choose shader", shaderFilesCStr[currentShaderImGui])) {
+					for (int i = 0; i < shaderFilesCStr.size(); i++) {
+						bool is_selected = (currentShaderImGui == i);
+						if (ImGui::Selectable(shaderFilesCStr[i], is_selected))
+							currentShaderImGui = i;
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
 				if (ImGui::Button("Render Cube")) {
 					renderObject = RenderObject::Cube;
 				}

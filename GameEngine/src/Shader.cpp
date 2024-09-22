@@ -68,6 +68,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		char* message = (char*)_malloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
 		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+		std::cout << "Path to failed shader: " << m_FilePath << std::endl;
 		std::cout << message << std::endl;
 		glDeleteShader(id);
 		return 0;
