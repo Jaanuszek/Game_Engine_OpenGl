@@ -12,7 +12,6 @@ uniform mat4 u_MVP;
 uniform mat4 u_model;
 uniform mat4 u_view;
 
-
 void main()
 {
 	gl_Position = u_MVP * vec4(position,1.0);
@@ -28,7 +27,6 @@ out vec4 v_Color;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-uniform sampler2D diffuse0;
 uniform vec3 u_objectColor;
 uniform vec3 u_lightColor;
 uniform vec3 u_lightPos;

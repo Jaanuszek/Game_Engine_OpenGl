@@ -26,33 +26,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include "GuiHandler.h"
 #include "Model.h"
 
-
-enum class RenderObject {
-	Cube,
-	Cuboid,
-	Cylinder,
-	Cone,
-	Pyramid,
-	Sphere,
-	Torus,
-	Assimp
-};
-
-enum class ShaderType {
-	Basic,
-	Lightning,
-	LightCube,
-	CustomModel,
-	Sphere
-};
-
-void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
-void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
-void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
-	const glm::mat4& model, Camera* camera);
+std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels);
+void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
+	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model);
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
+	const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
 void GetDesktopResolution(float& horizontal, float& vertical);
 
 float width = 0;
@@ -68,8 +49,13 @@ float lastFrame = 0.0f;
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 auto renderer = std::make_shared<Renderer>();
 
+// Files names
+std::vector<std::string> stringShaderFiles = getFilesNamesFromDirectory("../../assets/shaders");
+std::vector<std::string> stringModelsFiles = getFilesNamesFromDirectory("../../assets/models");
+std::vector<std::string> stringTexturesFiles = getFilesNamesFromDirectory("../../assets/textures");
+
 // ImGui Variables
-static int currentShaderImGui = 0;
+static int currentShaderImGui = 1;
 static int currentObjectImGui = 0;
 static int currentTextureImGui = 0;
 static int currentCustomModelImGui = 0;
@@ -99,22 +85,6 @@ int main() {
 	std::cout << "Graphics card: ";
 	std::cout << glGetString(GL_RENDERER) << std::endl;
 
-	std::vector<std::string> shaderFiles;
-	std::vector<const char*> shaderFilesCStr;
-	std::string currentPath = std::filesystem::current_path().string();
-	std::string pathToModels = "../../assets/shaders";
-	// Consider doing a class that handle saving variables that are important for imgui
-	// and consider doing class that handle imgui to not make this code so messy
-	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
-		std::string fileName = entry.path().filename().string();
-		fileName = fileName.substr(0, fileName.find_last_of('.'));
-		shaderFiles.push_back(fileName);
-	}
-	for (const auto& fileName : shaderFiles) {
-		// I had to do this this way, because if when i was passing pointer to c_str() in previous scope
-		// after leaving scope it was deallocated and I was getting garbage
-		shaderFilesCStr.push_back(fileName.c_str());
-	}
 	InputHandler inputHandler(window);
 	inputHandler.setCamera(camera);
 	inputHandler.setRenderer(renderer);
@@ -161,15 +131,7 @@ int main() {
 		Shader customModelShader("../../assets/shaders/CustomModel.shader");
 		customModelShader.Bind();
 		customModelShader.Unbind();
-		
-		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
-		std::map<std::string, std::shared_ptr<Shader>> shaders = {
-			{"BasicShader", std::make_shared<Shader>(lightningShader)},
-			{"CustomModelShader", std::make_shared<Shader>(customModelShader)},
-			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)},
-			{"LightningShader", std::make_shared<Shader>(lightningShader)},
-			{"SphereShader", std::make_shared<Shader>(shaderSphere) },
-		};
+
 		std::map<ShaderType, std::shared_ptr<Shader>> shadersMap = {
 			{ShaderType::Basic, std::make_shared<Shader>(basicShader)},
 			{ShaderType::Lightning, std::make_shared<Shader>(lightningShader)},
@@ -221,16 +183,16 @@ int main() {
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
+		ShaderType shaderType = ShaderType::Lightning;
 
-		//float targetFrameRate = 120.0f;
-		//float targetFrameTime = 1.0f / targetFrameRate;
+		GuiHandler gui(stringShaderFiles, stringTexturesFiles, stringModelsFiles,
+			currentShaderImGui, currentTextureImGui, currentCustomModelImGui,
+			shaderType, renderObject, translationA, viewTranslation, lightCubeTranslation, angle);
 
 		while (!glfwWindowShouldClose(window)) {
-			//auto frameStart = std::chrono::high_resolution_clock::now();
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-
 			renderer->Clear();
 			inputHandler.setDeltaTime(deltaTime);
 			if (inputHandler.getCameraOn()) {
@@ -240,6 +202,7 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
+				// Do something with this calculations
 				glm::mat4 proj = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
 				glm::mat4 view;
 				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
@@ -260,12 +223,11 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-				bool textureChosen = inputHandler.getTexture();
 
 				// rendering objects using map
 				if (renderObject != RenderObject::Assimp) {
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-					HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
+					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get());
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
 						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
@@ -299,67 +261,12 @@ int main() {
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				meshLight.Draw(lightCubeShader, *camera);
 			}
-			{
-				ImGui::Begin("Game_Engine");
-				if (ImGui::BeginCombo("Choose shader", shaderFilesCStr[currentShaderImGui])) {
-					for (int i = 0; i < shaderFilesCStr.size(); i++) {
-						bool is_selected = (currentShaderImGui == i);
-						if (ImGui::Selectable(shaderFilesCStr[i], is_selected))
-							currentShaderImGui = i;
-						if (is_selected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
-				if (ImGui::Button("Render Cube")) {
-					renderObject = RenderObject::Cube;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Cuboid")) {
-					renderObject = RenderObject::Cuboid;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Cylinder")) {
-					renderObject = RenderObject::Cylinder;
-				}
-				if (ImGui::Button("Render Pyramid")) {
-					renderObject = RenderObject::Pyramid;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Sphere")) {
-					renderObject = RenderObject::Sphere;
-				}
-				if (ImGui::Button("Render Cone")) {
-					renderObject = RenderObject::Cone;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Torus")) {
-					renderObject = RenderObject::Torus;
-				}
-				if (ImGui::Button("Render custom model")) {
-					renderObject = RenderObject::Assimp;
-				}
-				ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A y", &viewTranslation.y, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A z", &viewTranslation.z, -10.0f, 10.0f);
-				ImGui::SliderFloat("Angle", &angle, 0.0f, 360.0f);
-				ImGui::SliderFloat3("Light Cube Translation x", &lightCubeTranslation.x, -1.0f, 1.0f);
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::End();
-			}
+			// Draw whole Gui
+			gui.DrawMainGui();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
-
-			//auto frameEnd = std::chrono::high_resolution_clock::now();
-			//std::chrono::duration<float> duration = frameEnd - frameStart;
-
-			//float sleepTime = targetFrameTime - duration.count();
-			//if (sleepTime > 0) {
-			//	std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
-			//}
 		}
 	}
 	ImGui_ImplOpenGL3_Shutdown();
@@ -372,45 +279,35 @@ int main() {
 	return 0;
 }
 
-void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera) {
-	shader.Bind();
-	shader.SetUniform3f("u_lightPos", lightPos);
-	shader.SetUniformMat4f("u_MVP", mvp);
-	shader.SetUniform3f("u_viewPos", camera->GetCameraPos());
-	shader.SetUniformMat4f("u_model", model);
+std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels) {
+	std::vector<std::string> stringFilesNames;
+	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
+		std::string fileName = entry.path().filename().string();
+		fileName = fileName.substr(0, fileName.find_last_of('.'));
+		stringFilesNames.push_back(fileName);
+	}
+	return stringFilesNames;
 }
-void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp) {
-	shader.Bind();
-	shader.SetUniformMat4f("u_MVP", mvp);
-	mesh.Draw(shader, *camera);
-	shader.Unbind();
-}
-void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
-	const glm::mat4& model, Camera* camera) {
-	if (textureChosen) {
-		auto it = shader.find("LightningShader");
-		if (it != shader.end()) {
-			std::shared_ptr<Shader>& shaderWithLight = it->second;
-			BindShaderWithLightning(*shaderWithLight, lightPos, mvp, model, camera);
-			mesh.Draw(*shaderWithLight, *camera);
-			shaderWithLight->Unbind();
-		}
-		else {
-			std::cerr << "LightningShader not found" << std::endl;
-			return;
-		}
+
+void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType, 
+	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model) {
+	auto shader = shadersMap.find(shaderType);
+	if (shader != shadersMap.end()) {
+		shader->second->Bind();
+		shader->second->SetUniform3f("u_lightPos", lightPos);
+		shader->second->SetUniformMat4f("u_MVP", mvp);
+		shader->second->SetUniform3f("u_viewPos", camera->GetCameraPos());
+		shader->second->SetUniformMat4f("u_model", model);
 	}
 	else {
-		auto it = shader.find("SphereShader");
-		if (it != shader.end()) {
-			std::shared_ptr<Shader>& shaderWithoutLight = it->second;
-			DrawObjectWithShader(mesh, *shaderWithoutLight, mvp);
-		}
-		else {
-			std::cerr << "SphereShader not found" << std::endl;
-			return;
-		}
+		std::cout << "Shader not found" << std::endl;
+		return;
 	}
+}
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
+	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera) {
+	SetShader(chosedShader, shaderType, lightPos, mvp, camera, model);
+	mesh.Draw(*chosedShader.find(shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
 	RECT desktop;

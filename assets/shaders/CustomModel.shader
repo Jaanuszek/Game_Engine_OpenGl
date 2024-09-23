@@ -7,14 +7,12 @@ layout(location = 2) in vec3 aNormal;
 out vec2 TexCoords;
 
 uniform mat4 u_MVP;
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 u_model;
+uniform mat4 u_view;
 
 void main()
 {
 	TexCoords = aTexCoords;
-	// gl_Position = projection * view * model * vec4(aPos, 1.0);
 	gl_Position = u_MVP * vec4(aPos, 1.0);
 };
 
@@ -25,6 +23,11 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
+
+uniform vec3 u_objectColor;
+uniform vec3 u_lightColor;
+uniform vec3 u_lightPos;
+uniform vec3 u_viewPos;
 
 void main()
 {
