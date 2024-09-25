@@ -1,12 +1,27 @@
 #include "GuiHandler.h"
 
-void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOption) {
-	if (ImGui::BeginCombo("Choose shader", options[selectedOption].c_str())) {
+template<typename EnumType>
+void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text) {
+	if (ImGui::BeginCombo(text, options[selectedOption].c_str())) {
 		for (int i = 0; i < options.size(); i++) {
 			bool is_selected = (selectedOption == i);
 			if (ImGui::Selectable(options[i].c_str(), is_selected)) {
 				selectedOption = i;
-				m_shaderType = static_cast<ShaderType>(i);
+				enumValue = static_cast<EnumType>(i);
+			}
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOption, const char* text) {
+	if (ImGui::BeginCombo(text, options[selectedOption].c_str())) {
+		for (int i = 0; i < options.size(); i++) {
+			bool is_selected = (selectedOption == i);
+			if (ImGui::Selectable(options[i].c_str(), is_selected)) {
+				selectedOption = i;
 			}
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
@@ -32,10 +47,10 @@ GuiHandler::~GuiHandler()
 
 void GuiHandler::DrawMainGui(){
 	ImGui::Begin("Game_Engine");
-	drawCombo(m_shaderFiles, m_selectedShader);
+	drawCombo(m_shaderFiles, m_selectedShader, m_shaderType, "Select a shader");
 	if (m_selectedShader == 0) {
 		ImGui::Begin("Choose a texture");
-		drawCombo(m_textureFiles, m_selectedTexture);
+		drawCombo(m_textureFiles, m_selectedTexture, "Select a texture");
 		ImGui::End();
 	}
 	if (ImGui::Button("Render Cube")) {

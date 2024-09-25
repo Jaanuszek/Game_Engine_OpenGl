@@ -139,13 +139,20 @@ int main() {
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
 			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
-		Texture textures[] = {
-			Texture("../../assets/textures/rubics_cube.png", "diffuse")
-		};
+		// Maybe desing pattern here????
+		Texture monkeyTex("../../assets/textures/monkey.png", "diffuse");
+		Texture rubicsCubeTex("../../assets/textures/rubics_cube.png", "diffuse");
+		Texture pudzillaTex("../../assets/textures/pudzilla.png", "diffuse");
 
-		Texture texturesSphere[] = {
-			Texture("../../assets/textures/rubics_cube.png", "diffuse")
-		};
+		TextureStruct rubicsCubeTexStruct = rubicsCubeTex.GetTextureStruct();
+		TextureStruct pudzillaTexStruct = pudzillaTex.GetTextureStruct();
+		TextureStruct monkeyTexStruct = monkeyTex.GetTextureStruct();
+		// BLEEEEEEH CHANGE IT
+		std::vector<TextureStruct> texturesStruct = { monkeyTexStruct};
+		std::vector<TextureStruct> texturesStruct2 = { pudzillaTexStruct };
+		std::vector<TextureStruct> texturesStruct3 = { rubicsCubeTexStruct };
+		std::vector<TextureStruct> selectedTexturesStruct = texturesStruct;
+
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
@@ -160,17 +167,14 @@ int main() {
 		Model backpack("../../assets/models/backpack/backpack.obj");
 		MeshFactory meshFactory;
 
-		// Do something with that
-		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
-		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
-		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
-		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, texVec);
-		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
-		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
-		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
-		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
-		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
-		Mesh meshTorus = meshFactory.CreateMesh(torus, texVec);
+		Mesh meshCube = meshFactory.CreateMesh(cube, selectedTexturesStruct);
+		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, selectedTexturesStruct);
+		Mesh meshLight = meshFactory.CreateMesh(cube, selectedTexturesStruct);
+		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, selectedTexturesStruct);
+		Mesh meshSphere = meshFactory.CreateMesh(sphere, selectedTexturesStruct);
+		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, selectedTexturesStruct);
+		Mesh meshCone = meshFactory.CreateMesh(cone, selectedTexturesStruct);
+		Mesh meshTorus = meshFactory.CreateMesh(torus, selectedTexturesStruct);
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
 			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
@@ -184,7 +188,6 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 		ShaderType shaderType = ShaderType::Lightning;
-
 		GuiHandler gui(stringShaderFiles, stringTexturesFiles, stringModelsFiles,
 			currentShaderImGui, currentTextureImGui, currentCustomModelImGui,
 			shaderType, renderObject, translationA, viewTranslation, lightCubeTranslation, angle);
@@ -223,30 +226,44 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-
-				// rendering objects using map
+				switch (currentTextureImGui) {
+				case 0:
+					selectedTexturesStruct = texturesStruct;
+					break;
+				case 1:
+					selectedTexturesStruct = texturesStruct2;
+					break;
+				case 2:
+					selectedTexturesStruct = texturesStruct3;
+					break;
+				default:
+					selectedTexturesStruct = texturesStruct;
+					break;
+				}
 				if (renderObject != RenderObject::Assimp) {
+					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get());
+					//renderObject = RenderObject::Sphere;
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
-						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), selectedTexturesStruct);
 					}
 					if (renderObject == RenderObject::Cone) {
 						cone.UpdateParams();
-						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
+						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), selectedTexturesStruct);
 					}
 					if (renderObject == RenderObject::Torus) {
 						torus.UpdateParams();
-						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
+						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), selectedTexturesStruct);
 					}
 					if (renderObject == RenderObject::Cylinder) {
 						cylinder.UpdateParams();
-						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
+						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), selectedTexturesStruct);
 					}
 					if (renderObject == RenderObject::Cuboid) {
 						cuboid.UpdateParams();
-						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), texVec);
+						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), selectedTexturesStruct);
 					}
 				}
 				else {
@@ -254,7 +271,6 @@ int main() {
 					customModelShader.Bind();
 					customModelShader.SetUniformMat4f("u_MVP", mvp);
 					backpack.Draw(customModelShader, *camera);
-
 				}
 				// rendering light cube
 				lightCubeShader.Bind();
@@ -307,7 +323,7 @@ void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, Shader
 void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
 	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera) {
 	SetShader(chosedShader, shaderType, lightPos, mvp, camera, model);
-	mesh.Draw(*chosedShader.find(shaderType)->second, *camera);
+	mesh.DrawStruct(*chosedShader.find(shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
 	RECT desktop;

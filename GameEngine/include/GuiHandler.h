@@ -44,7 +44,9 @@ private:
 	glm::vec3& m_lightCubeTranslation;
 	float& m_angle;
 	// drawing option list
-	void drawCombo(std::vector<std::string>& options, int& selectedOption);
+	template<typename EnumType>
+	void drawCombo(std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);
+	void drawCombo(std::vector<std::string>& options, int& selectedOption, const char* text);
 public:
 	GuiHandler(std::vector<std::string>& shaderFiles, std::vector<std::string>& textureFiles, std::vector<std::string>& modelFiles,
 		int& selectedShader, int& selectedTexture, int& selectedModel, ShaderType& shaderType, RenderObject& renderObject,

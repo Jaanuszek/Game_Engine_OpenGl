@@ -29,12 +29,13 @@ public:
 	std::vector<Texture> m_textures;
 	std::vector<TextureStruct> m_texturesStruct;
 	
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); //ew tu moze byc problem bo usunalem referencj
+	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TextureStruct>& textures);
 	~Mesh();
 	void Draw(Shader& shader, Camera& camera);
 	void DrawStruct(Shader& shader, Camera& camera);
 	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
+	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures);
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "VBO.h"
 #include "Renderer.h"
 
 class Texture {
@@ -12,12 +13,14 @@ private:
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_BPP;
 	const char* m_type;
+	TextureStruct m_textureStruct;
 public:
 	Texture(const std::string& path, const char* texType);
 	~Texture();
 
 	void Bind(unsigned int slot = 0) const;
 	void Unbind() const;
+	TextureStruct GetTextureStruct() const { return m_textureStruct; }
 
 	inline int GetWidth() const { return m_Width; }
 	inline int GetHeight() const { return m_Height; }

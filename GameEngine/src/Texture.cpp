@@ -19,6 +19,11 @@ Texture::Texture(const std::string& path, const char* texType) :m_RendererID(0),
 
 	if (m_LocalBuffer)
 		stbi_image_free(m_LocalBuffer);
+
+	// set TextureStruct values
+	m_textureStruct.id = m_RendererID;
+	m_textureStruct.type = m_type;
+	m_textureStruct.path = m_FilePath;
 }
 
 Texture::~Texture()

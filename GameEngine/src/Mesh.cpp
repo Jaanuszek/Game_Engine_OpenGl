@@ -23,16 +23,24 @@ void Mesh::setupMesh()
 }
 
 void Mesh::setupMeshStruct() {
-	m_VAO->Bind(); // glGenVertexArrays(1, &m_RendererID)
-	m_VBO->Bind();
-	m_EBO->Bind();
-	m_layout->Push(GL_FLOAT, 3);
-	m_layout->Push(GL_FLOAT, 2);
-	m_layout->Push(GL_FLOAT, 3);
-	m_VAO->AddBuffer(*m_VBO, *m_layout);
-	m_EBO->Unbind();
-	m_VBO->Unbind();
-	m_VAO->Unbind();
+	if (!m_updateVBO) {
+		m_VAO->Bind();
+		m_VBO->Bind();
+		m_EBO->Bind();
+		m_layout->Push(GL_FLOAT, 3);
+		m_layout->Push(GL_FLOAT, 2);
+		m_layout->Push(GL_FLOAT, 3);
+		m_VAO->AddBuffer(*m_VBO, *m_layout);
+		m_EBO->Unbind();
+		m_VBO->Unbind();
+		m_VAO->Unbind();
+	}
+	else {
+		m_VBO->Bind();
+		m_EBO->Bind();
+		m_VBO->Update(m_vertices);
+		m_EBO->Update(m_indices);
+	}
 }
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
@@ -58,6 +66,7 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
 	m_layout = std::make_shared<VBL>();
 	m_EBO = std::make_shared<EBO>(m_indices);
 	setupMeshStruct();
+	m_updateVBO = true;
 }
 
 Mesh::~Mesh()
@@ -123,11 +132,6 @@ void Mesh::DrawStruct(Shader& shader, Camera& camera) {
 	glActiveTexture(GL_TEXTURE0);
 	m_VAO->Bind();
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
-	m_VAO->Unbind();
-	//Do I need this unbids?
-	for (unsigned int i = 0; i < m_texturesStruct.size(); i++) {
-		//m_texturesStruct[i].Unbind();
-	}
 	shader.Unbind();
 	m_VAO->Unbind();
 }
@@ -136,4 +140,10 @@ void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<uns
 	m_indices = indices;
 	m_textures = textures;
 	setupMesh();
+}
+void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures) {
+	m_vertices = vertices;
+	m_indices = indices;
+	m_texturesStruct = textures;
+	setupMeshStruct();
 }
