@@ -36,6 +36,7 @@ public:
 	void DrawStruct(Shader& shader, Camera& camera);
 	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures);
+	void updateTexture(const std::vector<TextureStruct>& textures);
 };
 
 #endif

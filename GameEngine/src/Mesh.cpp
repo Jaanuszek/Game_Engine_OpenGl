@@ -147,3 +147,6 @@ void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<uns
 	m_texturesStruct = textures;
 	setupMeshStruct();
 }
+void Mesh::updateTexture(const std::vector<TextureStruct>& textures) {
+	m_texturesStruct = textures;
+}

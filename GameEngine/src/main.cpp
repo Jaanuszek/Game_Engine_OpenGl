@@ -33,7 +33,7 @@ std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToMod
 void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
 	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model);
 void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
-	const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
+	const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updateDTexture);
 void GetDesktopResolution(float& horizontal, float& vertical);
 
 float width = 0;
@@ -165,16 +165,15 @@ int main() {
 		//torus
 		Torus torus(0.2f,0.5f,48,50);
 		Model backpack("../../assets/models/backpack/backpack.obj");
-		MeshFactory meshFactory;
 
-		Mesh meshCube = meshFactory.CreateMesh(cube, selectedTexturesStruct);
-		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, selectedTexturesStruct);
-		Mesh meshLight = meshFactory.CreateMesh(cube, selectedTexturesStruct);
-		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, selectedTexturesStruct);
-		Mesh meshSphere = meshFactory.CreateMesh(sphere, selectedTexturesStruct);
-		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, selectedTexturesStruct);
-		Mesh meshCone = meshFactory.CreateMesh(cone, selectedTexturesStruct);
-		Mesh meshTorus = meshFactory.CreateMesh(torus, selectedTexturesStruct);
+		Mesh meshCube = MeshFactory::CreateMesh(cube, selectedTexturesStruct);
+		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, selectedTexturesStruct);
+		Mesh meshLight = MeshFactory::CreateMesh(cube, selectedTexturesStruct);
+		Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, selectedTexturesStruct);
+		Mesh meshSphere = MeshFactory::CreateMesh(sphere, selectedTexturesStruct);
+		Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, selectedTexturesStruct);
+		Mesh meshCone = MeshFactory::CreateMesh(cone, selectedTexturesStruct);
+		Mesh meshTorus = MeshFactory::CreateMesh(torus, selectedTexturesStruct);
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
 			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
@@ -243,7 +242,7 @@ int main() {
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get());
+					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), selectedTexturesStruct);
 					//renderObject = RenderObject::Sphere;
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
@@ -321,8 +320,9 @@ void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, Shader
 	}
 }
 void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
-	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera) {
+	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updatedTexture) {
 	SetShader(chosedShader, shaderType, lightPos, mvp, camera, model);
+	mesh.updateTexture(updatedTexture);
 	mesh.DrawStruct(*chosedShader.find(shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
