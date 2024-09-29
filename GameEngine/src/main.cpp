@@ -28,6 +28,7 @@
 #include <assimp/postprocess.h>
 #include "GuiHandler.h"
 #include "Model.h"
+#include "TextureManager.h"
 
 std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels);
 void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
@@ -139,19 +140,10 @@ int main() {
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
 			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
-		// Maybe desing pattern here????
-		Texture monkeyTex("../../assets/textures/monkey.png", "diffuse");
-		Texture rubicsCubeTex("../../assets/textures/rubics_cube.png", "diffuse");
-		Texture pudzillaTex("../../assets/textures/pudzilla.png", "diffuse");
-
-		TextureStruct rubicsCubeTexStruct = rubicsCubeTex.GetTextureStruct();
-		TextureStruct pudzillaTexStruct = pudzillaTex.GetTextureStruct();
-		TextureStruct monkeyTexStruct = monkeyTex.GetTextureStruct();
-		// BLEEEEEEH CHANGE IT
-		std::vector<TextureStruct> texturesStruct = { monkeyTexStruct};
-		std::vector<TextureStruct> texturesStruct2 = { pudzillaTexStruct };
-		std::vector<TextureStruct> texturesStruct3 = { rubicsCubeTexStruct };
-		std::vector<TextureStruct> selectedTexturesStruct = texturesStruct;
+		TextureManager textureManager("../../assets/textures");
+		std::vector<TextureStruct> allTexturesStruct = textureManager.GetAllTexturesStruct();
+		TextureStruct structSelectedTexture = allTexturesStruct.front();
+		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
 
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
@@ -166,14 +158,14 @@ int main() {
 		Torus torus(0.2f,0.5f,48,50);
 		Model backpack("../../assets/models/backpack/backpack.obj");
 
-		Mesh meshCube = MeshFactory::CreateMesh(cube, selectedTexturesStruct);
-		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, selectedTexturesStruct);
-		Mesh meshLight = MeshFactory::CreateMesh(cube, selectedTexturesStruct);
-		Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, selectedTexturesStruct);
-		Mesh meshSphere = MeshFactory::CreateMesh(sphere, selectedTexturesStruct);
-		Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, selectedTexturesStruct);
-		Mesh meshCone = MeshFactory::CreateMesh(cone, selectedTexturesStruct);
-		Mesh meshTorus = MeshFactory::CreateMesh(torus, selectedTexturesStruct);
+		Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
+		Mesh meshLight = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, vecSelectedTexture);
+		Mesh meshSphere = MeshFactory::CreateMesh(sphere, vecSelectedTexture);
+		Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, vecSelectedTexture);
+		Mesh meshCone = MeshFactory::CreateMesh(cone, vecSelectedTexture);
+		Mesh meshTorus = MeshFactory::CreateMesh(torus, vecSelectedTexture);
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
 			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
@@ -225,44 +217,38 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-				switch (currentTextureImGui) {
-				case 0:
-					selectedTexturesStruct = texturesStruct;
-					break;
-				case 1:
-					selectedTexturesStruct = texturesStruct2;
-					break;
-				case 2:
-					selectedTexturesStruct = texturesStruct3;
-					break;
-				default:
-					selectedTexturesStruct = texturesStruct;
-					break;
+
+				// Chosing active texture
+				if (currentTextureImGui >= 0 && currentTextureImGui < allTexturesStruct.size()) {
+					structSelectedTexture = allTexturesStruct.at(currentTextureImGui);
 				}
+				vecSelectedTexture.clear();
+				vecSelectedTexture.push_back(structSelectedTexture);
+
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), selectedTexturesStruct);
+					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), vecSelectedTexture);
 					//renderObject = RenderObject::Sphere;
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
-						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), selectedTexturesStruct);
+						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
 					}
 					if (renderObject == RenderObject::Cone) {
 						cone.UpdateParams();
-						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), selectedTexturesStruct);
+						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
 					}
 					if (renderObject == RenderObject::Torus) {
 						torus.UpdateParams();
-						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), selectedTexturesStruct);
+						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
 					}
 					if (renderObject == RenderObject::Cylinder) {
 						cylinder.UpdateParams();
-						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), selectedTexturesStruct);
+						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
 					}
 					if (renderObject == RenderObject::Cuboid) {
 						cuboid.UpdateParams();
-						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), selectedTexturesStruct);
+						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
 					}
 				}
 				else {

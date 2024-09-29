@@ -16,6 +16,8 @@ private:
 	TextureStruct m_textureStruct;
 public:
 	Texture(const std::string& path, const char* texType);
+	//Default constructor because of the TextureManager map
+	Texture();
 	~Texture();
 
 	void Bind(unsigned int slot = 0) const;

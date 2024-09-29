@@ -25,7 +25,9 @@ Texture::Texture(const std::string& path, const char* texType) :m_RendererID(0),
 	m_textureStruct.type = m_type;
 	m_textureStruct.path = m_FilePath;
 }
+Texture::Texture(): m_RendererID(0){
 
+}
 Texture::~Texture()
 {
 	GLCall(glDeleteTextures(1, &m_RendererID));
@@ -35,6 +37,7 @@ void Texture::Bind(unsigned int slot) const
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+	std::cout << "Active texture: " << m_FilePath << std::endl;
 }
 
 void Texture::Unbind() const
