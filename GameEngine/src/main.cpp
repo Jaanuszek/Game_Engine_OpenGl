@@ -29,6 +29,7 @@
 #include "GuiHandler.h"
 #include "Model.h"
 #include "TextureManager.h"
+#include "ModelManager.h"
 
 std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels);
 void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
@@ -145,6 +146,11 @@ int main() {
 		TextureStruct structSelectedTexture = allTexturesStruct.front();
 		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
 
+		ModelManager modelManager("../../assets/models");
+		//std::map<std::string, std::shared_ptr<Model>> allModels = modelManager.GetModelsMap();
+		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
+		Model selectedModel = allModelsVector.front();
+
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
@@ -156,7 +162,8 @@ int main() {
 		Sphere sphere(0.5f, 48, 48);
 		//torus
 		Torus torus(0.2f,0.5f,48,50);
-		Model backpack("../../assets/models/backpack/backpack.obj");
+		//Model backpack("../../assets/models/backpack/backpack.obj");
+		//Model MonkeyHead("../../assets/models/MonkeyHead/monkeyHead.obj");
 
 		Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
 		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
@@ -225,6 +232,10 @@ int main() {
 				vecSelectedTexture.clear();
 				vecSelectedTexture.push_back(structSelectedTexture);
 
+				if (currentCustomModelImGui >= 0 && currentCustomModelImGui < allModelsVector.size()) {
+					selectedModel = allModelsVector.at(currentCustomModelImGui);
+				}
+
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
@@ -255,7 +266,9 @@ int main() {
 					//render assimp model
 					customModelShader.Bind();
 					customModelShader.SetUniformMat4f("u_MVP", mvp);
-					backpack.Draw(customModelShader, *camera);
+					//MonkeyHead.Draw(customModelShader, *camera);
+					//backpack.Draw(customModelShader, *camera);
+					selectedModel.Draw(customModelShader, *camera);
 				}
 				// rendering light cube
 				lightCubeShader.Bind();

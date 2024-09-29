@@ -45,5 +45,4 @@ TextureStruct TextureManager::GetTextureStructFromPath(const std::string& path) 
 		std::cerr << "TextureManager::GetTextureStructFromPath: "<< e.what() << std::endl;
 		return TextureStruct();
 	}
-	
 }

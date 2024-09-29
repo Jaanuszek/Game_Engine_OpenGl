@@ -81,6 +81,11 @@ void GuiHandler::DrawMainGui(){
 	if (ImGui::Button("Render custom model")) {
 		m_renderObject = RenderObject::Assimp;
 	}
+	if (m_renderObject == RenderObject::Assimp) {
+		ImGui::Begin("Choose a model");
+		drawCombo(m_modelFiles, m_selectedModel, "Select a model");
+		ImGui::End();
+	}
 	ImGui::SliderFloat3("Translation A", &m_translation.x, -1.0f, 1.0f);
 	ImGui::SliderFloat("View Translation A x", &m_viewTranslation.x, -1.0f, 1.0f);
 	ImGui::SliderFloat("View Translation A y", &m_viewTranslation.y, -1.0f, 1.0f);

@@ -92,9 +92,13 @@ std::vector<TextureStruct> Model::loadMaterialTextures(aiMaterial* mat, aiTextur
 	}
 	return textures;
 }
-Model::Model(char* path)
+Model::Model(const char* path)
 {
 	loadModel(path);
+}
+
+Model::Model() {
+	std::cout << "Model::Model: Default constructor called" << std::endl;
 }
 
 Model::~Model()
