@@ -69,6 +69,18 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
 	m_updateVBO = true;
 }
 
+Mesh::Mesh(Solid& solid, const std::vector<TextureStruct>& textures) {
+	this->m_vertices = solid.GetVertices();
+	this->m_indices = solid.GetIndices();
+	this->m_texturesStruct = textures;
+	m_VAO = std::make_shared<VAO>();
+	m_VBO = std::make_shared<VBO>(m_vertices);
+	m_layout = std::make_shared<VBL>();
+	m_EBO = std::make_shared<EBO>(m_indices);
+	setupMeshStruct();
+	m_updateVBO = true;
+}
+
 Mesh::~Mesh()
 {
 }

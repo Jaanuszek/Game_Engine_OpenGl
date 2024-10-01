@@ -15,6 +15,7 @@ target_link_libraries(GameEngineLib PRIVATE
 
 target_include_directories(GameEngineLib PRIVATE
     ${CMAKE_SOURCE_DIR}/GameEngine/include
+    ${CMAKE_SOURCE_DIR}/GameEngine/include/factories
     ${CMAKE_SOURCE_DIR}/GameEngine/include/IO
     ${CMAKE_SOURCE_DIR}/GameEngine/include/objects
     ${CMAKE_SOURCE_DIR}/GameEngine/include/tests

@@ -22,6 +22,8 @@
 #include "objects/Sphere.h"
 #include "objects/Torus.h"
 #include "IO/InputHandler.h"
+#include "factories/IObjectFactory.h"
+#include "factories/ObjectFactory.h"
 #include "MeshFactory.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -147,40 +149,63 @@ int main() {
 		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
 
 		ModelManager modelManager("../../assets/models");
-		//std::map<std::string, std::shared_ptr<Model>> allModels = modelManager.GetModelsMap();
 		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
 		Model selectedModel = allModelsVector.front();
 
-		Cube cube;
-		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
-		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
-		Cylinder cylinder;
-		//cone
-		Cone cone(0.5f, 1.0f, 48, 48);
-		Pyramid pyramid;
-		//sphere
-		Sphere sphere(0.5f, 48, 48);
-		//torus
-		Torus torus(0.2f,0.5f,48,50);
-		//Model backpack("../../assets/models/backpack/backpack.obj");
-		//Model MonkeyHead("../../assets/models/MonkeyHead/monkeyHead.obj");
+		//Cube cube;
+		//float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
+		//Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
+		//Cylinder cylinder;
+		////cone
+		//Cone cone(0.5f, 1.0f, 48, 48);
+		//Pyramid pyramid;
+		////sphere
+		//Sphere sphere(0.5f, 48, 48);
+		////torus
+		//Torus torus(0.2f,0.5f,48,50);
 
-		Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
-		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
-		Mesh meshLight = MeshFactory::CreateMesh(cube, vecSelectedTexture);
-		Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, vecSelectedTexture);
-		Mesh meshSphere = MeshFactory::CreateMesh(sphere, vecSelectedTexture);
-		Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, vecSelectedTexture);
-		Mesh meshCone = MeshFactory::CreateMesh(cone, vecSelectedTexture);
-		Mesh meshTorus = MeshFactory::CreateMesh(torus, vecSelectedTexture);
+		//Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		//Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
+		//Mesh meshLight = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		//Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, vecSelectedTexture);
+		//Mesh meshSphere = MeshFactory::CreateMesh(sphere, vecSelectedTexture);
+		//Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, vecSelectedTexture);
+		//Mesh meshCone = MeshFactory::CreateMesh(cone, vecSelectedTexture);
+		//Mesh meshTorus = MeshFactory::CreateMesh(torus, vecSelectedTexture);
+		auto ConeFactory = ObjectFactory::GetFactory(RenderObject::Cone);
+		std::shared_ptr<Mesh> meshCone = ConeFactory->CreateMesh(vecSelectedTexture);
+		auto CubeFactory = ObjectFactory::GetFactory(RenderObject::Cube);
+		std::shared_ptr<Mesh> meshCube = CubeFactory->CreateMesh(vecSelectedTexture);
+		std::shared_ptr<Mesh> meshLight = CubeFactory->CreateMesh(vecSelectedTexture);
+		auto CuboidFactory = ObjectFactory::GetFactory(RenderObject::Cuboid);
+		std::shared_ptr<Mesh> meshCuboid = CuboidFactory->CreateMesh(vecSelectedTexture);
+		auto CylinderFactory = ObjectFactory::GetFactory(RenderObject::Cylinder);
+		std::shared_ptr<Mesh> meshCylinder = CylinderFactory->CreateMesh(vecSelectedTexture);
+		auto PyramidFactory = ObjectFactory::GetFactory(RenderObject::Pyramid);
+		std::shared_ptr<Mesh> meshPyramid = PyramidFactory->CreateMesh(vecSelectedTexture);
+		auto SphereFactory = ObjectFactory::GetFactory(RenderObject::Sphere);
+		std::shared_ptr<Mesh> meshSphere = SphereFactory->CreateMesh(vecSelectedTexture);
+		auto TorusFactory = ObjectFactory::GetFactory(RenderObject::Torus);
+		std::shared_ptr<Mesh> meshTorus = TorusFactory->CreateMesh(vecSelectedTexture);
+
+		//std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
+		//	{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
+		//	{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
+		//	{RenderObject::Cylinder, std::make_shared<Mesh>(meshCylinder)},
+		//	{RenderObject::Cone, std::make_shared<Mesh>(meshCone)},
+		//	{RenderObject::Pyramid, std::make_shared<Mesh>(meshPyramid)},
+		//	{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)},
+		//	{RenderObject::Torus, std::make_shared<Mesh>(meshTorus)}
+		//};
+
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
-			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
-			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
-			{RenderObject::Cylinder, std::make_shared<Mesh>(meshCylinder)},
-			{RenderObject::Cone, std::make_shared<Mesh>(meshCone)},
-			{RenderObject::Pyramid, std::make_shared<Mesh>(meshPyramid)},
-			{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)},
-			{RenderObject::Torus, std::make_shared<Mesh>(meshTorus)}
+			{RenderObject::Cube, meshCube},
+			{RenderObject::Cuboid, meshCuboid},
+			{RenderObject::Cylinder, meshCylinder},
+			{RenderObject::Cone, meshCone},
+			{RenderObject::Pyramid, meshPyramid},
+			{RenderObject::Sphere, meshSphere},
+			{RenderObject::Torus, meshTorus}
 		};
 		float angle = 0.0f;
 
@@ -241,39 +266,37 @@ int main() {
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), vecSelectedTexture);
 					//renderObject = RenderObject::Sphere;
-					if (renderObject == RenderObject::Sphere) {
-						sphere.UpdateParams();
-						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cone) {
-						cone.UpdateParams();
-						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Torus) {
-						torus.UpdateParams();
-						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cylinder) {
-						cylinder.UpdateParams();
-						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cuboid) {
-						cuboid.UpdateParams();
-						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
-					}
+					//if (renderObject == RenderObject::Sphere) {
+					//	sphere.UpdateParams();
+					//	meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
+					//}
+					//if (renderObject == RenderObject::Cone) {
+					//	cone.UpdateParams();
+					//	meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
+					//}
+					//if (renderObject == RenderObject::Torus) {
+					//	torus.UpdateParams();
+					//	meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
+					//}
+					//if (renderObject == RenderObject::Cylinder) {
+					//	cylinder.UpdateParams();
+					//	meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
+					//}
+					//if (renderObject == RenderObject::Cuboid) {
+					//	cuboid.UpdateParams();
+					//	meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
+					//}
 				}
 				else {
 					//render assimp model
 					customModelShader.Bind();
 					customModelShader.SetUniformMat4f("u_MVP", mvp);
-					//MonkeyHead.Draw(customModelShader, *camera);
-					//backpack.Draw(customModelShader, *camera);
 					selectedModel.Draw(customModelShader, *camera);
 				}
 				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-				meshLight.Draw(lightCubeShader, *camera);
+				meshLight->Draw(lightCubeShader, *camera);
 			}
 			// Draw whole Gui
 			gui.DrawMainGui();

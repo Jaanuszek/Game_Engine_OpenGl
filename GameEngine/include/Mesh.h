@@ -14,6 +14,8 @@
 #include "VBL.h"
 #include <memory>
 
+#include "objects/Solid.h"
+
 class Mesh {
 private:
 	std::shared_ptr<VAO> m_VAO;
@@ -31,6 +33,7 @@ public:
 	
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TextureStruct>& textures);
+	Mesh(Solid& solid, const std::vector<TextureStruct>& textures);
 	~Mesh();
 	void Draw(Shader& shader, Camera& camera);
 	void DrawStruct(Shader& shader, Camera& camera);

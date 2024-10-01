@@ -1,10 +1,12 @@
 #include "Cone.h"
+#include <iostream>
 
 std::vector<float> Cone::getSideNormals() {
 	//const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
 	float sectorStep = 2 * PI / m_sectors;
 	float sectorAngle;
 	std::vector<float> sideNormals;
+	sideNormals.reserve(m_sectors * 3 + 3);
 
 	float zAngle = atan2(m_radius, m_height); // angle between the height and the side wall of the cone (APEX)
 	float x0 = cos(zAngle); // x value of the normal
@@ -12,9 +14,9 @@ std::vector<float> Cone::getSideNormals() {
 
 	for (int i = 0; i <= m_sectors; i++) {
 		sectorAngle = i * sectorStep;
-		sideNormals.push_back(x0 * cos(sectorAngle));
-		sideNormals.push_back(x0 * sin(sectorAngle));
-		sideNormals.push_back(z0);
+		sideNormals.emplace_back(x0 * cos(sectorAngle));
+		sideNormals.emplace_back(x0 * sin(sectorAngle));
+		sideNormals.emplace_back(z0);
 	}
 	return sideNormals;
 }
