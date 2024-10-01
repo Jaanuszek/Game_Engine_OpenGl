@@ -9,7 +9,7 @@ project (
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     #standard cpp 14
-    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 17)
     # -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -36,15 +36,17 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e 
 )
-
 FetchContent_MakeAvailable(glm)
+
+FetchContent_Declare(
+    assimp
+    GIT_REPOSITORY https://github.com/assimp/assimp.git
+    GIT_TAG 	v5.4.3
+)
+FetchContent_MakeAvailable(assimp)
 
 add_subdirectory(GameEngine/src)
 add_subdirectory(GameEngine/include)
-
-#FindOpenGL Cmake component
-#include_directories can be replaced with newest target_include_directories()
-include_directories( ${OPENGL_INCLUDE_DIRS})
 
 if(MSVC)
     set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
@@ -54,14 +56,14 @@ set(GLFW_CMAKE_STARTER_SRC "GameEngine/src/main.cpp")
 set(GLAD_C_PATH "GameEngine/src/glad.c")
 
 add_executable("${CMAKE_PROJECT_NAME}" ${GLFW_CMAKE_STARTER_SRC} ${GLAD_C_PATH})
+
 #Adding external libraries to the project
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     OpenGL::GL
     glfw
-    #stb_image
-    #imgui
     glm::glm
     GameEngineLib
+    assimp
 )
 #Adding header files to the project
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -70,6 +72,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/external/stb_image
     ${CMAKE_SOURCE_DIR}/external/glm
     ${CMAKE_SOURCE_DIR}/external/imgui
+    ${CMAKE_SOURCE_DIR}/external/assimp
 )
 
 if( MSVC )

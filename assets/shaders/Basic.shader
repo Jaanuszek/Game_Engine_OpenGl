@@ -9,12 +9,14 @@ out vec2 v_TexCoord;
 out vec3 v_Color;
 
 uniform mat4 u_MVP;
+uniform mat4 u_model;
+uniform mat4 u_view;
 
 void main()
 {
 	gl_Position = u_MVP * vec4(position,1.0);
 	v_TexCoord = texCoord;
-	v_Color = color;
+	//v_Color = color;
 };
 
 #shader fragment
@@ -27,6 +29,11 @@ in vec3 v_Color;
 
 //uniform vec4 u_Color;
 uniform sampler2D u_Texture;
+
+uniform vec3 u_objectColor;
+uniform vec3 u_lightColor;
+uniform vec3 u_lightPos;
+uniform vec3 u_viewPos;
 
 void main()
 {

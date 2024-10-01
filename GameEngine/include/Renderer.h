@@ -3,9 +3,9 @@
 
 #include <glad/glad.h>
 
-#include "VAO.h";
-#include "EBO.h";
-#include "Shader.h";
+#include "VAO.h"
+#include "EBO.h"
+#include "Shader.h"
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\

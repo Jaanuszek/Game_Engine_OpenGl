@@ -8,6 +8,7 @@
 class MeshFactory {
 public:
 	static Mesh CreateMesh (Solid& solid, std::vector<Texture>& textures);
+	static Mesh CreateMesh (Solid& solid, std::vector<TextureStruct>& textures);
 };
 
 #endif

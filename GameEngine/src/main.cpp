@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <filesystem>
 #include "wtypes.h" // for GetDesktopWindow
 //#include <thread>
 //#include <chrono>
@@ -22,21 +23,19 @@
 #include "objects/Torus.h"
 #include "IO/InputHandler.h"
 #include "MeshFactory.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include "GuiHandler.h"
+#include "Model.h"
+#include "TextureManager.h"
+#include "ModelManager.h"
 
-enum class RenderObject {
-	Cube,
-	Cuboid,
-	Cylinder,
-	Cone,
-	Pyramid,
-	Sphere,
-	Torus
-};
-
-void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera);
-void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp);
-void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
-	const glm::mat4& model, Camera* camera);
+std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels);
+void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
+	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model);
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
+	const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updateDTexture);
 void GetDesktopResolution(float& horizontal, float& vertical);
 
 float width = 0;
@@ -52,10 +51,21 @@ float lastFrame = 0.0f;
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 auto renderer = std::make_shared<Renderer>();
 
+// Files names
+std::vector<std::string> stringShaderFiles = getFilesNamesFromDirectory("../../assets/shaders");
+std::vector<std::string> stringModelsFiles = getFilesNamesFromDirectory("../../assets/models");
+std::vector<std::string> stringTexturesFiles = getFilesNamesFromDirectory("../../assets/textures");
+
+// ImGui Variables
+static int currentShaderImGui = 1;
+static int currentObjectImGui = 0;
+static int currentTextureImGui = 0;
+static int currentCustomModelImGui = 0;
+
 int main() {
 	if (!glfwInit())
 		return -1;
-
+	Assimp::Importer importer;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -103,33 +113,44 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
-		Shader shader1("../../assets/shaders/LightningShader.shader");
+
+		Shader basicShader("../../assets/shaders/Basic.shader");
+
+		Shader lightningShader("../../assets/shaders/LightningShader.shader");
 		//is these lines below necessary?
-		shader1.Bind();
-		shader1.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
-		shader1.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
-		shader1.SetUniform3f("u_lightPos", lightCubeTranslation);
-		shader1.Unbind();
+		lightningShader.Bind();
+		lightningShader.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
+		lightningShader.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
+		lightningShader.SetUniform3f("u_lightPos", lightCubeTranslation);
+		lightningShader.Unbind();
 		Shader shaderSphere("../../assets/shaders/Sphere.shader");
 
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 		lightCubeShader.Unbind();
+		
+		Shader customModelShader("../../assets/shaders/CustomModel.shader");
+		customModelShader.Bind();
+		customModelShader.Unbind();
 
-		//maybe It will be faster if I create hashmap with shaders, but right now its not necessary
-		std::map<std::string, std::shared_ptr<Shader>> shaders = {
-			{"LightningShader", std::make_shared<Shader>(shader1)},
-			{"SphereShader", std::make_shared<Shader>(shaderSphere)},
-			{"LightCubeShader", std::make_shared<Shader>(lightCubeShader)}
+		std::map<ShaderType, std::shared_ptr<Shader>> shadersMap = {
+			{ShaderType::Basic, std::make_shared<Shader>(basicShader)},
+			{ShaderType::Lightning, std::make_shared<Shader>(lightningShader)},
+			{ShaderType::LightCube, std::make_shared<Shader>(lightCubeShader)},
+			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
+			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
-		Texture textures[] = {
-			Texture("../../assets/textures/rubics_cube.png", "diffuse")
-		};
+		TextureManager textureManager("../../assets/textures");
+		std::vector<TextureStruct> allTexturesStruct = textureManager.GetAllTexturesStruct();
+		TextureStruct structSelectedTexture = allTexturesStruct.front();
+		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
 
-		Texture texturesSphere[] = {
-			Texture("../../assets/textures/rubics_cube.png", "diffuse")
-		};
+		ModelManager modelManager("../../assets/models");
+		//std::map<std::string, std::shared_ptr<Model>> allModels = modelManager.GetModelsMap();
+		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
+		Model selectedModel = allModelsVector.front();
+
 		Cube cube;
 		float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
 		Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
@@ -141,19 +162,17 @@ int main() {
 		Sphere sphere(0.5f, 48, 48);
 		//torus
 		Torus torus(0.2f,0.5f,48,50);
-		MeshFactory meshFactory;
+		//Model backpack("../../assets/models/backpack/backpack.obj");
+		//Model MonkeyHead("../../assets/models/MonkeyHead/monkeyHead.obj");
 
-		// Do something with that
-		std::vector <Texture> texVec(textures, textures + sizeof(textures) / sizeof(Texture));
-		std::vector <Texture> texVecSph(texturesSphere, texturesSphere + sizeof(texturesSphere) / sizeof(Texture));
-		Mesh meshCube = meshFactory.CreateMesh(cube, texVec);
-		Mesh meshCuboid = meshFactory.CreateMesh(cuboid, texVec);
-		Mesh meshLight = meshFactory.CreateMesh(cube, texVec);
-		Mesh meshPyramid = meshFactory.CreateMesh(pyramid, texVec);
-		Mesh meshSphere = meshFactory.CreateMesh(sphere, texVecSph);
-		Mesh meshCylinder = meshFactory.CreateMesh(cylinder, texVec);
-		Mesh meshCone = meshFactory.CreateMesh(cone, texVec);
-		Mesh meshTorus = meshFactory.CreateMesh(torus, texVec);
+		Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
+		Mesh meshLight = MeshFactory::CreateMesh(cube, vecSelectedTexture);
+		Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, vecSelectedTexture);
+		Mesh meshSphere = MeshFactory::CreateMesh(sphere, vecSelectedTexture);
+		Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, vecSelectedTexture);
+		Mesh meshCone = MeshFactory::CreateMesh(cone, vecSelectedTexture);
+		Mesh meshTorus = MeshFactory::CreateMesh(torus, vecSelectedTexture);
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
 			{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
@@ -166,16 +185,15 @@ int main() {
 		float angle = 0.0f;
 
 		RenderObject renderObject = RenderObject::Cube;
-
-		//float targetFrameRate = 120.0f;
-		//float targetFrameTime = 1.0f / targetFrameRate;
+		ShaderType shaderType = ShaderType::Lightning;
+		GuiHandler gui(stringShaderFiles, stringTexturesFiles, stringModelsFiles,
+			currentShaderImGui, currentTextureImGui, currentCustomModelImGui,
+			shaderType, renderObject, translationA, viewTranslation, lightCubeTranslation, angle);
 
 		while (!glfwWindowShouldClose(window)) {
-			//auto frameStart = std::chrono::high_resolution_clock::now();
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-
 			renderer->Clear();
 			inputHandler.setDeltaTime(deltaTime);
 			if (inputHandler.getCameraOn()) {
@@ -185,6 +203,7 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
+				// Do something with this calculations
 				glm::mat4 proj = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
 				glm::mat4 view;
 				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
@@ -205,84 +224,63 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-				bool textureChosen = inputHandler.getTexture();
-				// rendering objects using map
-				Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-				HandleRendering(selectedMesh, shaders, textureChosen, lightCubeTranslation, mvp, model, camera.get());
-				if (renderObject == RenderObject::Sphere) {
-					sphere.UpdateParams();
-					meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), texVecSph);
+
+				// Chosing active texture
+				if (currentTextureImGui >= 0 && currentTextureImGui < allTexturesStruct.size()) {
+					structSelectedTexture = allTexturesStruct.at(currentTextureImGui);
 				}
-				if (renderObject == RenderObject::Cone) {
-					cone.UpdateParams();
-					meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), texVec);
+				vecSelectedTexture.clear();
+				vecSelectedTexture.push_back(structSelectedTexture);
+
+				if (currentCustomModelImGui >= 0 && currentCustomModelImGui < allModelsVector.size()) {
+					selectedModel = allModelsVector.at(currentCustomModelImGui);
 				}
-				if (renderObject == RenderObject::Torus) {
-					torus.UpdateParams();
-					meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), texVec);
+
+				if (renderObject != RenderObject::Assimp) {
+					// rendering objects using map
+					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
+					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), vecSelectedTexture);
+					//renderObject = RenderObject::Sphere;
+					if (renderObject == RenderObject::Sphere) {
+						sphere.UpdateParams();
+						meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cone) {
+						cone.UpdateParams();
+						meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Torus) {
+						torus.UpdateParams();
+						meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cylinder) {
+						cylinder.UpdateParams();
+						meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cuboid) {
+						cuboid.UpdateParams();
+						meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
+					}
 				}
-				if (renderObject == RenderObject::Cylinder) {
-					cylinder.UpdateParams();
-					meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), texVec);
-				}
-				if (renderObject == RenderObject::Cuboid) {
-					cuboid.UpdateParams();
-					meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), texVec);
+				else {
+					//render assimp model
+					customModelShader.Bind();
+					customModelShader.SetUniformMat4f("u_MVP", mvp);
+					//MonkeyHead.Draw(customModelShader, *camera);
+					//backpack.Draw(customModelShader, *camera);
+					selectedModel.Draw(customModelShader, *camera);
 				}
 				// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				meshLight.Draw(lightCubeShader, *camera);
 			}
-			{
-				ImGui::Begin("Game_Engine");
-				if (ImGui::Button("Render Cube")) {
-					renderObject = RenderObject::Cube;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Cuboid")) {
-					renderObject = RenderObject::Cuboid;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Cylinder")) {
-					renderObject = RenderObject::Cylinder;
-				}
-
-				if (ImGui::Button("Render Pyramid")) {
-					renderObject = RenderObject::Pyramid;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Sphere")) {
-					renderObject = RenderObject::Sphere;
-				}
-				if (ImGui::Button("Render Cone")) {
-					renderObject = RenderObject::Cone;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Render Torus")) {
-					renderObject = RenderObject::Torus;
-				}
-				ImGui::SliderFloat3("Translation A", &translationA.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A x", &viewTranslation.x, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A y", &viewTranslation.y, -1.0f, 1.0f);
-				ImGui::SliderFloat("View Translation A z", &viewTranslation.z, -10.0f, 10.0f);
-				ImGui::SliderFloat("Angle", &angle, 0.0f, 360.0f);
-				ImGui::SliderFloat3("Light Cube Translation x", &lightCubeTranslation.x, -1.0f, 1.0f);
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::End();
-			}
+			// Draw whole Gui
+			gui.DrawMainGui();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
-
-			//auto frameEnd = std::chrono::high_resolution_clock::now();
-			//std::chrono::duration<float> duration = frameEnd - frameStart;
-
-			//float sleepTime = targetFrameTime - duration.count();
-			//if (sleepTime > 0) {
-			//	std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
-			//}
 		}
 	}
 	ImGui_ImplOpenGL3_Shutdown();
@@ -295,43 +293,36 @@ int main() {
 	return 0;
 }
 
-void BindShaderWithLightning(Shader& shader, const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera) {
-	shader.Bind();
-	shader.SetUniform3f("u_lightPos", lightPos);
-	shader.SetUniformMat4f("u_MVP", mvp);
-	shader.SetUniform3f("u_viewPos", camera->GetCameraPos());
-	shader.SetUniformMat4f("u_model", model);
+std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels) {
+	std::vector<std::string> stringFilesNames;
+	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
+		std::string fileName = entry.path().filename().string();
+		fileName = fileName.substr(0, fileName.find_last_of('.'));
+		stringFilesNames.push_back(fileName);
+	}
+	return stringFilesNames;
 }
-void DrawObjectWithShader(Mesh& mesh, Shader& shader, const glm::mat4& mvp) {
-	shader.Bind();
-	shader.SetUniformMat4f("u_MVP", mvp);
-	mesh.Draw(shader, *camera);
-}
-void HandleRendering(Mesh& mesh, std::map<std::string, std::shared_ptr<Shader>> shader, bool textureChosen, const glm::vec3& lightPos, const glm::mat4& mvp,
-	const glm::mat4& model, Camera* camera) {
-	if (textureChosen) {
-		auto it = shader.find("LightningShader");
-		if (it != shader.end()) {
-			std::shared_ptr<Shader>& shaderWithLight = it->second;
-			BindShaderWithLightning(*shaderWithLight, lightPos, mvp, model, camera);
-			mesh.Draw(*shaderWithLight, *camera);
-		}
-		else {
-			std::cerr << "LightningShader not found" << std::endl;
-			return;
-		}
+
+void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType, 
+	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model) {
+	auto shader = shadersMap.find(shaderType);
+	if (shader != shadersMap.end()) {
+		shader->second->Bind();
+		shader->second->SetUniform3f("u_lightPos", lightPos);
+		shader->second->SetUniformMat4f("u_MVP", mvp);
+		shader->second->SetUniform3f("u_viewPos", camera->GetCameraPos());
+		shader->second->SetUniformMat4f("u_model", model);
 	}
 	else {
-		auto it = shader.find("SphereShader");
-		if (it != shader.end()) {
-			std::shared_ptr<Shader>& shaderWithoutLight = it->second;
-			DrawObjectWithShader(mesh, *shaderWithoutLight, mvp);
-		}
-		else {
-			std::cerr << "SphereShader not found" << std::endl;
-			return;
-		}
+		std::cout << "Shader not found" << std::endl;
+		return;
 	}
+}
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
+	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updatedTexture) {
+	SetShader(chosedShader, shaderType, lightPos, mvp, camera, model);
+	mesh.updateTexture(updatedTexture);
+	mesh.DrawStruct(*chosedShader.find(shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
 	RECT desktop;

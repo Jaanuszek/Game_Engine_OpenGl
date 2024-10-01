@@ -7,10 +7,10 @@ file(GLOB_RECURSE ENGINE_SRC
 add_library(GameEngineLib STATIC ${ENGINE_SRC})
 
 target_link_libraries(GameEngineLib PRIVATE 
-    OpenGL::GL 
-    #stb_image 
+    OpenGL::GL  
     glfw 
     glm::glm
+    assimp
 )
 
 target_include_directories(GameEngineLib PRIVATE
@@ -22,4 +22,5 @@ target_include_directories(GameEngineLib PRIVATE
     ${CMAKE_SOURCE_DIR}/external/stb_image
     ${CMAKE_SOURCE_DIR}/external/glm
     ${CMAKE_SOURCE_DIR}/external/imgui
+    ${CMAKE_SOURCE_DIR}/external/assimp/include
 )
