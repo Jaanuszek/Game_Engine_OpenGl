@@ -19,8 +19,7 @@ protected:
 	virtual void Initalize() = 0;
 	std::vector<float> getUnitCircleVertices(unsigned int sectorCount);
 public:
-	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
-	virtual ~Solid() {}
+	virtual ~Solid() = default;
 	virtual void UpdateVerticesAndIndices() = 0;
 	virtual void UpdateParams() = 0;
 	const std::vector<Vertex>& GetVertices(void) const { return vertices; }

@@ -9,6 +9,8 @@
 
 class IObjectFactory {
 public:
+	virtual ~IObjectFactory() = default;
+	virtual Solid& GetSolidObject() = 0;
 	virtual std::shared_ptr<Mesh> CreateMesh(const std::vector<TextureStruct>& vecSelectedTexture) const = 0;
 };
 

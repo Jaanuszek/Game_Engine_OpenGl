@@ -1,16 +1,16 @@
 #include "Solid.h"
-
+#include <iostream>
 std::vector<float> Solid::getUnitCircleVertices(unsigned int sectorCount) {
     //const float PI = glm::pi<float>();
     const float sectorStep = 2 * PI / sectorCount; //360 / m_sectors
     float sectorAngle;
-
     std::vector<float> unitCircleVertices;
+	unitCircleVertices.reserve(sectorCount * 3 + 3); // 3 components per vertex
     for (int i = 0; i <= sectorCount; ++i) {
         sectorAngle = i * sectorStep; // fi
-        unitCircleVertices.push_back(cos(sectorAngle)); // x
-        unitCircleVertices.push_back(sin(sectorAngle)); // y 
-        unitCircleVertices.push_back(0);                // 0 because i want to render xy plane
+        unitCircleVertices.emplace_back(cos(sectorAngle)); // x
+        unitCircleVertices.emplace_back(sin(sectorAngle)); // y 
+        unitCircleVertices.emplace_back(0);                // 0 because i want to render xy plane
     }
     return unitCircleVertices;
 }

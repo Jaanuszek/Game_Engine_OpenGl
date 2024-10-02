@@ -2,13 +2,8 @@
 #include <map>
 #include <filesystem>
 #include "wtypes.h" // for GetDesktopWindow
-//#include <thread>
-//#include <chrono>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-//#include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/constants.hpp>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -24,7 +19,6 @@
 #include "IO/InputHandler.h"
 #include "factories/IObjectFactory.h"
 #include "factories/ObjectFactory.h"
-#include "MeshFactory.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -152,51 +146,29 @@ int main() {
 		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
 		Model selectedModel = allModelsVector.front();
 
-		//Cube cube;
-		//float cuboidWidht = 0.75, cuboidHeight = 0.5, cuboidDepth = 0.5;
-		//Cuboid cuboid(cuboidWidht, cuboidHeight, cuboidDepth);
-		//Cylinder cylinder;
-		////cone
-		//Cone cone(0.5f, 1.0f, 48, 48);
-		//Pyramid pyramid;
-		////sphere
-		//Sphere sphere(0.5f, 48, 48);
-		////torus
-		//Torus torus(0.2f,0.5f,48,50);
+		Cube cube;
+		Cuboid cuboid(0.75f, 0.5f, 0.5f);
+		Cylinder cylinder;
+		Cone cone(0.5f, 1.0f, 48, 48);
+		Pyramid pyramid;
+		Sphere sphere(0.5f, 48, 48);
+		Torus torus(0.2f,0.5f,48,50);
 
-		//Mesh meshCube = MeshFactory::CreateMesh(cube, vecSelectedTexture);
-		//Mesh meshCuboid = MeshFactory::CreateMesh(cuboid, vecSelectedTexture);
-		//Mesh meshLight = MeshFactory::CreateMesh(cube, vecSelectedTexture);
-		//Mesh meshPyramid = MeshFactory::CreateMesh(pyramid, vecSelectedTexture);
-		//Mesh meshSphere = MeshFactory::CreateMesh(sphere, vecSelectedTexture);
-		//Mesh meshCylinder = MeshFactory::CreateMesh(cylinder, vecSelectedTexture);
-		//Mesh meshCone = MeshFactory::CreateMesh(cone, vecSelectedTexture);
-		//Mesh meshTorus = MeshFactory::CreateMesh(torus, vecSelectedTexture);
-		auto ConeFactory = ObjectFactory::GetFactory(RenderObject::Cone);
+		auto ConeFactory = ObjectFactory::GetFactory(RenderObject::Cone, cone);
 		std::shared_ptr<Mesh> meshCone = ConeFactory->CreateMesh(vecSelectedTexture);
-		auto CubeFactory = ObjectFactory::GetFactory(RenderObject::Cube);
+		auto CubeFactory = ObjectFactory::GetFactory(RenderObject::Cube, cube);
 		std::shared_ptr<Mesh> meshCube = CubeFactory->CreateMesh(vecSelectedTexture);
 		std::shared_ptr<Mesh> meshLight = CubeFactory->CreateMesh(vecSelectedTexture);
-		auto CuboidFactory = ObjectFactory::GetFactory(RenderObject::Cuboid);
+		auto CuboidFactory = ObjectFactory::GetFactory(RenderObject::Cuboid, cuboid);
 		std::shared_ptr<Mesh> meshCuboid = CuboidFactory->CreateMesh(vecSelectedTexture);
-		auto CylinderFactory = ObjectFactory::GetFactory(RenderObject::Cylinder);
+		auto CylinderFactory = ObjectFactory::GetFactory(RenderObject::Cylinder, cylinder);
 		std::shared_ptr<Mesh> meshCylinder = CylinderFactory->CreateMesh(vecSelectedTexture);
-		auto PyramidFactory = ObjectFactory::GetFactory(RenderObject::Pyramid);
+		auto PyramidFactory = ObjectFactory::GetFactory(RenderObject::Pyramid, pyramid);
 		std::shared_ptr<Mesh> meshPyramid = PyramidFactory->CreateMesh(vecSelectedTexture);
-		auto SphereFactory = ObjectFactory::GetFactory(RenderObject::Sphere);
+		auto SphereFactory = ObjectFactory::GetFactory(RenderObject::Sphere, sphere);
 		std::shared_ptr<Mesh> meshSphere = SphereFactory->CreateMesh(vecSelectedTexture);
-		auto TorusFactory = ObjectFactory::GetFactory(RenderObject::Torus);
+		auto TorusFactory = ObjectFactory::GetFactory(RenderObject::Torus, torus);
 		std::shared_ptr<Mesh> meshTorus = TorusFactory->CreateMesh(vecSelectedTexture);
-
-		//std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
-		//	{RenderObject::Cube, std::make_shared<Mesh>(meshCube)},
-		//	{RenderObject::Cuboid, std::make_shared<Mesh>(meshCuboid)},
-		//	{RenderObject::Cylinder, std::make_shared<Mesh>(meshCylinder)},
-		//	{RenderObject::Cone, std::make_shared<Mesh>(meshCone)},
-		//	{RenderObject::Pyramid, std::make_shared<Mesh>(meshPyramid)},
-		//	{RenderObject::Sphere, std::make_shared<Mesh>(meshSphere)},
-		//	{RenderObject::Torus, std::make_shared<Mesh>(meshTorus)}
-		//};
 
 		std::map<RenderObject, std::shared_ptr<Mesh>> meshMap = {
 			{RenderObject::Cube, meshCube},
@@ -265,27 +237,26 @@ int main() {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), vecSelectedTexture);
-					//renderObject = RenderObject::Sphere;
-					//if (renderObject == RenderObject::Sphere) {
-					//	sphere.UpdateParams();
-					//	meshSphere.updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
-					//}
-					//if (renderObject == RenderObject::Cone) {
-					//	cone.UpdateParams();
-					//	meshCone.updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
-					//}
-					//if (renderObject == RenderObject::Torus) {
-					//	torus.UpdateParams();
-					//	meshTorus.updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
-					//}
-					//if (renderObject == RenderObject::Cylinder) {
-					//	cylinder.UpdateParams();
-					//	meshCylinder.updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
-					//}
-					//if (renderObject == RenderObject::Cuboid) {
-					//	cuboid.UpdateParams();
-					//	meshCuboid.updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
-					//}
+					if (renderObject == RenderObject::Sphere) {
+						sphere.UpdateParams();
+						meshSphere->updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cone) {
+						cone.UpdateParams();
+						meshCone->updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Torus) {
+						torus.UpdateParams();
+						meshTorus->updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cylinder) {
+						cylinder.UpdateParams();
+						meshCylinder->updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
+					}
+					if (renderObject == RenderObject::Cuboid) {
+						cuboid.UpdateParams();
+						meshCuboid->updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
+					}
 				}
 				else {
 					//render assimp model

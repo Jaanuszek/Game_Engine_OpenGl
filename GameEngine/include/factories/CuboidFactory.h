@@ -5,9 +5,15 @@
 #include "Cuboid.h"
 
 class CuboidFactory : public IObjectFactory {
+private:
+	Cuboid& m_cuboid;
 public:
+	explicit CuboidFactory(Cuboid& cuboid) : m_cuboid(cuboid) {}
 	std::shared_ptr<Mesh> CreateMesh(const std::vector<TextureStruct>& vecSelectedTexture) const override {
-		return std::make_shared<Mesh>(Cuboid(0.75F,0.5F,0.5F), vecSelectedTexture);
+		return std::make_shared<Mesh>(m_cuboid, vecSelectedTexture);
+	}
+	Solid& GetSolidObject() override {
+		return m_cuboid;
 	}
 };
 
