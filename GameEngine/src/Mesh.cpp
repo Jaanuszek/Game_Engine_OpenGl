@@ -147,6 +147,12 @@ void Mesh::DrawStruct(Shader& shader, Camera& camera) {
 	shader.Unbind();
 	m_VAO->Unbind();
 }
+void Mesh::HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, const ShadersParams& shaderParams,
+	const std::vector<TextureStruct>& updatedTexture) {
+	Shader::SetShader(chosedShader, shaderParams);
+	mesh.updateTexture(updatedTexture);
+	mesh.DrawStruct(*chosedShader.find(shaderParams.shaderType)->second, *shaderParams.camera);
+}
 void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures) {
 	m_vertices = vertices;
 	m_indices = indices;

@@ -1,11 +1,9 @@
 #ifndef MODEL_MANAGER_H
 #define MODEL_MANAGER_H
 
-#include <iostream>
 #include <string>
 #include <map>
 #include <filesystem>
-#include <algorithm>
 
 #include "Model.h"
 

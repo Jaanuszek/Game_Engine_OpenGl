@@ -1,6 +1,5 @@
 #include <iostream>
 #include <map>
-#include <filesystem>
 #include "wtypes.h" // for GetDesktopWindow
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -20,16 +19,12 @@
 #include "factories/IObjectFactory.h"
 #include "factories/ObjectFactory.h"
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include "GuiHandler.h"
 #include "Model.h"
 #include "TextureManager.h"
 #include "ModelManager.h"
 #include "IO/FileHandler.h"
 
-void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader,const ShadersParams& shaderParams,
-	const std::vector<TextureStruct>& updatedTexture);
 void GetDesktopResolution(float& horizontal, float& vertical);
 
 float width = 0;
@@ -233,7 +228,7 @@ int main() {
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-					HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
+					Mesh::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
 						meshSphere->updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
@@ -282,12 +277,6 @@ int main() {
 	glfwTerminate();
 
 	return 0;
-}
-void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, const ShadersParams& shaderParams,
-	const std::vector<TextureStruct>& updatedTexture) {
-	Shader::SetShader(chosedShader, shaderParams);
-	mesh.updateTexture(updatedTexture);
-	mesh.DrawStruct(*chosedShader.find(shaderParams.shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
 	RECT desktop;
