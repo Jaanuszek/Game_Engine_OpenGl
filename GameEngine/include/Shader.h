@@ -6,6 +6,10 @@
 #include <glm/glm.hpp>
 #include <map>
 #include <memory>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "VBO.h"
 
 struct ShaderProgramSource {

@@ -1,6 +1,5 @@
 #include "VAO.h"
 #include "VBL.h"
-#include "Renderer.h"
 
 VAO::VAO() {
 	GLCall(glGenVertexArrays(1, &m_RendererID));

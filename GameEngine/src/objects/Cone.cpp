@@ -1,5 +1,4 @@
 #include "Cone.h"
-#include <iostream>
 
 std::vector<float> Cone::getSideNormals() {
 	//const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting

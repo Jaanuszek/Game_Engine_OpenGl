@@ -43,19 +43,6 @@ void Mesh::setupMeshStruct() {
 	}
 }
 
-Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
-{
-	this->m_vertices = vertices;
-	this->m_indices = indices;
-	this->m_textures = textures;
-	m_VAO = std::make_shared<VAO>();
-	m_VBO = std::make_shared<VBO>(m_vertices);
-	m_layout = std::make_shared<VBL>();
-	m_EBO = std::make_shared<EBO>(m_indices);
-	setupMesh();
-	m_updateVBO = true;
-}
-
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TextureStruct>& textures)
 {
 	this->m_vertices = vertices;
@@ -85,42 +72,7 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::Draw(Shader& shader, Camera& camera)
-{
-	shader.Bind();
-	m_VAO->Bind();
-
-	unsigned int  numDiffuse = 0;
-	unsigned int  numSpecular = 0;
-
-	for (unsigned int i = 0; i < m_textures.size(); i++) {
-		if (i >= m_textures.size()) {
-			break;
-		}
-		//glActiveTexture(GL_TEXTURE0 + i);
-		std::string num;
-		std::string type = m_textures[i].GetType();
-		if(type == "diffuse") {
-			num = std::to_string(numDiffuse++);
-		}
-		else if(type == "specular") {
-			num = std::to_string(numSpecular++);
-		}
-		shader.SetUniform1f(("material." + type + num).c_str(), i);
-		m_textures[i].Bind(i);
-		shader.SetUniform1i((type+num).c_str(), i);
-		//shader.SetUniform3f("u_viewPos", camera.GetCameraPos().x, camera.GetCameraPos().y, camera.GetCameraPos().z);
-		shader.SetUniform3f("u_viewPos", camera.GetCameraPos());
-	}
-	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
-	//Do I need this unbids?
-	for (unsigned int i = 0; i < m_textures.size(); i++) {
-		m_textures[i].Unbind();
-	}
-	shader.Unbind();
-	m_VAO->Unbind();
-}
-void Mesh::DrawStruct(Shader& shader, Camera& camera) {
+void Mesh::Draw(Shader& shader, Camera& camera) {
 	shader.Bind();
 	m_VAO->Bind();
 
@@ -151,13 +103,7 @@ void Mesh::HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shad
 	const std::vector<TextureStruct>& updatedTexture) {
 	Shader::SetShader(chosedShader, shaderParams);
 	mesh.updateTexture(updatedTexture);
-	mesh.DrawStruct(*chosedShader.find(shaderParams.shaderType)->second, *shaderParams.camera);
-}
-void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures) {
-	m_vertices = vertices;
-	m_indices = indices;
-	m_textures = textures;
-	setupMesh();
+	mesh.Draw(*chosedShader.find(shaderParams.shaderType)->second, *shaderParams.camera);
 }
 void Mesh::updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures) {
 	m_vertices = vertices;

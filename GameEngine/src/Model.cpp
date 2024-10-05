@@ -105,10 +105,10 @@ Model::~Model()
 {
 }
 
-void Model::Draw(Shader& shader, Camera& camera)
+void Model::DrawModel(Shader& shader, Camera& camera)
 {
 	for (unsigned int i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i].DrawStruct(shader, camera);
+		m_meshes[i].Draw(shader, camera);
 	}
 }

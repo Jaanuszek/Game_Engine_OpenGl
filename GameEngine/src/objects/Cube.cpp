@@ -1,4 +1,4 @@
-#include "../include/objects/Cube.h"
+#include "Cube.h"
 
 void Cube::Initalize()
 {

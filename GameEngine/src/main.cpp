@@ -104,20 +104,16 @@ int main() {
 		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
 
 		Shader basicShader("../../assets/shaders/Basic.shader");
-
 		Shader lightningShader("../../assets/shaders/LightningShader.shader");
 		lightningShader.Bind();
 		lightningShader.SetUniform3f("u_objectColor", 0.5f, 0.5f, 0.1f);
 		lightningShader.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
 		lightningShader.SetUniform3f("u_lightPos", lightCubeTranslation);
 		lightningShader.Unbind();
-		Shader shaderSphere("../../assets/shaders/Sphere.shader");
-
 		Shader lightCubeShader("../../assets/shaders/LightCube.shader");
 		lightCubeShader.Bind();
 		lightCubeShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
 		lightCubeShader.Unbind();
-		
 		Shader customModelShader("../../assets/shaders/CustomModel.shader");
 
 		std::map<ShaderType, std::shared_ptr<Shader>> shadersMap = {
@@ -125,7 +121,6 @@ int main() {
 			{ShaderType::Lightning, std::make_shared<Shader>(lightningShader)},
 			{ShaderType::LightCube, std::make_shared<Shader>(lightCubeShader)},
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
-			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
 		std::map<std::string, std::shared_ptr<Shader>> shadersMapStr;
 		TextureManager textureManager("../../assets/textures");
@@ -174,9 +169,23 @@ int main() {
 
 		RenderObject renderObject = RenderObject::Cube;
 		ShaderType shaderType = ShaderType::Lightning;
-		GuiHandler gui(stringShaderFiles, stringTexturesFiles, stringModelsFiles,
-			currentShaderImGui, currentTextureImGui, currentCustomModelImGui,
-			shaderType, renderObject, translationA, viewTranslation, lightCubeTranslation, angle);
+
+        GuiHandlerParams guiParams{
+            stringShaderFiles,
+            stringTexturesFiles,
+            stringModelsFiles,
+            currentShaderImGui,
+            currentTextureImGui,
+            currentCustomModelImGui,
+            shaderType,
+            renderObject,
+            translationA,
+            viewTranslation,
+            lightCubeTranslation,
+            angle
+        };
+
+        GuiHandler gui(guiParams);
 
 		while (!glfwWindowShouldClose(window)) {
 			float currentFrame = glfwGetTime();
@@ -254,7 +263,7 @@ int main() {
 					//render assimp model
 					customModelShader.Bind();
 					customModelShader.SetUniformMat4f("u_MVP", mvp);
-					selectedModel.Draw(customModelShader, *camera);
+					selectedModel.DrawModel(customModelShader, *camera);
 				}
 				// rendering light cube
 				lightCubeShader.Bind();

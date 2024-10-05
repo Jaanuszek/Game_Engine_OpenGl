@@ -11,6 +11,22 @@
 
 #include "glm/glm.hpp"
 
+struct GuiHandlerParams {
+	std::vector<std::string>& shaderFiles;
+	std::vector<std::string>& textureFiles;
+	std::vector<std::string>& modelFiles;
+	int& selectedShader;
+	int& selectedTexture;
+	int& selectedModel;
+	ShaderType& shaderType;
+	RenderObject& renderObject;
+	glm::vec3& translation;
+	glm::vec3& viewTranslation;
+	glm::vec3& lightCubeTranslation;
+	float& angle;
+};
+
+
 class GuiHandler {
 private:
 	std::vector<std::string>& m_shaderFiles;
@@ -27,12 +43,10 @@ private:
 	float& m_angle;
 	// drawing option list
 	template<typename EnumType>
-	void drawCombo(std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);
-	void drawCombo(std::vector<std::string>& options, int& selectedOption, const char* text);
+	void drawCombo(const std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);
+	void drawCombo(const std::vector<std::string>& options, int& selectedOption, const char* text);
 public:
-	GuiHandler(std::vector<std::string>& shaderFiles, std::vector<std::string>& textureFiles, std::vector<std::string>& modelFiles,
-		int& selectedShader, int& selectedTexture, int& selectedModel, ShaderType& shaderType, RenderObject& renderObject,
-		glm::vec3& translation, glm::vec3& viewTranslation, glm::vec3& lightCubeTranslation, float& angle);
+	GuiHandler(GuiHandlerParams params);
 	~GuiHandler();
 	void DrawMainGui();
 };

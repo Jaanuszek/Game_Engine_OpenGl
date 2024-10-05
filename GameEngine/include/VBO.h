@@ -59,8 +59,7 @@ public:
 
 	void Bind() const;
 	void Unbind() const;
-	void Update(const void* data, unsigned int size) const;
-	void Update(std::vector<Vertex>& vertices);
+	void Update(const std::vector<Vertex>& vertices);
 };
 
 #endif

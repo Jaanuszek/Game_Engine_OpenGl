@@ -1,7 +1,5 @@
 #include "Solid.h"
-#include <iostream>
 std::vector<float> Solid::getUnitCircleVertices(unsigned int sectorCount) {
-    //const float PI = glm::pi<float>();
     const float sectorStep = 2 * PI / sectorCount; //360 / m_sectors
     float sectorAngle;
     std::vector<float> unitCircleVertices;

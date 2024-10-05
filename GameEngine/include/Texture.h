@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "VBO.h"
+#include "stb_image.h"
 #include "Renderer.h"
 
 class Texture {
