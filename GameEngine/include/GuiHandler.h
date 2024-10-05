@@ -4,30 +4,12 @@
 #include <string>
 #include <vector>
 
+#include "VBO.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 #include "glm/glm.hpp"
-
-enum class RenderObject {
-	Cube,
-	Cuboid,
-	Cylinder,
-	Cone,
-	Pyramid,
-	Sphere,
-	Torus,
-	Assimp
-};
-
-enum class ShaderType {
-	Basic = 0,
-	CustomModel = 1,
-	LightCube = 2,
-	Lightning = 3,
-	Sphere = 4
-};
 
 class GuiHandler {
 private:

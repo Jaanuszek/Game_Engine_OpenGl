@@ -27,8 +27,8 @@ out vec4 v_Color;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-uniform vec3 u_objectColor;
-uniform vec3 u_lightColor;
+uniform vec3 u_objectColor = vec3(1.0f, 0.2f, 0.8f);
+uniform vec3 u_lightColor = vec3(1.0f, 1.0f, 1.0f);
 uniform vec3 u_lightPos;
 uniform vec3 u_viewPos;
 

@@ -6,9 +6,10 @@ project (
     DESCRIPTION "Game Engine project with CMake that will hoepfully make me pass my bachelor degree"
     LANGUAGES CXX C
     )
-
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    #standard cpp 14
     set(CMAKE_CXX_STANDARD 17)
     # -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
@@ -48,8 +49,13 @@ FetchContent_MakeAvailable(assimp)
 add_subdirectory(GameEngine/src)
 add_subdirectory(GameEngine/include)
 
-if(MSVC)
-    set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
+if (MSVC)
+    set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Wall")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /Wall")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
+else()
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
 set(GLFW_CMAKE_STARTER_SRC "GameEngine/src/main.cpp")
@@ -73,6 +79,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/external/glm
     ${CMAKE_SOURCE_DIR}/external/imgui
     ${CMAKE_SOURCE_DIR}/external/assimp
+)
+
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+    $<$<CONFIG:Debug>:/Zi>
+    $<$<CONFIG:Release>:/O2>
 )
 
 if( MSVC )

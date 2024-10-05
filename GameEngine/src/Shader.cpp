@@ -106,7 +106,20 @@ void Shader::Unbind() const
 {
 	GLCall(glUseProgram(0));
 }
-
+void Shader::SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, const ShadersParams& params) {
+	auto shader = shadersMap.find(params.shaderType);
+	if (shader != shadersMap.end()) {
+		shader->second->Bind();
+		shader->second->SetUniform3f("u_lightPos", params.lightPos);
+		shader->second->SetUniformMat4f("u_MVP", params.mvp);
+		shader->second->SetUniform3f("u_viewPos", params.camera->GetCameraPos());
+		shader->second->SetUniformMat4f("u_model", params.model);
+	}
+	else {
+		std::cout << "Shader not found" << std::endl;
+		return;
+	}
+}
 void Shader::SetUniform1i(const std::string& name, int value)
 {
 	GLCall(glUniform1i(GetUniformLocation(name), value));

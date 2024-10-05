@@ -6,6 +6,7 @@
 #include "VAO.h"
 #include "EBO.h"
 #include "Shader.h"
+#include "VBO.h"
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -21,6 +22,9 @@ public:
 	void ShowGridLine() const;
 	void ShowGridPoint() const;
 	void DisableGrid() const;
+	// TODO
+	void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, const ShadersParams& shaderParams,
+		const std::vector<TextureStruct>& updatedTexture);
 	void Draw(const VAO& vao, const EBO& ebo, const Shader& shader) const;
 };
 #endif

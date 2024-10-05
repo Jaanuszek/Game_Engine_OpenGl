@@ -4,12 +4,14 @@
 #include <string>
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include <map>
+#include <memory>
+#include "VBO.h"
 
 struct ShaderProgramSource {
 	std::string VertexSource;
 	std::string FragmentSource;
 };
-
 
 class Shader {
 private:
@@ -22,7 +24,7 @@ public:
 
 	void Bind() const;
 	void Unbind() const;
-
+	static void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, const ShadersParams& params);
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniform1f(const std::string& name, float value);
 	void SetUniform3f(const std::string& name, float v0, float v1, float v2);

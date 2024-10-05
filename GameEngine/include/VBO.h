@@ -6,8 +6,9 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include "Camera.h"
 
-
+// Consider moving these structs to a separate file
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec2 TexCoords;
@@ -18,6 +19,33 @@ struct TextureStruct {
 	unsigned int id;
 	std::string type;
 	std::string path;
+};
+
+enum class RenderObject {
+	Cube,
+	Cuboid,
+	Cylinder,
+	Cone,
+	Pyramid,
+	Sphere,
+	Torus,
+	Assimp
+};
+
+enum class ShaderType {
+	Basic = 0,
+	CustomModel = 1,
+	LightCube = 2,
+	Lightning = 3,
+	Sphere = 4
+};
+
+struct ShadersParams {
+	ShaderType shaderType;
+	glm::mat4 mvp;
+	glm::mat4 model;
+	glm::vec3 lightPos;
+	Camera* camera;
 };
 
 class VBO {

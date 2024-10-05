@@ -26,12 +26,10 @@
 #include "Model.h"
 #include "TextureManager.h"
 #include "ModelManager.h"
+#include "IO/FileHandler.h"
 
-std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels);
-void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType,
-	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model);
-void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
-	const glm::vec3& lightPos, const glm::mat4& mvp, const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updateDTexture);
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader,const ShadersParams& shaderParams,
+	const std::vector<TextureStruct>& updatedTexture);
 void GetDesktopResolution(float& horizontal, float& vertical);
 
 float width = 0;
@@ -48,9 +46,9 @@ auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA
 auto renderer = std::make_shared<Renderer>();
 
 // Files names
-std::vector<std::string> stringShaderFiles = getFilesNamesFromDirectory("../../assets/shaders");
-std::vector<std::string> stringModelsFiles = getFilesNamesFromDirectory("../../assets/models");
-std::vector<std::string> stringTexturesFiles = getFilesNamesFromDirectory("../../assets/textures");
+std::vector<std::string> stringShaderFiles = FileHandler::getFilesNamesFromDirectory("../../assets/shaders");
+std::vector<std::string> stringModelsFiles = FileHandler::getFilesNamesFromDirectory("../../assets/models");
+std::vector<std::string> stringTexturesFiles = FileHandler::getFilesNamesFromDirectory("../../assets/textures");
 
 // ImGui Variables
 static int currentShaderImGui = 1;
@@ -113,9 +111,8 @@ int main() {
 		Shader basicShader("../../assets/shaders/Basic.shader");
 
 		Shader lightningShader("../../assets/shaders/LightningShader.shader");
-		//is these lines below necessary?
 		lightningShader.Bind();
-		lightningShader.SetUniform3f("u_objectColor", 1.0f, 0.2f, 0.8f);
+		lightningShader.SetUniform3f("u_objectColor", 0.5f, 0.5f, 0.1f);
 		lightningShader.SetUniform3f("u_lightColor", 1.0f, 1.0f, 1.0f);
 		lightningShader.SetUniform3f("u_lightPos", lightCubeTranslation);
 		lightningShader.Unbind();
@@ -127,8 +124,6 @@ int main() {
 		lightCubeShader.Unbind();
 		
 		Shader customModelShader("../../assets/shaders/CustomModel.shader");
-		customModelShader.Bind();
-		customModelShader.Unbind();
 
 		std::map<ShaderType, std::shared_ptr<Shader>> shadersMap = {
 			{ShaderType::Basic, std::make_shared<Shader>(basicShader)},
@@ -137,6 +132,7 @@ int main() {
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
 			{ShaderType::Sphere, std::make_shared<Shader>(shaderSphere)}
 		};
+		std::map<std::string, std::shared_ptr<Shader>> shadersMapStr;
 		TextureManager textureManager("../../assets/textures");
 		std::vector<TextureStruct> allTexturesStruct = textureManager.GetAllTexturesStruct();
 		TextureStruct structSelectedTexture = allTexturesStruct.front();
@@ -221,7 +217,8 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-
+				// Set shader parameters
+				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };
 				// Chosing active texture
 				if (currentTextureImGui >= 0 && currentTextureImGui < allTexturesStruct.size()) {
 					structSelectedTexture = allTexturesStruct.at(currentTextureImGui);
@@ -236,7 +233,7 @@ int main() {
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
-					HandleRendering(selectedMesh, shadersMap, shaderType, lightCubeTranslation, mvp, model, camera.get(), vecSelectedTexture);
+					HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
 					if (renderObject == RenderObject::Sphere) {
 						sphere.UpdateParams();
 						meshSphere->updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
@@ -286,37 +283,11 @@ int main() {
 
 	return 0;
 }
-
-std::vector<std::string> getFilesNamesFromDirectory(const std::string& pathToModels) {
-	std::vector<std::string> stringFilesNames;
-	for (const auto& entry : std::filesystem::directory_iterator(pathToModels)) {
-		std::string fileName = entry.path().filename().string();
-		fileName = fileName.substr(0, fileName.find_last_of('.'));
-		stringFilesNames.push_back(fileName);
-	}
-	return stringFilesNames;
-}
-
-void SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, ShaderType shaderType, 
-	const glm::vec3 lightPos,const glm::mat4& mvp, Camera* camera, const glm::mat4& model) {
-	auto shader = shadersMap.find(shaderType);
-	if (shader != shadersMap.end()) {
-		shader->second->Bind();
-		shader->second->SetUniform3f("u_lightPos", lightPos);
-		shader->second->SetUniformMat4f("u_MVP", mvp);
-		shader->second->SetUniform3f("u_viewPos", camera->GetCameraPos());
-		shader->second->SetUniformMat4f("u_model", model);
-	}
-	else {
-		std::cout << "Shader not found" << std::endl;
-		return;
-	}
-}
-void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, ShaderType shaderType,
-	const glm::vec3& lightPos, const glm::mat4& mvp,const glm::mat4& model, Camera* camera, std::vector<TextureStruct> updatedTexture) {
-	SetShader(chosedShader, shaderType, lightPos, mvp, camera, model);
+void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, const ShadersParams& shaderParams,
+	const std::vector<TextureStruct>& updatedTexture) {
+	Shader::SetShader(chosedShader, shaderParams);
 	mesh.updateTexture(updatedTexture);
-	mesh.DrawStruct(*chosedShader.find(shaderType)->second, *camera);
+	mesh.DrawStruct(*chosedShader.find(shaderParams.shaderType)->second, *camera);
 }
 void GetDesktopResolution(float& horizontal, float& vertical) {
 	RECT desktop;
