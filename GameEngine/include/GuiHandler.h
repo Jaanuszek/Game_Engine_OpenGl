@@ -24,6 +24,7 @@ struct GuiHandlerParams {
 	glm::vec3& viewTranslation;
 	glm::vec3& lightCubeTranslation;
 	float& angle;
+	bool& isObjectBeingUpdated;
 };
 
 

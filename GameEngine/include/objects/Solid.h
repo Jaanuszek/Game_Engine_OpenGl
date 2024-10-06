@@ -16,6 +16,7 @@ protected:
 	unsigned int verticesSize;
 	std::vector<unsigned int> indices;
 	unsigned int indicesSize;
+	bool m_isUpdated = false;
 	virtual void Initalize() = 0;
 	std::vector<float> getUnitCircleVertices(unsigned int sectorCount);
 public:
@@ -26,5 +27,7 @@ public:
 	const unsigned int GetVerticesSize(void) const { return vertices.size(); }
 	const std::vector<unsigned int>& GetIndices(void) const { return indices; }
 	const unsigned int GetIndicesSize(void) const { return indices.size(); }
+	void SetIsUpdated(const bool& isUpdated) { m_isUpdated = isUpdated; }
+	bool GetIsUpdated() { return m_isUpdated; }
 };
 #endif

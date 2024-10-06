@@ -24,9 +24,14 @@
 #include "TextureManager.h"
 #include "ModelManager.h"
 #include "IO/FileHandler.h"
+#include "Calculations.h"
 
 void GetDesktopResolution(float& horizontal, float& vertical);
-
+void SetActiveTexture(static int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
+	std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture);
+void SetActiveModel(static int currentCustomModelImGui, const std::vector<Model>& allModelsVector, Model& selectedModel);
+void UpdateObjectParams(const RenderObject& renderObject, IObjectFactory& objectFactory,
+	const std::map<RenderObject, std::shared_ptr<Mesh>>& meshMap, const std::vector<TextureStruct>& selectedTexture);
 float width = 0;
 float height = 0;
 
@@ -50,6 +55,7 @@ static int currentShaderImGui = 1;
 static int currentObjectImGui = 0;
 static int currentTextureImGui = 0;
 static int currentCustomModelImGui = 0;
+bool isObjectUpdated = false;
 
 int main() {
 	if (!glfwInit())
@@ -182,7 +188,8 @@ int main() {
             translationA,
             viewTranslation,
             lightCubeTranslation,
-            angle
+            angle,
+			isObjectUpdated
         };
 
         GuiHandler gui(guiParams);
@@ -200,22 +207,18 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
-				// Do something with this calculations
-				glm::mat4 proj = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
+				glm::mat4 proj = Calculations::CalculateProjectionMatrix(width, height);
 				glm::mat4 view;
-				glm::mat4 model = glm::mat4(1.0f); //model is a second step according to book xd
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				model = glm::translate(model, translationA);
+				glm::mat4 model = Calculations::CalculateModelMatrix(angle, glm::vec3(0.5f, 1.0f, 0.0f), translationA);
 				glm::mat4 mvp;
-				//light cube
-				glm::mat4 viewLightCube = glm::translate(glm::mat4(1.0f), glm::vec3(-0.0f, 0.0f, -3.0f));
-				glm::mat4 modelLightCube = glm::translate(glm::mat4(1.0f), lightCubeTranslation);
+				glm::mat4 viewLightCube = Calculations::CalculateViewMatrix(glm::vec3(-0.0f, 0.0f, -3.0f));
+				glm::mat4 modelLightCube = Calculations::CalculateModelMatrix(lightCubeTranslation);
 				modelLightCube = glm::scale(modelLightCube, glm::vec3(0.2f));
 				glm::mat4 mvpLightCube;
 				if (!inputHandler.getCameraOn()) {
-					view = glm::translate(glm::mat4(1.0f), viewTranslation);
-					mvp = proj * view * model;
-					mvpLightCube = proj * viewLightCube * modelLightCube;
+					view = Calculations::CalculateViewMatrix(viewTranslation);
+					mvp = Calculations::CalculateMVPMatrix(proj, view, model);
+					mvpLightCube = Calculations::CalculateMVPMatrix(proj, viewLightCube, modelLightCube);
 				}
 				else {
 					mvp = camera->CalculateMVP(proj, model);
@@ -223,41 +226,14 @@ int main() {
 				}
 				// Set shader parameters
 				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };
-				// Chosing active texture
-				if (currentTextureImGui >= 0 && currentTextureImGui < allTexturesStruct.size()) {
-					structSelectedTexture = allTexturesStruct.at(currentTextureImGui);
-				}
-				vecSelectedTexture.clear();
-				vecSelectedTexture.push_back(structSelectedTexture);
-
-				if (currentCustomModelImGui >= 0 && currentCustomModelImGui < allModelsVector.size()) {
-					selectedModel = allModelsVector.at(currentCustomModelImGui);
-				}
+				SetActiveTexture(currentTextureImGui, allTexturesStruct, vecSelectedTexture, structSelectedTexture);
+				SetActiveModel(currentCustomModelImGui, allModelsVector, selectedModel);
 
 				if (renderObject != RenderObject::Assimp) {
 					// rendering objects using map
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second; // add if statement to check if it is in map
 					Mesh::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
-					if (renderObject == RenderObject::Sphere) {
-						sphere.UpdateParams();
-						meshSphere->updateMesh(sphere.GetVertices(), sphere.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cone) {
-						cone.UpdateParams();
-						meshCone->updateMesh(cone.GetVertices(), cone.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Torus) {
-						torus.UpdateParams();
-						meshTorus->updateMesh(torus.GetVertices(), torus.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cylinder) {
-						cylinder.UpdateParams();
-						meshCylinder->updateMesh(cylinder.GetVertices(), cylinder.GetIndices(), vecSelectedTexture);
-					}
-					if (renderObject == RenderObject::Cuboid) {
-						cuboid.UpdateParams();
-						meshCuboid->updateMesh(cuboid.GetVertices(), cuboid.GetIndices(), vecSelectedTexture);
-					}
+					UpdateObjectParams(renderObject, *TorusFactory, meshMap, vecSelectedTexture);
 				}
 				else {
 					//render assimp model
@@ -293,4 +269,36 @@ void GetDesktopResolution(float& horizontal, float& vertical) {
 	GetWindowRect(hDesktop, &desktop);
 	horizontal = desktop.right;
 	vertical = desktop.bottom;
+}
+
+void SetActiveTexture(static int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
+	std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture) {
+	if (currentTextureImGui >= 0 && currentTextureImGui < allTextures.size()) {
+		structSelectedTexture = allTextures.at(currentTextureImGui);
+	}
+	vecSelectedTexture.clear();
+	vecSelectedTexture.push_back(structSelectedTexture);
+}
+void SetActiveModel(static int currentCustomModelImGui, const std::vector<Model>& allModelsVector, Model& selectedModel) {
+	if (currentCustomModelImGui >= 0 && currentCustomModelImGui < allModelsVector.size()) {
+		selectedModel = allModelsVector.at(currentCustomModelImGui);
+	}
+}
+
+void UpdateObjectParams(const RenderObject& renderObject, IObjectFactory& objectFactory,
+	const std::map<RenderObject, std::shared_ptr<Mesh>>& meshMap, const std::vector<TextureStruct>& selectedTexture){
+	Solid& solid = objectFactory.GetSolidObject();
+	bool isUpdated = solid.GetIsUpdated();
+	//add something like this!!!!
+	//if (solid == nulptr) {
+	//	throw std::runtime_error("Solid object is null");
+	//}
+	//if (isUpdated) {
+		auto it = meshMap.find(renderObject);
+		if (it == meshMap.end()) {
+			throw std::runtime_error("RenderObject not found in meshMap");
+		}
+		solid.UpdateParams();
+		it->second->updateMesh(solid.GetVertices(), solid.GetIndices(), selectedTexture);
+	//}
 }
