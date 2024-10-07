@@ -18,6 +18,8 @@ public:
 	TextureManager(const std::string& directoryPath);
 	~TextureManager();
 	void LoadTexturesFromDirectory(const std::string& directoryPath);
+	static void SetActiveTexture(int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
+		std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture);
 	std::vector<TextureStruct> GetAllTexturesStruct();
 	TextureStruct GetTextureStructFromPath(const std::string& path);
 };

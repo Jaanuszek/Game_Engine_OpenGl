@@ -25,7 +25,14 @@ void TextureManager::LoadTexturesFromDirectory(const std::string& directoryPath)
 		}
 	}
 }
-
+void TextureManager::SetActiveTexture(int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
+	std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture) {
+	if (currentTextureImGui >= 0 && currentTextureImGui < allTextures.size()) {
+		structSelectedTexture = allTextures.at(currentTextureImGui);
+	}
+	vecSelectedTexture.clear();
+	vecSelectedTexture.push_back(structSelectedTexture);
+}
 std::vector<TextureStruct> TextureManager::GetAllTexturesStruct() {
 	std::vector<TextureStruct> texturesStruct;
 	for (auto& texture : m_texturesMap) {

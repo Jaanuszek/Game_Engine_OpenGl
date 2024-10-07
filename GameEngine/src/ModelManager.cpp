@@ -30,6 +30,11 @@ void ModelManager::LoadModelsFromDirectory(const std::string& directoryPath) {
 		}
 	}
 }
+void ModelManager::SetActiveCustomModel(int currentCustomModel, const std::vector<Model>& allModelsVec, Model& selectedModel) {
+	if (currentCustomModel >= 0 && currentCustomModel < allModelsVec.size()) {
+		selectedModel = allModelsVec.at(currentCustomModel);
+	}
+}
 std::map<std::string, std::shared_ptr<Model>> ModelManager::GetModelsMap() {
 	return m_mapModels;
 }

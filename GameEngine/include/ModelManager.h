@@ -16,6 +16,7 @@ public:
 	ModelManager(const std::string& directoryPath);
 	~ModelManager();
 	void LoadModelsFromDirectory(const std::string& directoryPath);
+	static void SetActiveCustomModel(int currentCustomModel, const std::vector<Model>& allModelsVec, Model& selectedModel);
 	std::map<std::string, std::shared_ptr<Model>> GetModelsMap();
 	std::vector<Model> GetAllModelsVector();
 	std::shared_ptr<Model> GetModelFromPath(const std::string& path);
