@@ -6,7 +6,8 @@
 
 class Calculations {
 public:
-	static glm::mat4 CalculateProjectionMatrix(const float& width, const float& height);;
+	static glm::mat4 CalculateProjectionMatrix(const float& width, const float& height);
+	static glm::mat4 CalculateProjectionMatrix(const int& width, const int& height);
 	static glm::mat4 CalculateViewMatrix(const glm::vec3& viewTranslation);
 	static glm::mat4 CalculateModelMatrix(const float& angle, const glm::vec3& axis, const glm::vec3 translation);
 	static glm::mat4 CalculateModelMatrix(const glm::vec3& translation);

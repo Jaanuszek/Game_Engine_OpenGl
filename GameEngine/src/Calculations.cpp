@@ -3,6 +3,9 @@
 glm::mat4 Calculations::CalculateProjectionMatrix(const float& width, const float& height) {
 	return glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
 }
+glm::mat4 Calculations::CalculateProjectionMatrix(const int& width, const int& height) {
+	return glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+}
 
 glm::mat4 Calculations::CalculateViewMatrix(const glm::vec3& viewTranslation) {
 	return glm::translate(glm::mat4(1.0f), viewTranslation);

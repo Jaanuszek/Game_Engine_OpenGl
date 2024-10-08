@@ -1,5 +1,5 @@
-#ifndef INPUTHANDLER_H
-#define INPUTHANDLER_H
+#ifndef INPUT_HANDLER_H
+#define INPUT_HANDLER_H
 
 #include <unordered_map>
 #include <functional>
@@ -10,8 +10,6 @@
 class InputHandler
 {
 private:
-	bool m_cameraOn;
-	bool m_firstMouse;
 	float m_deltaTime;
 	float lastX, lastY;
 	GLFWwindow* m_window;
@@ -19,6 +17,8 @@ private:
 	std::unordered_map<int, std::function<void()>> m_CameraKeyBindings;
 	std::unordered_map<int, std::function<void(int)>> m_keyActions;
 	std::shared_ptr<Renderer> m_renderer;
+	bool m_cameraOn;
+	bool m_firstMouse;
 	bool m_GridLineOn;
 	bool m_GridPointOn;
 	bool m_Texture; //for now i have only 2 options, so i will use bool, but later i will proprably change it to enum
@@ -29,7 +29,7 @@ public:
 
 	void setCamera(std::shared_ptr<Camera> cam);
 	void setRenderer(std::shared_ptr<Renderer> renderer);
-	void setDeltaTime(float deltaTime);
+	void setDeltaTime(double deltaTime);
 
 	bool getCameraOn(void) const;
 	void setCameraOn(bool cameraOn);

@@ -51,7 +51,13 @@ add_subdirectory(GameEngine/include)
 
 if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Wall")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /Wall")
+    
+    # Highest level of optimization for Visual Studio in Release mode
+    set(CMAKE_CXX_FLAGS_RELEASE "/Ox /GL /Wall /arch:AVX2")
+    
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG") # Enables link-time code generation for optimization
+    
+    # Setting linker flags to use a custom entry point
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
 else()
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
@@ -83,7 +89,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:/Zi>
-    $<$<CONFIG:Release>:/O2>
+    $<$<CONFIG:Release>:/Ox>
 )
 
 if( MSVC )

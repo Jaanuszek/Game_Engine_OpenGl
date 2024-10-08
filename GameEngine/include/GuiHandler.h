@@ -49,6 +49,9 @@ private:
 public:
 	GuiHandler(GuiHandlerParams params);
 	~GuiHandler();
+	static void Init(GLFWwindow* window);
+	static void StartFrame();
+	static void EndFrame();
 	void DrawMainGui();
 };
 

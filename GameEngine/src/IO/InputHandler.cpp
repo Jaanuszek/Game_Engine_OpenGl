@@ -40,7 +40,7 @@ void InputHandler::setRenderer(std::shared_ptr<Renderer> renderer)
 {
 	m_renderer = renderer;
 }
-void InputHandler::setDeltaTime(float deltaTime)
+void InputHandler::setDeltaTime(double deltaTime)
 {
 	m_deltaTime = deltaTime;
 }

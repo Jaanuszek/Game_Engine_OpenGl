@@ -15,9 +15,9 @@ struct Vertex {
 };
 
 struct TextureStruct {
-	unsigned int id;
 	std::string type;
 	std::string path;
+	unsigned int id;
 };
 
 enum class RenderObject {

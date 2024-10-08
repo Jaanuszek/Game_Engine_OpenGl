@@ -5,7 +5,7 @@
 
 class SystemUtils {
 public:
-	static void GetDesktopResolution(float& horizontal, float& vertical) {
+	static void GetDesktopResolution(int& horizontal, int& vertical) {
 		RECT desktop;
 		const HWND hDesktop = GetDesktopWindow();
 		GetWindowRect(hDesktop, &desktop);

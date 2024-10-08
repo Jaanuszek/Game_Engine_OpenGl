@@ -26,20 +26,17 @@
 #include "Calculations.h"
 #include "SystemUtils.h"
 #include "MeshUpdater.h"
+#include "factories/MeshFactory.h"
 
-void HandleRendering(const RenderObject renderObject, std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>> meshMap,
-	std::map<ShaderType, std::shared_ptr<Shader>> shadersMap, ShadersParams& shadersParams, const std::vector<TextureStruct>& vecSelectedTexture,
-	Shader customModelShader, glm::mat4 mvp, Model selectedModel, Shader lightCubeShader, glm::mat4 mvpLightCube, std::shared_ptr<Mesh> meshLight);
-
-float width = 0;
-float height = 0;
+int width = 0;
+int height = 0;
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
 
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+double deltaTime = 0.0f;
+double lastFrame = 0.0f;
 
 auto camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), translationA);
 auto renderer = std::make_shared<Renderer>();
@@ -102,11 +99,7 @@ int main() {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glEnable(GL_DEPTH_TEST));
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui::StyleColorsDark();
-		ImGui_ImplOpenGL3_Init((char*)glGetString(330));
+		GuiHandler::Init(window);
 
 		Shader basicShader("../../assets/shaders/Basic.shader");
 		Shader lightningShader("../../assets/shaders/LightningShader.shader");
@@ -145,32 +138,21 @@ int main() {
 		Sphere sphere(0.5f, 48, 48);
 		Torus torus(0.2f,0.5f,48,50);
 
-		std::unique_ptr<IObjectFactory>  ConeFactory = ObjectFactory::GetFactory(RenderObject::Cone, cone);
-		std::shared_ptr<Mesh> meshCone = ConeFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory>  CubeFactory = ObjectFactory::GetFactory(RenderObject::Cube, cube);
-		std::shared_ptr<Mesh> meshCube = CubeFactory->CreateMesh(vecSelectedTexture);
-		std::shared_ptr<Mesh> meshLight = CubeFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory>  CuboidFactory = ObjectFactory::GetFactory(RenderObject::Cuboid, cuboid);
-		std::shared_ptr<Mesh> meshCuboid = CuboidFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory>  CylinderFactory = ObjectFactory::GetFactory(RenderObject::Cylinder, cylinder);
-		std::shared_ptr<Mesh> meshCylinder = CylinderFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory>  PyramidFactory = ObjectFactory::GetFactory(RenderObject::Pyramid, pyramid);
-		std::shared_ptr<Mesh> meshPyramid = PyramidFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory>  SphereFactory = ObjectFactory::GetFactory(RenderObject::Sphere, sphere);
-		std::shared_ptr<Mesh> meshSphere = SphereFactory->CreateMesh(vecSelectedTexture);
-		std::unique_ptr<IObjectFactory> TorusFactory = ObjectFactory::GetFactory(RenderObject::Torus, torus);
-		std::shared_ptr<Mesh> meshTorus = TorusFactory->CreateMesh(vecSelectedTexture);
+		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
 
+		std::vector<std::pair<RenderObject, Solid&>> objects = {
+			{RenderObject::Cube, cube},
+			{RenderObject::Cuboid, cuboid},
+			{RenderObject::Cylinder, cylinder},
+			{RenderObject::Cone, cone},
+			{RenderObject::Pyramid, pyramid},
+			{RenderObject::Sphere, sphere},
+			{RenderObject::Torus, torus}
+		};
 		std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>> meshMap;
-		// Emplace, because sunique_ptr is not copyable but movable, and Emplace creates the object in place 
-		// std::move() is used to transfer ownership of the unique_ptr to the map
-		meshMap.emplace(RenderObject::Cube, std::make_pair(meshCube, std::move(CubeFactory)));
-		meshMap.emplace(RenderObject::Cuboid, std::make_pair(meshCuboid, std::move(CuboidFactory)));
-		meshMap.emplace(RenderObject::Cylinder, std::make_pair(meshCylinder, std::move(CylinderFactory)));
-		meshMap.emplace(RenderObject::Cone, std::make_pair(meshCone, std::move(ConeFactory)));
-		meshMap.emplace(RenderObject::Pyramid, std::make_pair(meshPyramid, std::move(PyramidFactory)));
-		meshMap.emplace(RenderObject::Sphere, std::make_pair(meshSphere, std::move(SphereFactory)));
-		meshMap.emplace(RenderObject::Torus, std::make_pair(meshTorus, std::move(TorusFactory)));
+		for (const auto& object : objects) {
+			MeshFactory::AddMeshToMap(object.first, object.second, meshMap, vecSelectedTexture);
+		}
 
 		float angle = 0.0f;
 
@@ -196,7 +178,7 @@ int main() {
         GuiHandler gui(guiParams);
 
 		while (!glfwWindowShouldClose(window)) {
-			float currentFrame = glfwGetTime();
+			double currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			renderer->Clear();
@@ -204,9 +186,7 @@ int main() {
 			if (inputHandler.getCameraOn()) {
 				inputHandler.cameraMovement_callback();
 			}
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
+			GuiHandler::StartFrame();
 			{
 				glm::mat4 proj = Calculations::CalculateProjectionMatrix(width, height);
 				glm::mat4 view;
@@ -246,50 +226,19 @@ int main() {
 					customModelShader.SetUniformMat4f("u_MVP", mvp);
 					selectedModel.DrawModel(customModelShader, *camera);
 				}
-				// rendering light cube
+				//// rendering light cube
 				lightCubeShader.Bind();
 				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
 				meshLight->Draw(lightCubeShader, *camera);
 			}
-			// Draw whole Gui
 			gui.DrawMainGui();
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			GuiHandler::EndFrame();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
 	return 0;
-}
-
-void HandleRendering(const RenderObject renderObject, std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>> meshMap,
-	std::map<ShaderType, std::shared_ptr<Shader>> shadersMap, ShadersParams& shadersParams, const std::vector<TextureStruct>& vecSelectedTexture,
-	Shader customModelShader, glm::mat4 mvp, Model selectedModel, Shader lightCubeShader, glm::mat4 mvpLightCube, std::shared_ptr<Mesh> meshLight) {
-	if (renderObject != RenderObject::Assimp) {
-		// rendering objects using map
-		auto meshMapIterator = meshMap.find(renderObject);
-		if (meshMapIterator == meshMap.end()) {
-			throw std::runtime_error("RenderObject not found in meshMap");
-		}
-		Mesh& selectedMesh = *meshMap.find(renderObject)->second.first;
-		Mesh::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
-		MeshUpdater::UpdateObjectParams(renderObject, meshMap, vecSelectedTexture);
-	}
-	else {
-		//render assimp model
-		customModelShader.Bind();
-		customModelShader.SetUniformMat4f("u_MVP", mvp);
-		selectedModel.DrawModel(customModelShader, *camera);
-	}
-	// rendering light cube
-	lightCubeShader.Bind();
-	lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-	meshLight->Draw(lightCubeShader, *camera);
 }

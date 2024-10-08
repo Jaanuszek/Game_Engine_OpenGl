@@ -7,7 +7,7 @@ private:
 	float m_radius;
 	float m_height;
 	unsigned int m_sectors;
-	int m_maxSectors = m_sectors;
+	unsigned int m_maxSectors = m_sectors;
 	float m_bottomBaseRadius;
 	float m_topBaseRadius;
 	void Initalize() override;

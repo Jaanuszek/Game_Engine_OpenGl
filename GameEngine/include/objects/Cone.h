@@ -8,8 +8,8 @@ private:
 	float m_height;
 	unsigned int m_sectors;
 	unsigned int m_stacks;
-	int m_maxSectors = m_sectors;
-	int m_maxStacks = m_stacks;
+	unsigned int m_maxSectors = m_sectors;
+	unsigned int m_maxStacks = m_stacks;
 	std::vector<float> getSideNormals();
 	void Initalize() override;
 public:

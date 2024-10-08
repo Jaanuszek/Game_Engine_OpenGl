@@ -29,7 +29,22 @@ void GuiHandler::drawCombo(const std::vector<std::string>& options, int& selecte
 		ImGui::EndCombo();
 	}
 }
-
+void GuiHandler::Init(GLFWwindow* window) {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL3_Init((char*)glGetString(330));
+}
+void GuiHandler::StartFrame() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+}
+void GuiHandler::EndFrame() {
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 GuiHandler::GuiHandler(GuiHandlerParams params) : m_shaderFiles(params.shaderFiles), m_textureFiles(params.textureFiles), m_modelFiles(params.modelFiles),
 m_selectedShader(params.selectedShader), m_selectedTexture(params.selectedTexture), m_selectedModel(params.selectedModel), m_shaderType(params.shaderType),
 m_renderObject(params.renderObject), m_translation(params.translation), m_viewTranslation(params.viewTranslation),
@@ -39,6 +54,9 @@ m_lightCubeTranslation(params.lightCubeTranslation), m_angle(params.angle)
 
 GuiHandler::~GuiHandler()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void GuiHandler::DrawMainGui(){
