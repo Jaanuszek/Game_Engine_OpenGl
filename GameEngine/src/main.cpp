@@ -2,9 +2,6 @@
 #include <map>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include "Mesh.h"
 #include "Renderer.h"
 #include "objects/Cuboid.h"
@@ -16,7 +13,6 @@
 #include "objects/Torus.h"
 #include "IO/InputHandler.h"
 #include "factories/IObjectFactory.h"
-#include "factories/ObjectFactory.h"
 #include <assimp/Importer.hpp>
 #include "GuiHandler.h"
 #include "Model.h"
@@ -27,6 +23,7 @@
 #include "SystemUtils.h"
 #include "MeshUpdater.h"
 #include "factories/MeshFactory.h"
+#include "RenderingManager.h"
 
 int width = 0;
 int height = 0;
@@ -217,19 +214,15 @@ int main() {
 						throw std::runtime_error("RenderObject not found in meshMap");
 					}
 					Mesh& selectedMesh = *meshMap.find(renderObject)->second.first;
-					Mesh::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
+					RenderingManager::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
 					MeshUpdater::UpdateObjectParams(renderObject, meshMap, vecSelectedTexture);
 				}
 				else {
 					//render assimp model
-					customModelShader.Bind();
-					customModelShader.SetUniformMat4f("u_MVP", mvp);
-					selectedModel.DrawModel(customModelShader, *camera);
+					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, selectedModel, camera);
 				}
 				//// rendering light cube
-				lightCubeShader.Bind();
-				lightCubeShader.SetUniformMat4f("u_MVP", mvpLightCube);
-				meshLight->Draw(lightCubeShader, *camera);
+				RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);
 			}
 			gui.DrawMainGui();
 			GuiHandler::EndFrame();
