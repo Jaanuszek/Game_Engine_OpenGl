@@ -1,11 +1,11 @@
 #include "Cone.h"
 
-std::vector<float> Cone::getSideNormals() {
+std::vector<float> Cone::getSideNormals() const{
 	//const float PI = glm::pi<float>(); //acos(-1.0f) == pi interesting
-	float sectorStep = 2 * PI / m_sectors;
+	float sectorStep = 2 * PI / static_cast<float>(m_sectors);
 	float sectorAngle;
 	std::vector<float> sideNormals;
-	sideNormals.reserve(m_sectors * 3 + 3);
+	sideNormals.reserve(static_cast<size_t>(m_sectors) * 3 + 3);
 
 	float zAngle = atan2(m_radius, m_height); // angle between the height and the side wall of the cone (APEX)
 	float x0 = cos(zAngle); // x value of the normal
@@ -39,7 +39,7 @@ void Cone::Initalize()
 		float t = 1.0f - (float)i / m_stacks;
 		for (int j = 0, k = 0; j <= m_sectors; j++, k += 3) {
 			x = unitCircleVertices[k];
-			y = unitCircleVertices[k + 1];
+			y = unitCircleVertices[static_cast<size_t>(k + 1)];
 			if (verticesIt == vertices.end()) {
 				break;
 			}
@@ -49,8 +49,8 @@ void Cone::Initalize()
 			(*verticesIt).TexCoords[0] = (float)j / m_sectors;
 			(*verticesIt).TexCoords[1] = t;
 			(*verticesIt).Normal[0] = sideNormals[k];
-			(*verticesIt).Normal[1] = sideNormals[k + 1];
-			(*verticesIt).Normal[2] = sideNormals[k + 2];
+			(*verticesIt).Normal[1] = sideNormals[static_cast<size_t>(k + 1)];
+			(*verticesIt).Normal[2] = sideNormals[static_cast<size_t>(k + 2)];
 			verticesIt++;
 			baseVertexIndex++;
 		}
@@ -68,7 +68,7 @@ void Cone::Initalize()
 	verticesIt++;
 	for (int i = 0, j = 0; i < m_sectors; i++, j += 3) {
 		x = unitCircleVertices[j];
-		y = unitCircleVertices[j + 1];
+		y = unitCircleVertices[static_cast<size_t>(j + 1)];
 		(*verticesIt).Position[0] = x * m_radius;
 		(*verticesIt).Position[1] = y * m_radius;
 		(*verticesIt).Position[2] = z;
@@ -88,7 +88,7 @@ void Cone::Initalize()
 	// body indices = m_stack * m_secotrs * 6
 	// base indices = m_sectors * 3 because the base has a center vertex and m_sectors vertices around the base
 	unsigned int totalIndices = m_sectors * m_stacks * 6 + m_sectors * 3;
-	indices.resize(m_sectors * m_stacks * 6 + m_sectors * 3);
+	indices.resize(static_cast<size_t>(m_sectors * m_stacks * 6 + m_sectors * 3));
 	std::vector<unsigned int>::iterator indicesIt = indices.begin();
 	for (int i = 0; i < m_stacks; i++) {
 		k1 = i * (m_sectors + 1);

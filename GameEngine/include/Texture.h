@@ -10,9 +10,9 @@
 class Texture {
 private:
 	unsigned int m_RendererID;
+	int m_Width, m_Height, m_BPP;
 	std::string m_FilePath;
 	unsigned char* m_LocalBuffer;
-	int m_Width, m_Height, m_BPP;
 	const char* m_type;
 	TextureStruct m_textureStruct;
 public:

@@ -1,7 +1,7 @@
 #include "EBO.h"
 #include "Renderer.h"
 
-EBO::EBO(const std::vector<unsigned int>& indices)
+EBO::EBO(const std::vector<unsigned int>& indices) : m_Count()
 {
 	GLCall(glGenBuffers(1, &m_ID));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID));
@@ -32,5 +32,4 @@ void EBO::Update(const std::vector<unsigned int>& indices)
 	else {
 		GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), indices.data()));
 	}
-	//Unbind();
 }

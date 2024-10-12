@@ -5,7 +5,7 @@ void Model::loadModel(std::string path) {
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+		std::cout << "[Model::loadModel] ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
 		return;
 	}
 	m_directory = path.substr(0, path.find_last_of('/'));
@@ -95,10 +95,6 @@ std::vector<TextureStruct> Model::loadMaterialTextures(aiMaterial* mat, aiTextur
 Model::Model(const char* path)
 {
 	loadModel(path);
-}
-
-Model::Model() {
-	std::cout << "Model::Model: Default constructor called" << std::endl;
 }
 
 Model::~Model()

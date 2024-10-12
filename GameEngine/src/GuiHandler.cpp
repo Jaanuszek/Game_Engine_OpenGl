@@ -52,6 +52,23 @@ m_lightCubeTranslation(params.lightCubeTranslation), m_angle(params.angle)
 {
 }
 
+GuiHandler& GuiHandler::operator=(const GuiHandler& other) {
+	if (this == &other) return *this;
+	m_shaderFiles = other.m_shaderFiles;
+	m_textureFiles = other.m_textureFiles;
+	m_modelFiles = other.m_modelFiles;
+	m_selectedShader = other.m_selectedShader;
+	m_selectedTexture = other.m_selectedTexture;
+	m_selectedModel = other.m_selectedModel;
+	m_shaderType = other.m_shaderType;
+	m_renderObject = other.m_renderObject;
+	m_translation = other.m_translation;
+	m_viewTranslation = other.m_viewTranslation;
+	m_lightCubeTranslation = other.m_lightCubeTranslation;
+	m_angle = other.m_angle;
+	return *this;
+}
+
 GuiHandler::~GuiHandler()
 {
 	ImGui_ImplOpenGL3_Shutdown();

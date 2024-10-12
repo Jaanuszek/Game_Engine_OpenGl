@@ -12,7 +12,6 @@
 #include "objects/Sphere.h"
 #include "objects/Torus.h"
 #include "IO/InputHandler.h"
-#include "factories/IObjectFactory.h"
 #include <assimp/Importer.hpp>
 #include "GuiHandler.h"
 #include "Model.h"
@@ -21,7 +20,6 @@
 #include "IO/FileHandler.h"
 #include "Calculations.h"
 #include "SystemUtils.h"
-#include "MeshUpdater.h"
 #include "factories/MeshFactory.h"
 #include "RenderingManager.h"
 #include "MeshRegistry.h"
@@ -81,13 +79,16 @@ int main() {
 	inputHandler.setCamera(camera);
 	inputHandler.setRenderer(renderer);
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+	//add excpetion handlers to this callbacks
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) noexcept{
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
 		if (handler) {
 			handler->mouse_callback(xpos, ypos);
 		}
 		});
-	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) noexcept{
+		(void)scancode;
+		(void)mods;
 		InputHandler* handler = static_cast<InputHandler*>(glfwGetWindowUserPointer(window));
 		if (handler) {
 			handler->key_callback(key, action);
@@ -147,7 +148,6 @@ int main() {
 		};
 		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
 		MeshRegistry meshRegistry(objects, vecSelectedTexture);
-		std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>>& meshMap = meshRegistry.GetMeshMap();
 		RenderingManager renderingManager(shadersMap);
 		RenderObject renderObject = RenderObject::Cube;
 		ShaderType shaderType = ShaderType::Lightning;
@@ -199,7 +199,6 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
-
 				// Rendering
 				// Set shader parameters
 				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };

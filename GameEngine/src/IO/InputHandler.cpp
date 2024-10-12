@@ -1,5 +1,4 @@
 #include "../include/IO/InputHandler.h"
-#include <iostream>
 
 InputHandler::InputHandler(GLFWwindow* window)
 	: m_cameraOn(false), m_firstMouse(true), m_deltaTime(0.0f), m_window(window), lastX(0.0f), lastY(0.0f), m_camera(nullptr), m_renderer(nullptr),

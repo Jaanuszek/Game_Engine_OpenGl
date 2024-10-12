@@ -31,15 +31,15 @@ std::unique_ptr<IObjectFactory> ObjectFactory::GetFactory(RenderObject object, S
 		}
 	}
 	catch (const std::bad_cast& e) {
-		std::cerr << "ObjectFactory::GetFactory Bad cast caught: " << e.what() << std::endl;
+		std::cerr << "[ObjectFactory::GetFactory] Bad cast caught: " << e.what() << std::endl;
 		return nullptr;
 	}
 	catch (const std::exception& e) {
-		std::cerr << "ObjectFactory::GetFactory Exception caught: " << e.what() << std::endl;
+		std::cerr << "[ObjectFactory::GetFactory] Exception caught: " << e.what() << std::endl;
 		return nullptr;
 	}
 	catch (...) {
-		std::cerr << "ObjectFactory::GetFactory Unknown exception caught" << std::endl;
+		std::cerr << "[ObjectFactory::GetFactory] Unknown exception caught" << std::endl;
 		return nullptr;
 	}
 }

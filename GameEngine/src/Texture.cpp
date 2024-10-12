@@ -24,7 +24,7 @@ Texture::Texture(const std::string& path, const char* texType) :m_RendererID(0),
 	m_textureStruct.type = m_type;
 	m_textureStruct.path = m_FilePath;
 }
-Texture::Texture(): m_RendererID(0){
+Texture::Texture(): m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0), m_type() {
 
 }
 Texture::~Texture()
@@ -36,7 +36,7 @@ void Texture::Bind(unsigned int slot) const
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-	std::cout << "Active texture: " << m_FilePath << std::endl;
+	std::cout << "[Texture::Bind] Active texture: " << m_FilePath << std::endl;
 }
 
 void Texture::Unbind() const
@@ -72,7 +72,7 @@ unsigned int Texture::TextureFromFile(const char* path, const std::string& direc
 		stbi_image_free(data);
 	}
 	else {
-		std::cout << "Texture failed to load at path: " << path << std::endl;
+		std::cout << "[Texture::TextureFromFile] Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
 	return textureID;

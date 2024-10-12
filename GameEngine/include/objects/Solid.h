@@ -12,9 +12,9 @@
 
 class Solid {
 protected:
+	bool m_isUpdated = false;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	bool m_isUpdated = false;
 
 	virtual void Initalize() = 0;
 	std::vector<float> getUnitCircleVertices(unsigned int sectorCount);

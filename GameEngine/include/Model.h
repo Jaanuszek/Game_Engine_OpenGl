@@ -17,7 +17,6 @@ private:
 	std::vector<TextureStruct> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 public:
 	Model(const char* path);
-	Model();
 	~Model();
 	void DrawModel(Shader& shader, Camera& camera);
 };

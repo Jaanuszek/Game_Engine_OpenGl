@@ -10,7 +10,7 @@ private:
 	unsigned int m_stacks;
 	unsigned int m_maxSectors = m_sectors;
 	unsigned int m_maxStacks = m_stacks;
-	std::vector<float> getSideNormals();
+	std::vector<float> getSideNormals() const;
 	void Initalize() override;
 public:
 	Cone(float radius = 0.5f, float height = 1.0f, unsigned int sectors = 50, unsigned int stacks = 10);

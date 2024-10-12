@@ -1,7 +1,7 @@
 #ifndef SYSTEM_UTILS_H
 #define SYSTEM_UTILS_H
 
-#include "wtypes.h" // for GetDesktopWindow
+#include "wtypes.h"
 
 class SystemUtils {
 public:

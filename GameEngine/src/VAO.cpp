@@ -18,7 +18,7 @@ void VAO::AddBuffer(const VBO& vbo, const VBL& layout) {
 	for (unsigned int i = 0; i < elements.size();i++) {
 		const auto& element = elements[i];
 		GLCall(glEnableVertexAttribArray(i));
-		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (const void*)offset));
+		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (const void*)(uintptr_t)offset)); // first cast to uint pointer, and then cast to const void* because in some platforms pointers can be larger than integers
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
 	vbo.Unbind();

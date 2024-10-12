@@ -7,28 +7,25 @@
 
 
 struct VertexBufferElement {
-	unsigned int type;
-	unsigned int count;
-	unsigned char normalized;
+    unsigned int type;
+    unsigned int count;
+    unsigned char normalized;
 
-	//VertexBufferElement(unsigned int type, unsigned int count, unsigned char normalized)
-	//	: type(type), count(count), normalized(normalized) {}
-
-	static unsigned int GetSizeOfType(unsigned int type) {
-		switch (type) {
-		case GL_FLOAT: return 4;
-		case GL_UNSIGNED_INT: return 4;
-		case GL_UNSIGNED_BYTE: return 1;
-		}
-		ASSERT(false);
-		return 0;
-	}
+    static unsigned int GetSizeOfType(unsigned int type) {
+        switch (type) {
+        case GL_FLOAT: return 4;
+        case GL_UNSIGNED_INT: return 4;
+        case GL_UNSIGNED_BYTE: return 1;
+        }
+        ASSERT(false);
+        return 0;
+    }
 };
 
 class VBL {
 private:
+    unsigned int m_Stride;
 	std::vector<VertexBufferElement> m_Elements;
-	unsigned int m_Stride;
 public:
 	VBL() : m_Stride(0) {}
 	void Push(unsigned int type, unsigned int count)

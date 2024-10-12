@@ -16,6 +16,10 @@ private:
 	void CrateAndAddMeshToMap();
 public:
 	MeshRegistry(std::vector<std::pair<RenderObject, Solid&>>& vecObjects, std::vector<TextureStruct>& vecSelectedTexture);
+	MeshRegistry(const MeshRegistry& other);
+	MeshRegistry& operator=(const MeshRegistry& other);
+	MeshRegistry(MeshRegistry&& other) noexcept;
+	MeshRegistry& operator=(MeshRegistry&& other) noexcept;
 	std::map < RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>>& GetMeshMap() { return m_meshMap; }
 	Mesh& GetMeshFromMap(RenderObject renderObject);
 	IObjectFactory* GetFactoryFromMap(RenderObject renderObject);

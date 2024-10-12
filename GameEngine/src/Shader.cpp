@@ -60,8 +60,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = (char*)_malloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
-		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
-		std::cout << "Path to failed shader: " << m_FilePath << std::endl;
+		std::cout << "[Shader::CompileShader] Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+		std::cout << "[Shader::CompileShader] Path to failed shader: " << m_FilePath << std::endl;
 		std::cout << message << std::endl;
 		glDeleteShader(id);
 		return 0;
@@ -89,7 +89,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 void Shader::Bind() const
 {
 	if (m_RendererID == 0) {
-		std::cerr << "Shader program ID is invalid." << std::endl;
+		std::cerr << "[Shader::Bind] Shader program ID is invalid." << std::endl;
 		return;
 	}
 	GLCall(glUseProgram(m_RendererID));
@@ -102,7 +102,7 @@ void Shader::Unbind() const
 void Shader::SetShader(std::map<ShaderType, std::shared_ptr<Shader>>& shadersMap, const ShadersParams& params) {
     auto shader = shadersMap.find(params.shaderType);
     if (shader == shadersMap.end()) {
-        throw std::runtime_error("Shader not found");
+        throw std::runtime_error("[Shader::SetShader] Shader not found");
     }
     shader->second->Bind();
     shader->second->SetUniform3f("u_lightPos", params.lightPos);
@@ -147,7 +147,7 @@ int Shader::GetUniformLocation(const std::string& name)
 
 	GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
 	if (location == -1) {
-		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+		std::cout << "[Shader::GetUniformLocation] Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 	}
 	m_UniformLocationCache[name] = location;
 	return location;

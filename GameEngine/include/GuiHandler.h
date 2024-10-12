@@ -12,19 +12,96 @@
 #include "glm/glm.hpp"
 
 struct GuiHandlerParams {
-	std::vector<std::string>& shaderFiles;
-	std::vector<std::string>& textureFiles;
-	std::vector<std::string>& modelFiles;
-	int& selectedShader;
-	int& selectedTexture;
-	int& selectedModel;
-	ShaderType& shaderType;
-	RenderObject& renderObject;
-	glm::vec3& translation;
-	glm::vec3& viewTranslation;
-	glm::vec3& lightCubeTranslation;
-	float& angle;
-	bool& isObjectBeingUpdated;
+    std::vector<std::string>& shaderFiles;
+    std::vector<std::string>& textureFiles;
+    std::vector<std::string>& modelFiles;
+    int& selectedShader;
+    int& selectedTexture;
+    int& selectedModel;
+    ShaderType& shaderType;
+    RenderObject& renderObject;
+    glm::vec3& translation;
+    glm::vec3& viewTranslation;
+    glm::vec3& lightCubeTranslation;
+    float& angle;
+    bool& isObjectBeingUpdated;
+
+    GuiHandlerParams(
+        std::vector<std::string>& shaderFiles,
+        std::vector<std::string>& textureFiles,
+        std::vector<std::string>& modelFiles,
+        int& selectedShader,
+        int& selectedTexture,
+        int& selectedModel,
+        ShaderType& shaderType,
+        RenderObject& renderObject,
+        glm::vec3& translation,
+        glm::vec3& viewTranslation,
+        glm::vec3& lightCubeTranslation,
+        float& angle,
+        bool& isObjectBeingUpdated
+    ) : shaderFiles(shaderFiles),
+        textureFiles(textureFiles),
+        modelFiles(modelFiles),
+        selectedShader(selectedShader),
+        selectedTexture(selectedTexture),
+        selectedModel(selectedModel),
+        shaderType(shaderType),
+        renderObject(renderObject),
+        translation(translation),
+        viewTranslation(viewTranslation),
+        lightCubeTranslation(lightCubeTranslation),
+        angle(angle),
+        isObjectBeingUpdated(isObjectBeingUpdated) {}
+	GuiHandlerParams(const GuiHandlerParams& other) : shaderFiles(other.shaderFiles),
+		textureFiles(other.textureFiles),
+		modelFiles(other.modelFiles),
+		selectedShader(other.selectedShader),
+		selectedTexture(other.selectedTexture),
+		selectedModel(other.selectedModel),
+		shaderType(other.shaderType),
+		renderObject(other.renderObject),
+		translation(other.translation),
+		viewTranslation(other.viewTranslation),
+		lightCubeTranslation(other.lightCubeTranslation),
+		angle(other.angle),
+		isObjectBeingUpdated(other.isObjectBeingUpdated) {}
+	GuiHandlerParams& operator=(const GuiHandlerParams& other) {
+        if (this != &other) {
+            shaderFiles = other.shaderFiles;
+            textureFiles = other.textureFiles;
+            modelFiles = other.modelFiles;
+            selectedShader = other.selectedShader;
+            selectedTexture = other.selectedTexture;
+            selectedModel = other.selectedModel;
+            shaderType = other.shaderType;
+            renderObject = other.renderObject;
+            translation = other.translation;
+            viewTranslation = other.viewTranslation;
+            lightCubeTranslation = other.lightCubeTranslation;
+            angle = other.angle;
+            isObjectBeingUpdated = other.isObjectBeingUpdated;
+            return *this;
+        }
+	}
+    GuiHandlerParams& operator=(const GuiHandlerParams&& other) noexcept{
+        if (this != &other) {
+            shaderFiles = other.shaderFiles;
+            textureFiles = other.textureFiles;
+            modelFiles = other.modelFiles;
+            selectedShader = other.selectedShader;
+            selectedTexture = other.selectedTexture;
+            selectedModel = other.selectedModel;
+            shaderType = other.shaderType;
+            renderObject = other.renderObject;
+            translation = other.translation;
+            viewTranslation = other.viewTranslation;
+            lightCubeTranslation = other.lightCubeTranslation;
+            angle = other.angle;
+            isObjectBeingUpdated = other.isObjectBeingUpdated;
+            return *this;
+        }
+    }
 };
 
 
@@ -48,6 +125,7 @@ private:
 	void drawCombo(const std::vector<std::string>& options, int& selectedOption, const char* text);
 public:
 	GuiHandler(GuiHandlerParams params);
+	GuiHandler& operator=(const GuiHandler& other);
 	~GuiHandler();
 	static void Init(GLFWwindow* window);
 	static void StartFrame();

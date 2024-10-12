@@ -30,7 +30,6 @@ glm::vec3 Camera::GetCameraPos(void) const
 
 void Camera::processInput(Camera_Movement direction, float deltaTime)
 {
-	//float cameraSpeed = 2.5f * deltaTime;
 	if (direction == Camera_Movement::FORWARD)
 		m_CameraPos += cameraSpeed * m_CameraFront;
 	if (direction == Camera_Movement::BACKWARD)

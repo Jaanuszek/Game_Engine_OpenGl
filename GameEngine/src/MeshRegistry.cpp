@@ -15,10 +15,34 @@ MeshRegistry::MeshRegistry(std::vector<std::pair<RenderObject, Solid&>>& vecObje
 	CrateAndAddMeshToMap();
 }
 
+MeshRegistry::MeshRegistry(const MeshRegistry& other): m_vecObjects(other.m_vecObjects), m_vecSelectedTexture(other.m_vecSelectedTexture)  {
+	CrateAndAddMeshToMap();
+}
+MeshRegistry& MeshRegistry::operator=(const MeshRegistry& other) {
+	if (this == &other) {
+		return *this;
+	}
+	m_vecObjects = other.m_vecObjects;
+	m_vecSelectedTexture = other.m_vecSelectedTexture;
+	m_meshMap.clear();
+	CrateAndAddMeshToMap();
+	return *this;
+}
+MeshRegistry::MeshRegistry(MeshRegistry&& other) noexcept : m_vecObjects(std::move(other.m_vecObjects)), m_vecSelectedTexture(std::move(other.m_vecSelectedTexture)) {
+	CrateAndAddMeshToMap();
+}
+MeshRegistry& MeshRegistry::operator=(MeshRegistry&& other) noexcept {
+	if (this != &other) {
+		m_vecObjects = std::move(other.m_vecObjects);
+		m_vecSelectedTexture = std::move(other.m_vecSelectedTexture);
+		m_meshMap = std::move(other.m_meshMap);
+	}
+	return *this;
+}
 Mesh& MeshRegistry::GetMeshFromMap(RenderObject renderObject) {
 	auto meshMapIterator = m_meshMap.find(renderObject);
 	if (meshMapIterator == m_meshMap.end()) {
-		throw std::runtime_error("RenderObject not found in meshMap");
+		throw std::runtime_error("[MeshRegistry::GetMeshFromMap] RenderObject not found in meshMap");
 	}
 	return *meshMapIterator->second.first;
 }
@@ -26,7 +50,7 @@ Mesh& MeshRegistry::GetMeshFromMap(RenderObject renderObject) {
 IObjectFactory* MeshRegistry::GetFactoryFromMap(RenderObject renderObject) {
 	auto meshMapIterator = m_meshMap.find(renderObject);
 	if (meshMapIterator == m_meshMap.end()) {
-		throw std::runtime_error("RenderObject not found in meshMap");
+		throw std::runtime_error("[MeshRegistry::GetFactoryFromMap] RenderObject not found in meshMap");
 	}
 	// .get() returns the raw pointer (dereferenced)
 	return meshMapIterator->second.second.get();

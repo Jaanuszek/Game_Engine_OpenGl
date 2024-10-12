@@ -15,9 +15,9 @@ struct Vertex {
 };
 
 struct TextureStruct {
+	unsigned int id = 0;
 	std::string type;
 	std::string path;
-	unsigned int id;
 };
 
 enum class RenderObject {
@@ -52,7 +52,6 @@ private:
 	unsigned int m_ID;
 	unsigned int m_currentSizeOfBuffer;
 public:
-	VBO(const void* data, unsigned int size);
 	VBO(std::vector<Vertex>& vertices);
 	~VBO();
 

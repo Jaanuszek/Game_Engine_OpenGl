@@ -2,10 +2,10 @@
 
 void Sphere::Initalize()
 {
-	float const R = 1.0f / (float)(m_sectors - 1); //normalizing Sectors to be a value frome 0 to 1
-	float const S = 1.0f / (float)(m_stacks - 1); //normalizing Stacks 
+	float const R = 1.0f / static_cast<float>(m_sectors - 1); //normalizing Sectors to be a value frome 0 to 1
+	float const S = 1.0f / static_cast<float>(m_stacks - 1); //normalizing Stacks 
 	int r, s;
-	vertices.resize(m_sectors * m_stacks);
+	vertices.resize(static_cast<size_t>(m_sectors) * m_stacks);
 	std::vector<Vertex>::iterator verticesIt = vertices.begin();
 	for (r = 0; r < m_sectors; r++) {
 		for (s = 0; s < m_stacks; s++) {
@@ -28,7 +28,7 @@ void Sphere::Initalize()
 			verticesIt++;
 		}
 	}
-	indices.resize(m_sectors * m_stacks * 6); // 6 indices per quad because every quad have 2 triangles and 2 triangles have 6 indices
+	indices.resize(static_cast<size_t>(m_sectors) * m_stacks * 6); // 6 indices per quad because every quad have 2 triangles and 2 triangles have 6 indices
 	std::vector<unsigned int>::iterator i = indices.begin();
 	for (r = 0; r < m_sectors; r++) {
 		for (s = 0; s < m_stacks; s++) {
