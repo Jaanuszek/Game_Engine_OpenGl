@@ -20,23 +20,19 @@ private:
 	std::shared_ptr<VBO> m_VBO;
 	std::shared_ptr<VBL> m_layout;
 	std::shared_ptr<EBO> m_EBO;
-	bool m_updateVBO = false;
-	void setupMesh();
-	void setupMeshStruct();
-public:
 	std::vector<Vertex> m_vertices;
 	std::vector<unsigned int> m_indices;
 	std::vector<Texture> m_textures;
 	std::vector<TextureStruct> m_texturesStruct;
-	
+	bool m_updateVBO = false;
+	void setupMesh();
+	void setupMeshStruct();
+public:
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TextureStruct>& textures);
 	Mesh(Solid& solid, const std::vector<TextureStruct>& textures);
 	~Mesh();
 	void Draw(Shader& shader, Camera& camera);
-	// Is it okey to have this static function in Mesh class?
-	static void HandleRendering(Mesh& mesh, std::map<ShaderType, std::shared_ptr<Shader>> chosedShader, const ShadersParams& shaderParams,
-		const std::vector<TextureStruct>& updatedTexture);
-	void updateMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures);
+	void updateMeshParams(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures);
 	void updateTexture(const std::vector<TextureStruct>& textures);
 };
 

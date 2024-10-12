@@ -150,12 +150,6 @@ void InputHandler::InitializeKeyBindings()
 				}
 			}
 		}},
-		{GLFW_KEY_T,[this](int action) { // Toggling textures
-			if (action == GLFW_PRESS)
-			{
-				m_Texture = !m_Texture;
-			}
-		}},
 		{GLFW_KEY_ESCAPE, [this](int action) {
 			if (action == GLFW_PRESS)
 			{

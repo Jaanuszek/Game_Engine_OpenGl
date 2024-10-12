@@ -24,6 +24,7 @@
 #include "MeshUpdater.h"
 #include "factories/MeshFactory.h"
 #include "RenderingManager.h"
+#include "MeshRegistry.h"
 
 int width = 0;
 int height = 0;
@@ -31,6 +32,7 @@ int height = 0;
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
+float angle = 0.0f;
 
 double deltaTime = 0.0f;
 double lastFrame = 0.0f;
@@ -134,9 +136,6 @@ int main() {
 		Pyramid pyramid;
 		Sphere sphere(0.5f, 48, 48);
 		Torus torus(0.2f,0.5f,48,50);
-
-		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
-
 		std::vector<std::pair<RenderObject, Solid&>> objects = {
 			{RenderObject::Cube, cube},
 			{RenderObject::Cuboid, cuboid},
@@ -146,13 +145,10 @@ int main() {
 			{RenderObject::Sphere, sphere},
 			{RenderObject::Torus, torus}
 		};
-		std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>> meshMap;
-		for (const auto& object : objects) {
-			MeshFactory::AddMeshToMap(object.first, object.second, meshMap, vecSelectedTexture);
-		}
-
-		float angle = 0.0f;
-
+		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
+		MeshRegistry meshRegistry(objects, vecSelectedTexture);
+		std::map<RenderObject, std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>>>& meshMap = meshRegistry.GetMeshMap();
+		RenderingManager renderingManager(shadersMap);
 		RenderObject renderObject = RenderObject::Cube;
 		ShaderType shaderType = ShaderType::Lightning;
 
@@ -185,6 +181,7 @@ int main() {
 			}
 			GuiHandler::StartFrame();
 			{
+				// Calculations
 				glm::mat4 proj = Calculations::CalculateProjectionMatrix(width, height);
 				glm::mat4 view;
 				glm::mat4 model = Calculations::CalculateModelMatrix(angle, glm::vec3(0.5f, 1.0f, 0.0f), translationA);
@@ -202,26 +199,20 @@ int main() {
 					mvp = camera->CalculateMVP(proj, model);
 					mvpLightCube = camera->CalculateMVP(proj, modelLightCube);
 				}
+
+				// Rendering
 				// Set shader parameters
 				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };
 				TextureManager::SetActiveTexture(currentTextureImGui, allTexturesStruct, vecSelectedTexture, structSelectedTexture);
 				ModelManager::SetActiveCustomModel(currentCustomModelImGui, allModelsVector, selectedModel);
-
 				if (renderObject != RenderObject::Assimp) {
-					// rendering objects using map
-					auto meshMapIterator = meshMap.find(renderObject);
-					if (meshMapIterator == meshMap.end()) {
-						throw std::runtime_error("RenderObject not found in meshMap");
-					}
-					Mesh& selectedMesh = *meshMap.find(renderObject)->second.first;
-					RenderingManager::HandleRendering(selectedMesh, shadersMap, shadersParams, vecSelectedTexture);
-					MeshUpdater::UpdateObjectParams(renderObject, meshMap, vecSelectedTexture);
+					renderingManager.RenderObjectFromMap(meshRegistry, renderObject, shadersParams);
 				}
 				else {
 					//render assimp model
 					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, selectedModel, camera);
 				}
-				//// rendering light cube
+				// rendering light cube
 				RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);
 			}
 			gui.DrawMainGui();
