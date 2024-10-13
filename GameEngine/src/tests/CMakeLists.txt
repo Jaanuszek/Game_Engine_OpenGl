@@ -1,10 +1,23 @@
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Find test source files
+file(GLOB TESTS_SOURCE_FILES "${CMAKE_SOURCE_DIR}/GameEngine/src/tests/*.cpp")
 
-file(GLOB TESTS_SOURCE_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+# Create the test executable
+add_executable(GameEngineTests ${TESTS_SOURCE_FILES})
+
+# Link GTest and the Game Engine library
+target_link_libraries(GameEngineTests PRIVATE
+    gtest          # Automatically includes gtest and gtest_main
+    gtest_main
+    gmock
+    gmock_main
+    GameEngineLib
 )
 
-source_group("Source Files\\tests" FILES ${TESTS_SOURCE_FILES})
+# Set up include directories for Game Engine headers (GTest is auto-included now)
+target_include_directories(GameEngineTests PRIVATE
+    ${CMAKE_SOURCE_DIR}/GameEngine/include
+)
 
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${TESTS_SOURCE_FILES})
+# Enable testing
+enable_testing()
+add_test(NAME GameEngineTests COMMAND GameEngineTests)
