@@ -4,30 +4,106 @@
 #include <string>
 #include <vector>
 
+#include "VBO.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 #include "glm/glm.hpp"
 
-enum class RenderObject {
-	Cube,
-	Cuboid,
-	Cylinder,
-	Cone,
-	Pyramid,
-	Sphere,
-	Torus,
-	Assimp
+struct GuiHandlerParams {
+    std::vector<std::string>& shaderFiles;
+    std::vector<std::string>& textureFiles;
+    std::vector<std::string>& modelFiles;
+    int& selectedShader;
+    int& selectedTexture;
+    int& selectedModel;
+    ShaderType& shaderType;
+    RenderObject& renderObject;
+    glm::vec3& translation;
+    glm::vec3& viewTranslation;
+    glm::vec3& lightCubeTranslation;
+    float& angle;
+    bool& isObjectBeingUpdated;
+
+    GuiHandlerParams(
+        std::vector<std::string>& shaderFiles,
+        std::vector<std::string>& textureFiles,
+        std::vector<std::string>& modelFiles,
+        int& selectedShader,
+        int& selectedTexture,
+        int& selectedModel,
+        ShaderType& shaderType,
+        RenderObject& renderObject,
+        glm::vec3& translation,
+        glm::vec3& viewTranslation,
+        glm::vec3& lightCubeTranslation,
+        float& angle,
+        bool& isObjectBeingUpdated
+    ) : shaderFiles(shaderFiles),
+        textureFiles(textureFiles),
+        modelFiles(modelFiles),
+        selectedShader(selectedShader),
+        selectedTexture(selectedTexture),
+        selectedModel(selectedModel),
+        shaderType(shaderType),
+        renderObject(renderObject),
+        translation(translation),
+        viewTranslation(viewTranslation),
+        lightCubeTranslation(lightCubeTranslation),
+        angle(angle),
+        isObjectBeingUpdated(isObjectBeingUpdated) {}
+	GuiHandlerParams(const GuiHandlerParams& other) : shaderFiles(other.shaderFiles),
+		textureFiles(other.textureFiles),
+		modelFiles(other.modelFiles),
+		selectedShader(other.selectedShader),
+		selectedTexture(other.selectedTexture),
+		selectedModel(other.selectedModel),
+		shaderType(other.shaderType),
+		renderObject(other.renderObject),
+		translation(other.translation),
+		viewTranslation(other.viewTranslation),
+		lightCubeTranslation(other.lightCubeTranslation),
+		angle(other.angle),
+		isObjectBeingUpdated(other.isObjectBeingUpdated) {}
+	GuiHandlerParams& operator=(const GuiHandlerParams& other) {
+        if (this != &other) {
+            shaderFiles = other.shaderFiles;
+            textureFiles = other.textureFiles;
+            modelFiles = other.modelFiles;
+            selectedShader = other.selectedShader;
+            selectedTexture = other.selectedTexture;
+            selectedModel = other.selectedModel;
+            shaderType = other.shaderType;
+            renderObject = other.renderObject;
+            translation = other.translation;
+            viewTranslation = other.viewTranslation;
+            lightCubeTranslation = other.lightCubeTranslation;
+            angle = other.angle;
+            isObjectBeingUpdated = other.isObjectBeingUpdated;
+            return *this;
+        }
+	}
+    GuiHandlerParams& operator=(const GuiHandlerParams&& other) noexcept{
+        if (this != &other) {
+            shaderFiles = other.shaderFiles;
+            textureFiles = other.textureFiles;
+            modelFiles = other.modelFiles;
+            selectedShader = other.selectedShader;
+            selectedTexture = other.selectedTexture;
+            selectedModel = other.selectedModel;
+            shaderType = other.shaderType;
+            renderObject = other.renderObject;
+            translation = other.translation;
+            viewTranslation = other.viewTranslation;
+            lightCubeTranslation = other.lightCubeTranslation;
+            angle = other.angle;
+            isObjectBeingUpdated = other.isObjectBeingUpdated;
+            return *this;
+        }
+    }
 };
 
-enum class ShaderType {
-	Basic = 0,
-	CustomModel = 1,
-	LightCube = 2,
-	Lightning = 3,
-	Sphere = 4
-};
 
 class GuiHandler {
 private:
@@ -45,13 +121,15 @@ private:
 	float& m_angle;
 	// drawing option list
 	template<typename EnumType>
-	void drawCombo(std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);
-	void drawCombo(std::vector<std::string>& options, int& selectedOption, const char* text);
+	void drawCombo(const std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);
+	void drawCombo(const std::vector<std::string>& options, int& selectedOption, const char* text);
 public:
-	GuiHandler(std::vector<std::string>& shaderFiles, std::vector<std::string>& textureFiles, std::vector<std::string>& modelFiles,
-		int& selectedShader, int& selectedTexture, int& selectedModel, ShaderType& shaderType, RenderObject& renderObject,
-		glm::vec3& translation, glm::vec3& viewTranslation, glm::vec3& lightCubeTranslation, float& angle);
+	GuiHandler(GuiHandlerParams params);
+	GuiHandler& operator=(const GuiHandler& other);
 	~GuiHandler();
+	static void Init(GLFWwindow* window);
+	static void StartFrame();
+	static void EndFrame();
 	void DrawMainGui();
 };
 

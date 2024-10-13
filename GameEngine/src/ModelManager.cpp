@@ -12,30 +12,28 @@ void ModelManager::LoadModelsFromDirectory(const std::string& directoryPath) {
 		if (entry.exists() && entry.is_directory()) {
 			// Going into a directory
 			std::string stringDirectoryPath = entry.path().string();
-			std::cout << "ModelManager::LoadModelsFromDirectory: Loading models from directory: " << stringDirectoryPath << std::endl;
+			std::cout << "[ModelManager::LoadModelsFromDirectory] Loading models from directory: " << stringDirectoryPath << std::endl;
 			for(const auto& entryInDirectory : std::filesystem::directory_iterator(entry.path())){
 				if (entryInDirectory.exists() && entryInDirectory.is_regular_file() && entryInDirectory.path().extension() == ".obj") {
 					std::string stringModelObjectPath = entryInDirectory.path().string();
 					std::replace(stringModelObjectPath.begin(), stringModelObjectPath.end(), 92, 47);
-					std::cout << "ModelManager::LoadModelsFromDirectory: Loading model: " << stringModelObjectPath << std::endl;
+					std::cout << "[ModelManager::LoadModelsFromDirectory] Loading model: " << stringModelObjectPath << std::endl;
 					if (m_mapModels.find(stringModelObjectPath) == m_mapModels.end()) {
 						m_mapModels[stringModelObjectPath] = std::make_shared<Model>(stringModelObjectPath.c_str());
 						m_vectorModels.push_back(*m_mapModels[stringModelObjectPath]);
 					}
 				}
 				else {
-					std::cout << "ModelManager::LoadModelsFromDirectory: " << entryInDirectory.path().string() << " is not a valid model file" << std::endl;
+					std::cout << "[ModelManager::LoadModelsFromDirectory] " << entryInDirectory.path().string() << " is not a valid model file" << std::endl;
 				}
 			}
 		}
 	}
 }
-std::map<std::string, std::shared_ptr<Model>> ModelManager::GetModelsMap() {
-	return m_mapModels;
-}
-
-std::vector<Model> ModelManager::GetAllModelsVector() {
-	return m_vectorModels;
+void ModelManager::SetActiveCustomModel(int currentCustomModel, const std::vector<Model>& allModelsVec, Model& selectedModel) {
+	if (currentCustomModel >= 0 && currentCustomModel < allModelsVec.size()) {
+		selectedModel = allModelsVec.at(currentCustomModel);
+	}
 }
 std::shared_ptr<Model> ModelManager::GetModelFromPath(const std::string& path) {
 	try {
@@ -43,12 +41,12 @@ std::shared_ptr<Model> ModelManager::GetModelFromPath(const std::string& path) {
 			return m_mapModels[path];
 		}
 		else {
-			std::cout << "ModelManager::GetModelFromPath: Model with path: " << path << " does not exist" << std::endl;
-			throw std::runtime_error("ModelManager::GetModelFromPath: Model with path: " + path + " does not exist");
+			std::cout << "[ModelManager::GetModelFromPath] Model with path: " << path << " does not exist" << std::endl;
+			throw std::runtime_error("[ModelManager::GetModelFromPath] Model with path: " + path + " does not exist");
 		}
 	}
 	catch (const std::runtime_error& e) {
-		std::cerr << "ModelManager::GetModelFromPath: " << e.what() << std::endl;
+		std::cerr << "[ModelManager::GetModelFromPath] " << e.what() << std::endl;
 		return nullptr;
 	}
 }

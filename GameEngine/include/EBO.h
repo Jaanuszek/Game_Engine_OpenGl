@@ -10,14 +10,12 @@ private:
 	unsigned int m_Count;
 	unsigned int m_CurrentSize;
 public:
-	EBO(const unsigned int* data, unsigned int count);
-	EBO(std::vector<GLuint>& indices);
+	EBO(const std::vector<unsigned int>& indices);
 	~EBO();
 
 	void Bind() const;
 	void Unbind() const;
-	void Update(const unsigned int* data, unsigned int count);
-	void Update(std::vector<unsigned int>& indices);
+	void Update(const std::vector<unsigned int>& indices);
 
 	inline unsigned int GetCount() const { return m_Count; }
 };

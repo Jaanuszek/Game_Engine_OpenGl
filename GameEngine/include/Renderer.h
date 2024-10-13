@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <iostream>
 #include <glad/glad.h>
 
 #include "VAO.h"
@@ -15,7 +16,7 @@
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
 
-class Renderer { // tu jest opcja na wzorzec singletona
+class Renderer {
 public:
 	void Clear() const;
 	void ShowGridLine() const;

@@ -12,20 +12,24 @@
 
 class Solid {
 protected:
+	bool m_isUpdated = false;
 	std::vector<Vertex> vertices;
-	unsigned int verticesSize;
 	std::vector<unsigned int> indices;
-	unsigned int indicesSize;
+
 	virtual void Initalize() = 0;
 	std::vector<float> getUnitCircleVertices(unsigned int sectorCount);
 public:
-	Solid() : vertices(0),verticesSize(0),indices(0), indicesSize(0) {}
-	virtual ~Solid() {}
+	virtual ~Solid() = default;
 	virtual void UpdateVerticesAndIndices() = 0;
 	virtual void UpdateParams() = 0;
 	const std::vector<Vertex>& GetVertices(void) const { return vertices; }
-	const unsigned int GetVerticesSize(void) const { return vertices.size(); }
+	// I removed const because its not necesary since it returns a copy to this object
+	// But this second const is meaningful becasue it says that my method is not going to modify the object
+	size_t GetVerticesSize(void) const { return vertices.size(); } 
+	// But right there the first const is meaningful because we are returning a reference (pointer) so we are telling that the pointer is not going to be modified
 	const std::vector<unsigned int>& GetIndices(void) const { return indices; }
-	const unsigned int GetIndicesSize(void) const { return indices.size(); }
+	size_t GetIndicesSize(void) const { return indices.size(); }
+	void SetIsUpdated(const bool& isUpdated) { m_isUpdated = isUpdated; }
+	bool GetIsUpdated(void) const { return m_isUpdated; }
 };
 #endif

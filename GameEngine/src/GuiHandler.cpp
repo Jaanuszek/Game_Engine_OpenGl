@@ -1,7 +1,7 @@
 #include "GuiHandler.h"
 
 template<typename EnumType>
-void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text) {
+void GuiHandler::drawCombo(const std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text) {
 	if (ImGui::BeginCombo(text, options[selectedOption].c_str())) {
 		for (int i = 0; i < options.size(); i++) {
 			bool is_selected = (selectedOption == i);
@@ -16,7 +16,7 @@ void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOptio
 	}
 }
 
-void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOption, const char* text) {
+void GuiHandler::drawCombo(const std::vector<std::string>& options, int& selectedOption, const char* text) {
 	if (ImGui::BeginCombo(text, options[selectedOption].c_str())) {
 		for (int i = 0; i < options.size(); i++) {
 			bool is_selected = (selectedOption == i);
@@ -29,20 +29,51 @@ void GuiHandler::drawCombo(std::vector<std::string>& options, int& selectedOptio
 		ImGui::EndCombo();
 	}
 }
-
-GuiHandler::GuiHandler(std::vector<std::string>& shaderFiles, std::vector<std::string>& textureFiles, std::vector<std::string>& modelFiles,
-	int& selectedShader, int& selectedTexture, int& selectedModel, ShaderType& shaderType, RenderObject& renderObject,
-	glm::vec3& translation, glm::vec3& viewTranslation, glm::vec3& lightCubeTranslation, float& angle)
-	: m_shaderFiles(shaderFiles), m_textureFiles(textureFiles), m_modelFiles(modelFiles),
-	m_selectedShader(selectedShader), m_selectedTexture(selectedTexture), m_selectedModel(selectedModel), m_shaderType(shaderType),
-	m_renderObject(renderObject), m_translation(translation), m_viewTranslation(viewTranslation),
-	m_lightCubeTranslation(lightCubeTranslation), m_angle(angle) 
+void GuiHandler::Init(GLFWwindow* window) {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL3_Init((char*)glGetString(330));
+}
+void GuiHandler::StartFrame() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+}
+void GuiHandler::EndFrame() {
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+GuiHandler::GuiHandler(GuiHandlerParams params) : m_shaderFiles(params.shaderFiles), m_textureFiles(params.textureFiles), m_modelFiles(params.modelFiles),
+m_selectedShader(params.selectedShader), m_selectedTexture(params.selectedTexture), m_selectedModel(params.selectedModel), m_shaderType(params.shaderType),
+m_renderObject(params.renderObject), m_translation(params.translation), m_viewTranslation(params.viewTranslation),
+m_lightCubeTranslation(params.lightCubeTranslation), m_angle(params.angle)
 {
+}
 
+GuiHandler& GuiHandler::operator=(const GuiHandler& other) {
+	if (this == &other) return *this;
+	m_shaderFiles = other.m_shaderFiles;
+	m_textureFiles = other.m_textureFiles;
+	m_modelFiles = other.m_modelFiles;
+	m_selectedShader = other.m_selectedShader;
+	m_selectedTexture = other.m_selectedTexture;
+	m_selectedModel = other.m_selectedModel;
+	m_shaderType = other.m_shaderType;
+	m_renderObject = other.m_renderObject;
+	m_translation = other.m_translation;
+	m_viewTranslation = other.m_viewTranslation;
+	m_lightCubeTranslation = other.m_lightCubeTranslation;
+	m_angle = other.m_angle;
+	return *this;
 }
 
 GuiHandler::~GuiHandler()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void GuiHandler::DrawMainGui(){
