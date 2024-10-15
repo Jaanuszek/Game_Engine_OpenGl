@@ -137,14 +137,14 @@ int main() {
 		Pyramid pyramid;
 		Sphere sphere(0.5f, 48, 48);
 		Torus torus(0.2f,0.5f,48,50);
-		std::vector<std::pair<RenderObject, Solid&>> objects = {
-			{RenderObject::Cube, cube},
-			{RenderObject::Cuboid, cuboid},
-			{RenderObject::Cylinder, cylinder},
-			{RenderObject::Cone, cone},
-			{RenderObject::Pyramid, pyramid},
-			{RenderObject::Sphere, sphere},
-			{RenderObject::Torus, torus}
+		std::vector<std::pair<RenderObject, Solid*>> objects = {
+			{RenderObject::Cube, &cube},
+			{RenderObject::Cuboid, &cuboid},
+			{RenderObject::Cylinder, &cylinder},
+			{RenderObject::Cone, &cone},
+			{RenderObject::Pyramid, &pyramid},
+			{RenderObject::Sphere, &sphere},
+			{RenderObject::Torus, &torus}
 		};
 		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
 		MeshRegistry meshRegistry(objects, vecSelectedTexture);
