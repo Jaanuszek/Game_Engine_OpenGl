@@ -12,10 +12,26 @@ void MeshRegistry::CrateAndAddMeshToMap() {
 MeshRegistry::MeshRegistry(std::vector<std::pair<RenderObject, Solid*>>& vecObjects, std::vector<TextureStruct>& vecSelectedTexture)
 	: m_vecObjects(vecObjects), m_vecSelectedTexture(vecSelectedTexture)
 {
+	for (auto& object : m_vecObjects) {
+		if (object.first == RenderObject::Assimp) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] Assimp object spotted in m_vecObjects");
+		}
+		if (object.second == nullptr) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] nullptr spotted in m_vecObjects");
+		}
+	}
 	CrateAndAddMeshToMap();
 }
 
 MeshRegistry::MeshRegistry(const MeshRegistry& other): m_vecObjects(other.m_vecObjects), m_vecSelectedTexture(other.m_vecSelectedTexture)  {
+	for (auto& object : m_vecObjects) {
+		if (object.first == RenderObject::Assimp) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] Assimp object spotted in m_vecObjects");
+		}
+		if (object.second == nullptr) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] nullptr spotted in m_vecObjects");
+		}
+	}
 	CrateAndAddMeshToMap();
 }
 MeshRegistry& MeshRegistry::operator=(const MeshRegistry& other) {
@@ -35,6 +51,8 @@ MeshRegistry& MeshRegistry::operator=(const MeshRegistry& other) {
 	return *this;
 }
 MeshRegistry::MeshRegistry(MeshRegistry&& other) noexcept : m_vecObjects(std::move(other.m_vecObjects)), m_vecSelectedTexture(std::move(other.m_vecSelectedTexture)) {
+	other.m_meshMap.clear();
+	other.m_vecSelectedTexture.clear();
 	CrateAndAddMeshToMap();
 }
 MeshRegistry& MeshRegistry::operator=(MeshRegistry&& other) noexcept {
