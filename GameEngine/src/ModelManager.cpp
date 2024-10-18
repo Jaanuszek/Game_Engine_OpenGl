@@ -28,6 +28,12 @@ void ModelManager::LoadModelsFromDirectory(const std::string& directoryPath) {
 				}
 			}
 		}
+		else if (!entry.exists()){
+			throw std::runtime_error("[ModelManager::LoadModelsFromDirectory] " + entry.path().string() + " is not a valid directory");
+		}
+		else {
+			std::cout << "[ModelManager::LoadModelsFromDirectory] " << entry.path().string() << " is not a valid directory" << std::endl;
+		}
 	}
 }
 void ModelManager::SetActiveCustomModel(int currentCustomModel, const std::vector<Model>& allModelsVec, Model& selectedModel) {

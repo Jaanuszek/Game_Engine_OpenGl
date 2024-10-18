@@ -365,4 +365,4 @@ FodyWeavers.xsd
 # Ignore build folder
 build/
 
-assets/models
+assets/models/backpack
