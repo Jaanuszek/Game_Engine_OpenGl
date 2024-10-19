@@ -1,8 +1,11 @@
 #include "TextureManager.h"
 
-TextureManager::TextureManager(const std::string& directoryPath) : m_directoryPath(directoryPath)
+TextureManager::TextureManager(const std::string& directoryPath, std::vector<TextureStruct>& TextureContainer)
+	: m_directoryPath(directoryPath), m_vecLoadedTextures(TextureContainer)
 {
 	LoadTexturesFromDirectory(directoryPath);
+	m_vecLoadedTextures.clear();
+	m_vecLoadedTextures.push_back(m_vecAllTextures.front());
 }
 
 TextureManager::~TextureManager()
@@ -16,7 +19,9 @@ void TextureManager::LoadTexturesFromDirectory(const std::string& directoryPath)
 			std::cout << "[TextureManager::LoadTexturesFromDirectory] Loading texture: " << texturePath << std::endl;
 			if (m_texturesMap.find(texturePath) == m_texturesMap.end()) {
 				// for now it will be only diffuse, because I do not use any other texture type
+				// ADD HANDLER FOR SPECULAR AND NORMAL TESXTURES
 				m_texturesMap[texturePath] = std::make_shared<Texture>(texturePath, "diffuse");
+				m_vecAllTextures.push_back(m_texturesMap[texturePath]->GetTextureStruct());
 			}
 		}
 		else {
@@ -25,20 +30,13 @@ void TextureManager::LoadTexturesFromDirectory(const std::string& directoryPath)
 		}
 	}
 }
-void TextureManager::SetActiveTexture(int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
-	std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture) {
-	if (currentTextureImGui >= 0 && currentTextureImGui < allTextures.size()) {
-		structSelectedTexture = allTextures.at(currentTextureImGui);
+void TextureManager::SetActiveTexture(int currentTextureImGui) {
+	TextureStruct selectedTexture;
+	if (currentTextureImGui >= 0 && currentTextureImGui < m_vecAllTextures.size()) {
+		selectedTexture = m_vecAllTextures.at(currentTextureImGui);
 	}
-	vecSelectedTexture.clear();
-	vecSelectedTexture.push_back(structSelectedTexture);
-}
-std::vector<TextureStruct> TextureManager::GetAllTexturesStruct() {
-	std::vector<TextureStruct> texturesStruct;
-	for (auto& texture : m_texturesMap) {
-		texturesStruct.push_back(texture.second->GetTextureStruct());
-	}
-	return texturesStruct;
+	m_vecLoadedTextures.clear();
+	m_vecLoadedTextures.push_back(selectedTexture);
 }
 
 TextureStruct TextureManager::GetTextureStructFromPath(const std::string& path) {

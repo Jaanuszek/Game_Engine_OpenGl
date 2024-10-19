@@ -55,11 +55,19 @@ protected:
 
 TEST_F(ManagerTest, ModelManagerConstructorTest) {
 	std::string path = "resources/objects/nanosuit/nanosuit.obj";
-	EXPECT_THROW(ModelManager modelManager(path), std::runtime_error);
+	std::shared_ptr<Model> model;
+	EXPECT_THROW(ModelManager modelManager(path,model), std::runtime_error);
 	path = "../../../../../assets/models";
 	//EXPECT_NO_THROW(ModelManager modelManager1(path));
-    ModelManager modelManager1(path);
+    ModelManager modelManager1(path, model);
 	int directoryCount = GetNumberOfDirectories(path);
 	EXPECT_EQ(modelManager1.GetModelsMap().size(), directoryCount);
 }
 
+TEST_F(ManagerTest, GetModelFromPathTest) {
+	std::string path = "../../../../../assets/models";
+    std::shared_ptr<Model> model;
+	ModelManager modelManager(path, model);
+    auto modelFromPath = modelManager.GetModelFromPath("../../../../../assets/models/monkeyHead/monkeyHead.obj");
+	EXPECT_TRUE(modelFromPath != nullptr);
+}

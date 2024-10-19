@@ -120,15 +120,11 @@ int main() {
 			{ShaderType::LightCube, std::make_shared<Shader>(lightCubeShader)},
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
 		};
-		std::map<std::string, std::shared_ptr<Shader>> shadersMapStr;
-		TextureManager textureManager("../../assets/textures");
-		std::vector<TextureStruct> allTexturesStruct = textureManager.GetAllTexturesStruct();
-		TextureStruct structSelectedTexture = allTexturesStruct.front();
-		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
+		std::vector<TextureStruct> vecSelectedTexture;
+		TextureManager textureManager("../../assets/textures", vecSelectedTexture);
 
-		ModelManager modelManager("../../assets/models");
-		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
-		Model selectedModel = allModelsVector.front();
+		std::shared_ptr<Model> selectedModel;
+		ModelManager modelManager("../../assets/models", selectedModel);
 
 		Cube cube;
 		Cuboid cuboid(0.75f, 0.5f, 0.5f);
@@ -202,14 +198,14 @@ int main() {
 				// Rendering
 				// Set shader parameters
 				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };
-				TextureManager::SetActiveTexture(currentTextureImGui, allTexturesStruct, vecSelectedTexture, structSelectedTexture);
-				ModelManager::SetActiveCustomModel(currentCustomModelImGui, allModelsVector, selectedModel);
+				textureManager.SetActiveTexture(currentTextureImGui);
+				modelManager.SetActiveCustomModel(currentCustomModelImGui);
 				if (renderObject != RenderObject::Assimp) {
 					renderingManager.RenderObjectFromMap(meshRegistry, renderObject, shadersParams);
 				}
 				else {
 					//render assimp model
-					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, selectedModel, camera);
+					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, *selectedModel, camera);
 				}
 				// rendering light cube
 				RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);

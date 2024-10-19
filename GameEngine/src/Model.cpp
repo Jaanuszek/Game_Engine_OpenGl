@@ -82,12 +82,12 @@ std::vector<TextureStruct> Model::loadMaterialTextures(aiMaterial* mat, aiTextur
 			}
 		}
 		if (!skip) {
-			TextureStruct texture;
-			texture.id = Texture::TextureFromFile(str.C_Str(), m_directory);
-			texture.type = typeName;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			m_textures_loaded.push_back(texture);
+			TextureStruct textureStruct;
+			textureStruct.id = Texture::TextureFromFile(str.C_Str(), m_directory);
+			textureStruct.type = typeName;
+			textureStruct.path = str.C_Str();
+			textures.push_back(textureStruct);
+			m_textures_loaded.push_back(textureStruct);
 		}
 	}
 	return textures;
