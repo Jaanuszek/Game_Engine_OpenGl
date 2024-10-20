@@ -19,7 +19,7 @@ target_link_libraries(GameEngineTests PRIVATE
     GameEngineLib
 )
 
-# Set up include directories for Game Engine headers (GTest is auto-included now)
+# Set up include directories for Game Engine headers 
 target_include_directories(GameEngineTests PRIVATE
     ${CMAKE_SOURCE_DIR}/GameEngine/include
     ${CMAKE_SOURCE_DIR}/GameEngine/include/factories

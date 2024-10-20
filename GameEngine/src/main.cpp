@@ -26,6 +26,7 @@
 
 int width = 0;
 int height = 0;
+glm::vec4 clearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -161,7 +162,8 @@ int main() {
             viewTranslation,
             lightCubeTranslation,
             angle,
-			isObjectUpdated
+			isObjectUpdated,
+			clearColor
         };
 
         GuiHandler gui(guiParams);
@@ -212,6 +214,7 @@ int main() {
 			}
 			gui.DrawMainGui();
 			GuiHandler::EndFrame();
+			glClearColor(clearColor.x,clearColor.y,clearColor.z,clearColor.w);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
