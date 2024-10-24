@@ -26,6 +26,7 @@
 
 int width = 0;
 int height = 0;
+glm::vec4 clearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
@@ -120,15 +121,11 @@ int main() {
 			{ShaderType::LightCube, std::make_shared<Shader>(lightCubeShader)},
 			{ShaderType::CustomModel, std::make_shared<Shader>(customModelShader)},
 		};
-		std::map<std::string, std::shared_ptr<Shader>> shadersMapStr;
-		TextureManager textureManager("../../assets/textures");
-		std::vector<TextureStruct> allTexturesStruct = textureManager.GetAllTexturesStruct();
-		TextureStruct structSelectedTexture = allTexturesStruct.front();
-		std::vector<TextureStruct> vecSelectedTexture = { structSelectedTexture };
+		std::vector<TextureStruct> vecSelectedTexture;
+		TextureManager textureManager("../../assets/textures", vecSelectedTexture);
 
-		ModelManager modelManager("../../assets/models");
-		std::vector<Model> allModelsVector = modelManager.GetAllModelsVector();
-		Model selectedModel = allModelsVector.front();
+		std::shared_ptr<Model> selectedModel;
+		ModelManager modelManager("../../assets/models", selectedModel);
 
 		Cube cube;
 		Cuboid cuboid(0.75f, 0.5f, 0.5f);
@@ -137,14 +134,14 @@ int main() {
 		Pyramid pyramid;
 		Sphere sphere(0.5f, 48, 48);
 		Torus torus(0.2f,0.5f,48,50);
-		std::vector<std::pair<RenderObject, Solid&>> objects = {
-			{RenderObject::Cube, cube},
-			{RenderObject::Cuboid, cuboid},
-			{RenderObject::Cylinder, cylinder},
-			{RenderObject::Cone, cone},
-			{RenderObject::Pyramid, pyramid},
-			{RenderObject::Sphere, sphere},
-			{RenderObject::Torus, torus}
+		std::vector<std::pair<RenderObject, Solid*>> objects = {
+			{RenderObject::Cube, &cube},
+			{RenderObject::Cuboid, &cuboid},
+			{RenderObject::Cylinder, &cylinder},
+			{RenderObject::Cone, &cone},
+			{RenderObject::Pyramid, &pyramid},
+			{RenderObject::Sphere, &sphere},
+			{RenderObject::Torus, &torus}
 		};
 		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
 		MeshRegistry meshRegistry(objects, vecSelectedTexture);
@@ -165,7 +162,8 @@ int main() {
             viewTranslation,
             lightCubeTranslation,
             angle,
-			isObjectUpdated
+			isObjectUpdated,
+			clearColor
         };
 
         GuiHandler gui(guiParams);
@@ -202,20 +200,21 @@ int main() {
 				// Rendering
 				// Set shader parameters
 				ShadersParams shadersParams = { shaderType, mvp, model, lightCubeTranslation, camera.get() };
-				TextureManager::SetActiveTexture(currentTextureImGui, allTexturesStruct, vecSelectedTexture, structSelectedTexture);
-				ModelManager::SetActiveCustomModel(currentCustomModelImGui, allModelsVector, selectedModel);
+				textureManager.SetActiveTexture(currentTextureImGui);
+				modelManager.SetActiveCustomModel(currentCustomModelImGui);
 				if (renderObject != RenderObject::Assimp) {
 					renderingManager.RenderObjectFromMap(meshRegistry, renderObject, shadersParams);
 				}
 				else {
 					//render assimp model
-					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, selectedModel, camera);
+					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, *selectedModel, camera);
 				}
 				// rendering light cube
 				RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);
 			}
 			gui.DrawMainGui();
 			GuiHandler::EndFrame();
+			glClearColor(clearColor.x,clearColor.y,clearColor.z,clearColor.w);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}

@@ -34,6 +34,9 @@ public:
 	void Draw(Shader& shader, Camera& camera);
 	void updateMeshParams(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<TextureStruct>& textures);
 	void updateTexture(const std::vector<TextureStruct>& textures);
+	const std::vector<TextureStruct>& GetTextures() { return m_texturesStruct; }
+	std::vector<Vertex>& GetVertices() { return m_vertices; }
+	const std::vector<unsigned int>& GetIndices() { return m_indices; }
 };
 
 #endif

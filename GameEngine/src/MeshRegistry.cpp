@@ -2,33 +2,57 @@
 
 void MeshRegistry::CrateAndAddMeshToMap() {
 	for (auto& object : m_vecObjects) {
-		std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>> meshAndFactory = MeshFactory::CreateMeshFromFactory(object.first, object.second, m_vecSelectedTexture);
+		std::pair<std::shared_ptr<Mesh>, std::unique_ptr<IObjectFactory>> meshAndFactory = MeshFactory::CreateMeshFromFactory(object.first, *object.second, m_vecSelectedTexture);
 		// Emplace, because sunique_ptr is not copyable but movable, and Emplace creates the object in place 
 		// std::move() is used to transfer ownership of the unique_ptr to the map
 		m_meshMap.emplace(object.first, std::move(meshAndFactory));
 	}
 }
 
-MeshRegistry::MeshRegistry(std::vector<std::pair<RenderObject, Solid&>>& vecObjects, std::vector<TextureStruct>& vecSelectedTexture)
+MeshRegistry::MeshRegistry(std::vector<std::pair<RenderObject, Solid*>>& vecObjects, std::vector<TextureStruct>& vecSelectedTexture)
 	: m_vecObjects(vecObjects), m_vecSelectedTexture(vecSelectedTexture)
 {
+	for (auto& object : m_vecObjects) {
+		if (object.first == RenderObject::Assimp) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] Assimp object spotted in m_vecObjects");
+		}
+		if (object.second == nullptr) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] nullptr spotted in m_vecObjects");
+		}
+	}
 	CrateAndAddMeshToMap();
 }
 
 MeshRegistry::MeshRegistry(const MeshRegistry& other): m_vecObjects(other.m_vecObjects), m_vecSelectedTexture(other.m_vecSelectedTexture)  {
+	for (auto& object : m_vecObjects) {
+		if (object.first == RenderObject::Assimp) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] Assimp object spotted in m_vecObjects");
+		}
+		if (object.second == nullptr) {
+			throw std::runtime_error("[MeshRegistry::MeshRegistry] nullptr spotted in m_vecObjects");
+		}
+	}
 	CrateAndAddMeshToMap();
 }
 MeshRegistry& MeshRegistry::operator=(const MeshRegistry& other) {
 	if (this == &other) {
 		return *this;
 	}
-	m_vecObjects = other.m_vecObjects;
+	//google test helped me fixing the bug
+	//You can't copy reference, so i changed type of m_vecObjects vector to pinter to SOlid object
+	//I can also do this using smart pointers
+	m_vecObjects.clear();
+	for (const auto& object : other.m_vecObjects) {
+		m_vecObjects.emplace_back(object);
+	}
 	m_vecSelectedTexture = other.m_vecSelectedTexture;
 	m_meshMap.clear();
 	CrateAndAddMeshToMap();
 	return *this;
 }
 MeshRegistry::MeshRegistry(MeshRegistry&& other) noexcept : m_vecObjects(std::move(other.m_vecObjects)), m_vecSelectedTexture(std::move(other.m_vecSelectedTexture)) {
+	other.m_meshMap.clear();
+	other.m_vecSelectedTexture.clear();
 	CrateAndAddMeshToMap();
 }
 MeshRegistry& MeshRegistry::operator=(MeshRegistry&& other) noexcept {

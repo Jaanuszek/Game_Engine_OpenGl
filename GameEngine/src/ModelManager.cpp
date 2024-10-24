@@ -1,7 +1,9 @@
 #include "ModelManager.h"
 
-ModelManager::ModelManager(const std::string& directoryPath) : m_DirectoryPath(directoryPath){
+ModelManager::ModelManager(const std::string& directoryPath, std::shared_ptr<Model>& selectedModel) \
+	: m_DirectoryPath(directoryPath), m_selectedModel(selectedModel){
 	LoadModelsFromDirectory(directoryPath);
+	m_selectedModel = std::make_shared<Model>(m_vectorModels.front());
 }
 ModelManager::~ModelManager() {
 
@@ -23,16 +25,24 @@ void ModelManager::LoadModelsFromDirectory(const std::string& directoryPath) {
 						m_vectorModels.push_back(*m_mapModels[stringModelObjectPath]);
 					}
 				}
-				else {
-					std::cout << "[ModelManager::LoadModelsFromDirectory] " << entryInDirectory.path().string() << " is not a valid model file" << std::endl;
-				}
 			}
+		}
+		else if (!entry.exists()){
+			throw std::runtime_error("[ModelManager::LoadModelsFromDirectory] " + entry.path().string() + " is not a valid directory");
+		}
+		else {
+			std::cout << "[ModelManager::LoadModelsFromDirectory] " << entry.path().string() << " is not a valid directory" << std::endl;
 		}
 	}
 }
 void ModelManager::SetActiveCustomModel(int currentCustomModel, const std::vector<Model>& allModelsVec, Model& selectedModel) {
 	if (currentCustomModel >= 0 && currentCustomModel < allModelsVec.size()) {
 		selectedModel = allModelsVec.at(currentCustomModel);
+	}
+}
+void ModelManager::SetActiveCustomModel(int currentCustomModel) {
+	if (currentCustomModel >= 0 && currentCustomModel < m_vectorModels.size()) {
+		*m_selectedModel = m_vectorModels.at(currentCustomModel);
 	}
 }
 std::shared_ptr<Model> ModelManager::GetModelFromPath(const std::string& path) {
@@ -42,7 +52,7 @@ std::shared_ptr<Model> ModelManager::GetModelFromPath(const std::string& path) {
 		}
 		else {
 			std::cout << "[ModelManager::GetModelFromPath] Model with path: " << path << " does not exist" << std::endl;
-			throw std::runtime_error("[ModelManager::GetModelFromPath] Model with path: " + path + " does not exist");
+			return nullptr;
 		}
 	}
 	catch (const std::runtime_error& e) {

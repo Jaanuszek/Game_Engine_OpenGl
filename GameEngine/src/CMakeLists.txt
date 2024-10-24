@@ -11,6 +11,10 @@ target_link_libraries(GameEngineLib PRIVATE
     glfw 
     glm::glm
     assimp
+    gtest
+    gtest_main
+    gmock
+    gmock_main
 )
 
 target_include_directories(GameEngineLib PRIVATE
@@ -23,5 +27,4 @@ target_include_directories(GameEngineLib PRIVATE
     ${CMAKE_SOURCE_DIR}/external/stb_image
     ${CMAKE_SOURCE_DIR}/external/glm
     ${CMAKE_SOURCE_DIR}/external/imgui
-    ${CMAKE_SOURCE_DIR}/external/assimp/include
 )

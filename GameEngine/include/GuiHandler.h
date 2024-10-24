@@ -25,6 +25,7 @@ struct GuiHandlerParams {
     glm::vec3& lightCubeTranslation;
     float& angle;
     bool& isObjectBeingUpdated;
+    glm::vec4& clearColor;
 
     GuiHandlerParams(
         std::vector<std::string>& shaderFiles,
@@ -39,7 +40,8 @@ struct GuiHandlerParams {
         glm::vec3& viewTranslation,
         glm::vec3& lightCubeTranslation,
         float& angle,
-        bool& isObjectBeingUpdated
+        bool& isObjectBeingUpdated,
+        glm::vec4& clearColor
     ) : shaderFiles(shaderFiles),
         textureFiles(textureFiles),
         modelFiles(modelFiles),
@@ -52,7 +54,9 @@ struct GuiHandlerParams {
         viewTranslation(viewTranslation),
         lightCubeTranslation(lightCubeTranslation),
         angle(angle),
-        isObjectBeingUpdated(isObjectBeingUpdated) {}
+        isObjectBeingUpdated(isObjectBeingUpdated),
+		clearColor(clearColor)
+        {}
 	GuiHandlerParams(const GuiHandlerParams& other) : shaderFiles(other.shaderFiles),
 		textureFiles(other.textureFiles),
 		modelFiles(other.modelFiles),
@@ -65,7 +69,9 @@ struct GuiHandlerParams {
 		viewTranslation(other.viewTranslation),
 		lightCubeTranslation(other.lightCubeTranslation),
 		angle(other.angle),
-		isObjectBeingUpdated(other.isObjectBeingUpdated) {}
+		isObjectBeingUpdated(other.isObjectBeingUpdated),
+		clearColor(other.clearColor)
+        {}
 	GuiHandlerParams& operator=(const GuiHandlerParams& other) {
         if (this != &other) {
             shaderFiles = other.shaderFiles;
@@ -81,6 +87,7 @@ struct GuiHandlerParams {
             lightCubeTranslation = other.lightCubeTranslation;
             angle = other.angle;
             isObjectBeingUpdated = other.isObjectBeingUpdated;
+			clearColor = other.clearColor;
             return *this;
         }
 	}
@@ -99,6 +106,7 @@ struct GuiHandlerParams {
             lightCubeTranslation = other.lightCubeTranslation;
             angle = other.angle;
             isObjectBeingUpdated = other.isObjectBeingUpdated;
+			clearColor = other.clearColor;
             return *this;
         }
     }
@@ -119,6 +127,7 @@ private:
 	glm::vec3& m_viewTranslation;
 	glm::vec3& m_lightCubeTranslation;
 	float& m_angle;
+    glm::vec4& m_clearColor;
 	// drawing option list
 	template<typename EnumType>
 	void drawCombo(const std::vector<std::string>& options, int& selectedOption, EnumType& enumValue, const char* text);

@@ -46,18 +46,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(assimp)
 
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.15.2
+)
+FetchContent_MakeAvailable(googletest)
+
 add_subdirectory(GameEngine/src)
 add_subdirectory(GameEngine/include)
+add_subdirectory(GameEngine/src/tests)
 
 if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Wall")
-    
-    # Highest level of optimization for Visual Studio in Release mode
     set(CMAKE_CXX_FLAGS_RELEASE "/Ox /GL /Wall /arch:AVX2")
-    
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG") # Enables link-time code generation for optimization
-    
-    # Setting linker flags to use a custom entry point
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
 else()
     set(CMAKE_CXX_FLAGS_DEBUG "-g")

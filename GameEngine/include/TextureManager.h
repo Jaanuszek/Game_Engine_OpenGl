@@ -14,13 +14,14 @@ class TextureManager{
 private:
 	std::map<std::string, std::shared_ptr<Texture>> m_texturesMap;
 	std::string m_directoryPath;
+	std::vector<TextureStruct>& m_vecLoadedTextures;
+	std::vector<TextureStruct> m_vecAllTextures;
 public:
-	TextureManager(const std::string& directoryPath);
+	TextureManager(const std::string& directoryPath, std::vector<TextureStruct>& TextureContainer);
 	~TextureManager();
 	void LoadTexturesFromDirectory(const std::string& directoryPath);
-	static void SetActiveTexture(int currentTextureImGui, const std::vector<TextureStruct>& allTextures,
-		std::vector<TextureStruct>& vecSelectedTexture, TextureStruct& structSelectedTexture);
-	std::vector<TextureStruct> GetAllTexturesStruct();
+	void SetActiveTexture(int currentTextureImGui);
+	std::vector<TextureStruct> GetAllTexturesStruct() { return m_vecAllTextures; }
 	TextureStruct GetTextureStructFromPath(const std::string& path);
 };
 
