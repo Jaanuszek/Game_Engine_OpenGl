@@ -77,7 +77,7 @@ GuiHandler::~GuiHandler()
 }
 
 void GuiHandler::DrawMainGui(){
-	ImGui::Begin("Game_Engine");
+	ImGui::Begin("Game Engine");
 	drawCombo(m_shaderFiles, m_selectedShader, m_shaderType, "Select a shader");
 	if (m_selectedShader == 0) {
 		ImGui::Begin("Choose a texture");

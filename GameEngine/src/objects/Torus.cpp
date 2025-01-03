@@ -94,9 +94,11 @@ void Torus::UpdateVerticesAndIndices(float minorRadius, float majorRadius, unsig
 }
 
 void Torus::UpdateParams() {
+	ImGui::Begin("Torus update");
 	ImGui::SliderFloat("torus minor radius", &m_minorRadius, 0.01f, 1.0f);
 	ImGui::SliderFloat("torus major radius", &m_majorRadius, 0.01f, 1.0f);
     ImGui::SliderInt("torus sectors", reinterpret_cast<int*>(&m_sectors), 3, m_maxSectors);
 	ImGui::SliderInt("torus side", reinterpret_cast<int*>(&m_sides), 3, m_maxSides);
+	ImGui::End();
 	UpdateVerticesAndIndices();
 }

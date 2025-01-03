@@ -144,7 +144,7 @@ int main() {
 			{RenderObject::Torus, &torus}
 		};
 		std::shared_ptr<Mesh> meshLight = MeshFactory::CreateMeshFromFactory(RenderObject::Cube, cube, vecSelectedTexture).first;
-		MeshRegistry meshRegistry(objects, vecSelectedTexture);
+		MeshRegistry meshRegistry(objects, vecSelectedTexture); // Tworzona mapa
 		RenderingManager renderingManager(shadersMap);
 		RenderObject renderObject = RenderObject::Cube;
 		ShaderType shaderType = ShaderType::Lightning;
@@ -204,13 +204,13 @@ int main() {
 				modelManager.SetActiveCustomModel(currentCustomModelImGui);
 				if (renderObject != RenderObject::Assimp) {
 					renderingManager.RenderObjectFromMap(meshRegistry, renderObject, shadersParams);
+					// rendering light cube
+					RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);
 				}
 				else {
 					//render assimp model
 					RenderingManager::BindTextureAndDrawModel(customModelShader, mvp, *selectedModel, camera);
 				}
-				// rendering light cube
-				RenderingManager::BindTextureAndDrawMesh(lightCubeShader, mvpLightCube, *meshLight, camera);
 			}
 			gui.DrawMainGui();
 			GuiHandler::EndFrame();
