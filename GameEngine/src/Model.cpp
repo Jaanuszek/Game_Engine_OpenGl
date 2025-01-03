@@ -15,6 +15,8 @@ void Model::loadModel(std::string path) {
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+		//scene->mMeshes is an array of all meshes in the scene
+		//node->mMeshes is an array of indices of meshes in the scene
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		m_meshes.push_back(processMesh(mesh, scene));
 	}
@@ -51,12 +53,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vector.y = mesh->mNormals[i].y;
 		vector.z = mesh->mNormals[i].z;
 		vertex.Normal = vector;
-		vertices.push_back(vertex);
+		vertices.emplace_back(vertex);
 	}
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
 		aiFace face = mesh->mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; j++) {
-			indices.push_back(face.mIndices[j]);
+			indices.emplace_back(face.mIndices[j]);
 		}
 	}
 	if (mesh->mMaterialIndex >= 0) {

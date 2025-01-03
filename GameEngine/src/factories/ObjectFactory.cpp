@@ -11,6 +11,7 @@
 
 std::unique_ptr<IObjectFactory> ObjectFactory::GetFactory(RenderObject object, Solid& solid) {
 	try {
+		// spróbowac to zamieniæ na mape obiektów
 		switch (object) {
 		case RenderObject::Cone:
 			return std::make_unique<ConeFactory>(dynamic_cast<Cone&>(solid));

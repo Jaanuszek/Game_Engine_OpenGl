@@ -152,6 +152,7 @@ void Cone::UpdateVerticesAndIndices(float radius, float height, unsigned int sec
 void Cone::UpdateParams()
 {
 	// ADD THIS TO THE OTHER SOLIDS
+	ImGui::Begin("Cone update");
 	if (ImGui::SliderFloat("cone radius", &m_radius, 0.0f, 1.0f)) {
 		m_isUpdated = true;
 	}
@@ -164,6 +165,7 @@ void Cone::UpdateParams()
 	if(ImGui::SliderInt("cone stacks", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks) ){
 		m_isUpdated = true;
 	}
+	ImGui::End();
 	if (m_isUpdated)
 		UpdateVerticesAndIndices();
 	m_isUpdated = false;

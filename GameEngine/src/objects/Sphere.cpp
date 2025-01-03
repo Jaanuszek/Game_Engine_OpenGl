@@ -69,8 +69,10 @@ void Sphere::UpdateVerticesAndIndices(float radius, unsigned int sectors, unsign
 }
 
 void Sphere::UpdateParams() {
+	ImGui::Begin("Sphere update");
 	ImGui::SliderFloat("sphere radius", &m_radius, 0.01f, 1.0f);
 	ImGui::SliderInt("sphere sectors", reinterpret_cast<int*>(& m_sectors), 4, m_maxSectors);
 	ImGui::SliderInt("sphere side", reinterpret_cast<int*>(&m_stacks), 3, m_maxStacks);
+	ImGui::End();
 	UpdateVerticesAndIndices();
 }

@@ -14,6 +14,7 @@ Texture::Texture(const std::string& path, const char* texType) :m_RendererID(0),
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
 	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
+	GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 
 	if (m_LocalBuffer)

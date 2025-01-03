@@ -94,7 +94,7 @@ void Mesh::Draw(Shader& shader, Camera& camera) {
 		shader.SetUniform1i((type + num).c_str(), i);
 	}
 	glActiveTexture(GL_TEXTURE0);
-	m_VAO->Bind();
+	//m_VAO->Bind();
 	GLCall(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0));
 	shader.Unbind();
 	m_VAO->Unbind();
