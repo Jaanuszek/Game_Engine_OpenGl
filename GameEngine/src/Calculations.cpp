@@ -11,8 +11,9 @@ glm::mat4 Calculations::CalculateViewMatrix(const glm::vec3& viewTranslation) {
 	return glm::translate(glm::mat4(1.0f), viewTranslation);
 }
 
-glm::mat4 Calculations::CalculateModelMatrix(const float& angle, const glm::vec3& axis, const glm::vec3 translation) {
+glm::mat4 Calculations::CalculateModelMatrix(const float& angle, const glm::vec3& axis, const glm::vec3& translation, const glm::vec3& scale) {
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, scale);
 	model = glm::translate(model, translation);
 	model = glm::rotate(model, glm::radians(angle), axis);
 	return model;

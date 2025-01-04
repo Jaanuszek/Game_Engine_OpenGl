@@ -48,7 +48,7 @@ void GuiHandler::EndFrame() {
 GuiHandler::GuiHandler(GuiHandlerParams params) : m_shaderFiles(params.shaderFiles), m_textureFiles(params.textureFiles), m_modelFiles(params.modelFiles),
 m_selectedShader(params.selectedShader), m_selectedTexture(params.selectedTexture), m_selectedModel(params.selectedModel), m_shaderType(params.shaderType),
 m_renderObject(params.renderObject), m_translation(params.translation), m_viewTranslation(params.viewTranslation),
-m_lightCubeTranslation(params.lightCubeTranslation), m_angle(params.angle), m_clearColor(params.clearColor)
+m_lightCubeTranslation(params.lightCubeTranslation), m_angle(params.angle), m_scaleVector(params.scaleVector), m_clearColor(params.clearColor)
 {
 }
 
@@ -66,6 +66,7 @@ GuiHandler& GuiHandler::operator=(const GuiHandler& other) {
 	m_viewTranslation = other.m_viewTranslation;
 	m_lightCubeTranslation = other.m_lightCubeTranslation;
 	m_angle = other.m_angle;
+	m_scaleVector = other.m_scaleVector;
 	return *this;
 }
 
@@ -122,6 +123,7 @@ void GuiHandler::DrawMainGui(){
 	ImGui::SliderFloat("View Translation A y", &m_viewTranslation.y, -1.0f, 1.0f);
 	ImGui::SliderFloat("View Translation A z", &m_viewTranslation.z, -10.0f, 10.0f);
 	ImGui::SliderFloat("Angle", &m_angle, 0.0f, 360.0f);
+	ImGui::SliderFloat3("Scale", &m_scaleVector.x, 0.0f, 2.0f);
 	ImGui::SliderFloat3("Light Cube Translation x", &m_lightCubeTranslation.x, -1.0f, 1.0f);
 	ImGui::SliderFloat4("Background Color", &m_clearColor.x, 0.0f, 1.0f);
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

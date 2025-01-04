@@ -32,6 +32,7 @@ glm::vec3 translationA(0.0f, 0.0f, 0.0f);
 glm::vec3 viewTranslation(0.0f, 0.0f, -3.0f);
 glm::vec3 lightCubeTranslation(-1.0f, 1.0f, 0.0f);
 float angle = 0.0f;
+glm::vec3 scaleVector(1.0f, 1.0f, 1.0f);
 
 double deltaTime = 0.0f;
 double lastFrame = 0.0f;
@@ -162,6 +163,7 @@ int main() {
             viewTranslation,
             lightCubeTranslation,
             angle,
+			scaleVector,
 			isObjectUpdated,
 			clearColor
         };
@@ -182,7 +184,7 @@ int main() {
 				// Calculations
 				glm::mat4 proj = Calculations::CalculateProjectionMatrix(width, height);
 				glm::mat4 view;
-				glm::mat4 model = Calculations::CalculateModelMatrix(angle, glm::vec3(0.5f, 1.0f, 0.0f), translationA);
+				glm::mat4 model = Calculations::CalculateModelMatrix(angle, glm::vec3(0.5f, 1.0f, 0.0f), translationA, scaleVector);
 				glm::mat4 mvp;
 				glm::mat4 viewLightCube = Calculations::CalculateViewMatrix(glm::vec3(-0.0f, 0.0f, -3.0f));
 				glm::mat4 modelLightCube = Calculations::CalculateModelMatrix(lightCubeTranslation);

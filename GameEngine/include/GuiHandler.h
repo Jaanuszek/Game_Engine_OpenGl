@@ -24,6 +24,7 @@ struct GuiHandlerParams {
     glm::vec3& viewTranslation;
     glm::vec3& lightCubeTranslation;
     float& angle;
+	glm::vec3& scaleVector;
     bool& isObjectBeingUpdated;
     glm::vec4& clearColor;
 
@@ -40,6 +41,7 @@ struct GuiHandlerParams {
         glm::vec3& viewTranslation,
         glm::vec3& lightCubeTranslation,
         float& angle,
+        glm::vec3& scaleVector,
         bool& isObjectBeingUpdated,
         glm::vec4& clearColor
     ) : shaderFiles(shaderFiles),
@@ -54,6 +56,7 @@ struct GuiHandlerParams {
         viewTranslation(viewTranslation),
         lightCubeTranslation(lightCubeTranslation),
         angle(angle),
+		scaleVector(scaleVector),
         isObjectBeingUpdated(isObjectBeingUpdated),
 		clearColor(clearColor)
         {}
@@ -69,6 +72,7 @@ struct GuiHandlerParams {
 		viewTranslation(other.viewTranslation),
 		lightCubeTranslation(other.lightCubeTranslation),
 		angle(other.angle),
+		scaleVector(other.scaleVector),
 		isObjectBeingUpdated(other.isObjectBeingUpdated),
 		clearColor(other.clearColor)
         {}
@@ -86,6 +90,7 @@ struct GuiHandlerParams {
             viewTranslation = other.viewTranslation;
             lightCubeTranslation = other.lightCubeTranslation;
             angle = other.angle;
+			scaleVector = other.scaleVector;
             isObjectBeingUpdated = other.isObjectBeingUpdated;
 			clearColor = other.clearColor;
             return *this;
@@ -105,6 +110,7 @@ struct GuiHandlerParams {
             viewTranslation = other.viewTranslation;
             lightCubeTranslation = other.lightCubeTranslation;
             angle = other.angle;
+			scaleVector = other.scaleVector;
             isObjectBeingUpdated = other.isObjectBeingUpdated;
 			clearColor = other.clearColor;
             return *this;
@@ -127,6 +133,7 @@ private:
 	glm::vec3& m_viewTranslation;
 	glm::vec3& m_lightCubeTranslation;
 	float& m_angle;
+	glm::vec3& m_scaleVector;
     glm::vec4& m_clearColor;
 	// drawing option list
 	template<typename EnumType>
