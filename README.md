@@ -1,8 +1,7 @@
-# Game Engine OpenGL TODO CHANGE NAME!!
+# Game Engine OpenGL
 
 ## DESCRIPTION
-TODO: create and change the name of project<br>
-<name_of_project> is a simple game engine that renders some basic 3D objects. 
+This is a simple game engine that renders some basic 3D objects. 
 Using a GUI you can generate various 3D objects, execute transformation (such as rotating, translating, scaling), apply shaders and place custom textures. 
 User can move around the scene using a camera and change the view with the mouse. 
 There is also straightforward light physics (one source of light that affects the objects). 
